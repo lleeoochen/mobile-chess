@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "testing",
-    "slug": "testing",
+    "name": "Mobile Chess",
+    "slug": "Mobile Chess",
     "platforms": [
       "ios",
       "android",
