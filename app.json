@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Mobile Chess",
-    "slug": "Mobile Chess",
+    "name": "MobileChess",
+    "slug": "MobileChess",
     "platforms": [
       "ios",
       "android",
@@ -21,8 +21,9 @@
     "assetBundlePatterns": [
       "**/*"
     ],
-    "ios": {
-      "supportsTablet": true
+    "android": {
+      "package": "com.weitungchen.mobile_chess",
+      "versionCode": 1
     }
   }
 }
