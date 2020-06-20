@@ -21,11 +21,6 @@
     "assetBundlePatterns": [
       "**/*"
     ],
-    "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.weitungchen.mobile_chess",
-      "buildNumber": "1.0.0"
-    },
     "android": {
       "package": "com.weitungchen.mobile_chess",
       "versionCode": 1
