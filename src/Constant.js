@@ -1,3 +1,3 @@
 export default Object.freeze({
-	HOSTNAME: 'https://www.chessvibe.net/login'
+	HOSTNAME: 'http://10.0.0.59:4000'
 });

@@ -1,5 +1,5 @@
 {
-  "name": "ChessVibe",
+  "name": "chessvibe",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -10,9 +10,18 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@react-native-community/masked-view": "^0.1.10",
     "react": "16.11.0",
     "react-native": "0.62.2",
-    "react-native-webview": "8.1.1"
+    "react-native-gesture-handler": "^1.6.1",
+    "react-native-reanimated": "^1.9.0",
+    "react-native-safe-area-context": "^3.0.7",
+    "react-native-safe-area-view": "^1.1.1",
+    "react-native-screens": "^2.9.0",
+    "react-native-webview": "8.1.1",
+    "react-navigation": "^4.4.0",
+    "react-navigation-native": "0.0.0",
+    "react-navigation-stack": "^2.8.2"
   },
   "devDependencies": {
     "@babel/core": "^7.6.2",
