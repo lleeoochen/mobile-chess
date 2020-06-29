@@ -1,7 +1,9 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { Animated, View, Text, Button, StyleSheet, StatusBar } from 'react-native';
+import { Animated, View, Text, Button, StyleSheet, StatusBar, Image, Dimensions } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import { GoogleSignin, GoogleSigninButton, statusCodes } from '@react-native-community/google-signin';
+
+let logoImg = require('chessvibe/assets/logo.jpg');
 
 const FadeInView = (props) => {
 	const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -108,6 +110,7 @@ export default function EntryScreen(props) {
 			<View style={styles.screen}>
 				<StatusBar hidden={ true }/>
 				<Text style={styles.title}>Chess Vibe</Text>
+				<Image style={ styles.logo } source={ logoImg }/>
 				<FadeInView style={styles.googleBtnWrap}>
 					<GoogleSigninButton
 						style={styles.googleBtn}
@@ -124,12 +127,17 @@ export default function EntryScreen(props) {
 		<View style={styles.screen}>
 			<StatusBar hidden={ true }/>
 			<Text style={styles.title}>Chess Vibe</Text>
+			<Image style={ styles.logo } source={ logoImg }/>
 			{/*<Button
 				title="Go to home."
 				onPress={() => navigateHome()}/>*/}
 		</View>
 	);
 }
+
+const vw = Dimensions.get('window').width / 100.0;
+const vh = Dimensions.get('window').height / 100.0;
+const logoSize = 50 * vw;
 
 const styles = StyleSheet.create({
 	screen: {
@@ -145,6 +153,10 @@ const styles = StyleSheet.create({
 		fontSize: 50,
 		position: 'absolute',
 		top: 50,
+	},
+	logo: {
+		width: logoSize,
+		height: logoSize
 	},
 	googleBtnWrap: {
 		width: '80%',
