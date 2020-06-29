@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "364782423342",
+    "firebase_url": "https://gamedb-f807e.firebaseio.com",
+    "project_id": "gamedb-f807e",
+    "storage_bucket": "gamedb-f807e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:364782423342:android:e621deaaebb4617de3bebf",
+        "android_client_info": {
+          "package_name": "net.chessvibe"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "364782423342-u8vs5gs8m9o0et4uq4el09h06nbacgr4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "net.chessvibe",
+            "certificate_hash": "0414177a07235fe453ec7292ca31dd3fbefd959a"
+          }
+        },
+        {
+          "client_id": "364782423342-ieled6vsqf8no3bp5ce33fr6bf7rd3k9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAhM6K-SImwi_KETxyylC-clrc8G91ct40"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "364782423342-ieled6vsqf8no3bp5ce33fr6bf7rd3k9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

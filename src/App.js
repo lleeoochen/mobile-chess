@@ -1,18 +1,19 @@
 import * as React from 'react';
+import { View } from 'react-native';
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
-import Home from './Home';
-import Game from './Game';
+import Entry from './EntryScreen';
+import Home from './HomeScreen';
+import Game from './GameScreen';
 
 const Navigator = createStackNavigator(
 	{
+		Entry: { screen: Entry },
 		Home: { screen: Home },
 		Game: { screen: Game },
 	},
 	{
-
-		initialRouteName: 'Home',
-		/* The header config from HomeScreen is now here */
+		initialRouteName: 'Entry',
 		defaultNavigationOptions: {
 			headerStyle: {
 				backgroundColor: 'black',
@@ -26,3 +27,15 @@ const Navigator = createStackNavigator(
 );
 
 export default createAppContainer(Navigator);
+// const Container = createAppContainer(Navigator);
+
+
+// export default class App extends React.Component {
+// 	render() {
+// 		return (
+// 			<Container>
+
+// 			</Container>
+// 		);
+// 	}
+// }

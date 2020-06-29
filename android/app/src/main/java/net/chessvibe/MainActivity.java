@@ -1,4 +1,4 @@
-package com.chessvibe;
+package net.chessvibe;
 
 import com.facebook.react.ReactActivity;
 

@@ -1,4 +1,3 @@
-import { HOSTNAME } from 'react-native-dotenv';
 export default Object.freeze({
-	HOSTNAME: HOSTNAME || 'https://www.chessvibe.net'
+	HOSTNAME: 'http://10.0.0.59:4000' || 'https://www.chessvibe.net'
 });
