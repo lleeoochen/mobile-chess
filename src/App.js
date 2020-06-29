@@ -2,9 +2,9 @@ import * as React from 'react';
 import { View } from 'react-native';
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
-import Entry from './EntryScreen';
-import Home from './HomeScreen';
-import Game from './GameScreen';
+import Entry from './screens/EntryScreen';
+import Home from './screens/HomeScreen';
+import Game from './screens/GameScreen';
 
 const Navigator = createStackNavigator(
 	{

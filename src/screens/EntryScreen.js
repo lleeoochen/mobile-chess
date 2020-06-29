@@ -1,47 +1,42 @@
-import React, { useRef, useState, useEffect } from 'react';
-import { Animated, View, Text, Button, StyleSheet, StatusBar, Image, Dimensions } from 'react-native';
+import * as React from 'react';
+import { View, Text, Button, StyleSheet, StatusBar, Image, Dimensions } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import { GoogleSignin, GoogleSigninButton, statusCodes } from '@react-native-community/google-signin';
+import { URL } from '../Constants';
+import Util, { vw, vh } from '../Utilities';
+import FadeInView from '../widgets/FadeInView';
 
 let logoImg = require('chessvibe/assets/logo.jpg');
 
-const FadeInView = (props) => {
-	const fadeAnim = useRef(new Animated.Value(0)).current;
-
-	React.useEffect(() => {
-		Animated.timing(fadeAnim, {
-			toValue: 1,
-			duration: 1000,
-			useNativeDriver: true
-		}).start();
-	}, [])
-
-	return (
-		<Animated.View
-			style={{
-				...props.style,
-				opacity: fadeAnim,
-			}}>
-			{props.children}
-		</Animated.View>
-	);
-}
-
+// Navigation
 EntryScreen.navigationOptions = ({navigation}) => {
 	return {
 		headerShown: false
 	};
 };
 
+// Entry Screen
 export default function EntryScreen(props) {
-	// Webhooks
-	const [signingin, setSigningin] = useState(false);
-	const [user, setUser] = useState();
+	const [signingin, setSigningin] = React.useState(false);
+	const [user, setUser] = React.useState();
 
 	// Signin configs
 	GoogleSignin.configure({
 		webClientId: '364782423342-ieled6vsqf8no3bp5ce33fr6bf7rd3k9.apps.googleusercontent.com',
 	});
+
+
+	// Mount
+	React.useEffect(() => {
+		// Handle user state changes
+		auth().onAuthStateChanged(async (user) => {
+			setUser(user);
+			if (user) {
+				navigateHome();
+			}
+		});
+	}, []);
+
 
 	// Signin
 	async function signIn() {
@@ -76,7 +71,7 @@ export default function EntryScreen(props) {
 		let auth_token = await auth().currentUser.getIdToken(true);
 
 		// Login with firebase token
-		let result = await request('POST', '/login', { auth_token: auth_token });
+		let result = await Util.request('POST', URL.BACKEND + '/login', { auth_token: auth_token });
 
 		if (result.session_token) {
 
@@ -90,55 +85,46 @@ export default function EntryScreen(props) {
 		}
 	}
 
-	// Component did mount
-	useEffect(() => {
-		// Handle user state changes
-		auth().onAuthStateChanged(async (user) => {
-			setUser(user);
-			if (user) {
-				navigateHome();
-			}
-		});
-	}, []);
 
+	// Render
 	if (props.navigation.getParam('signout')) {
-		signOut();
+		return signOut();
 	}
 
 	if (!user) {
 		return (
-			<View style={styles.screen}>
+			<View style={ styles.screen }>
 				<StatusBar hidden={ true }/>
-				<Text style={styles.title}>Chess Vibe</Text>
+
+				<Text style={ styles.title }>Chess Vibe</Text>
 				<Image style={ styles.logo } source={ logoImg }/>
-				<FadeInView style={styles.googleBtnWrap}>
+
+				<FadeInView style={ styles.googleBtnWrap }>
 					<GoogleSigninButton
-						style={styles.googleBtn}
-						size={GoogleSigninButton.Size.Wide}
-						color={GoogleSigninButton.Color.Dark}
-						onPress={() => signIn()}
-						disabled={signingin}/>
+						style={ styles.googleBtn }
+						size={ GoogleSigninButton.Size.Wide }
+						color={ GoogleSigninButton.Color.Dark }
+						onPress={ () => signIn() }
+						disabled={ signingin }/>
 				</FadeInView>
 			</View>
 		);
 	}
 
 	return (
-		<View style={styles.screen}>
+		<View style={ styles.screen }>
 			<StatusBar hidden={ true }/>
-			<Text style={styles.title}>Chess Vibe</Text>
+
+			<Text style={ styles.title }>Chess Vibe</Text>
 			<Image style={ styles.logo } source={ logoImg }/>
 			{/*<Button
 				title="Go to home."
-				onPress={() => navigateHome()}/>*/}
+				onPress={ () => navigateHome() }/>*/}
 		</View>
 	);
 }
 
-const vw = Dimensions.get('window').width / 100.0;
-const vh = Dimensions.get('window').height / 100.0;
-const logoSize = 50 * vw;
-
+const logoSize = vw(50);
 const styles = StyleSheet.create({
 	screen: {
 		flex: 1,
@@ -170,21 +156,3 @@ const styles = StyleSheet.create({
 		width: '100%',
 	}
 });
-
-
-function request(method, url, body) {
-	return new Promise(async (resolve, reject) => {
-		let time_start = new Date().getTime();
-
-		const response = await fetch('http://10.0.0.59:8000' + url, {
-			method: method,
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify(body)
-		});
-
-		let result = await response.json();
-		resolve(result);
-	});
-}

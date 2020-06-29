@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { View, Text, Image, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
-import CONST from '../Constant.js';
-
+import { vw, vh } from '../Utilities';
 
 export default function ActionBar(title, left_img, left_img_on_press, right_img, right_img_on_press) {
 
@@ -31,10 +30,8 @@ export default function ActionBar(title, left_img, left_img_on_press, right_img,
 }
 
 
-const vw = Dimensions.get('window').width / 100.0;
-const vh = Dimensions.get('window').height / 100.0;
-const toolbar_title = 8 * vw;
-const toolbar_btn_size = 10 * vw;
+const toolbar_title = vw(8);
+const toolbar_btn_size = vw(10);
 
 const styles = StyleSheet.create({
 	toolbar: {
@@ -52,8 +49,8 @@ const styles = StyleSheet.create({
 	},
 
 	btnbox: {
-		paddingLeft: 2 * vw,
-		paddingRight: 2 * vw
+		paddingLeft: vw(2),
+		paddingRight: vw(2),
 	},
 
 	btn: {
