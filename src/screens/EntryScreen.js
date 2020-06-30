@@ -25,6 +25,8 @@ export default function EntryScreen(props) {
 	// Signin configs
 	GoogleSignin.configure({
 		webClientId: '364782423342-ieled6vsqf8no3bp5ce33fr6bf7rd3k9.apps.googleusercontent.com',
+		iosClientId: '364782423342-5gdd9i071pha4sjao8htllghr2l08j2e.apps.googleusercontent.com',
+		loginHint: '',
 	});
 
 
