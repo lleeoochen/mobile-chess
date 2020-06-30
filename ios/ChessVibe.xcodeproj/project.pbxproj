@@ -30,6 +30,7 @@
 		71F36DF28802496C8C49B7C9 /* Spectral-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D8F777AD815C4EE4BC9E06A1 /* Spectral-Regular.ttf */; };
 		FA7A8EE1EA164CC4AC1FFA35 /* Spectral-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0A952E539D0843A398E491F9 /* Spectral-SemiBold.ttf */; };
 		385077AEE1624B50B23009F5 /* Spectral-SemiBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A2628CA53A224220AADE572E /* Spectral-SemiBoldItalic.ttf */; };
+		3FDC8063916640819C90A850 /* Spectral.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 82DA9CF8984A416280786B7E /* Spectral.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -79,6 +80,7 @@
 		D8F777AD815C4EE4BC9E06A1 /* Spectral-Regular.ttf */ = {isa = PBXFileReference; name = "Spectral-Regular.ttf"; path = "../assets/fonts/Spectral-Regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		0A952E539D0843A398E491F9 /* Spectral-SemiBold.ttf */ = {isa = PBXFileReference; name = "Spectral-SemiBold.ttf"; path = "../assets/fonts/Spectral-SemiBold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		A2628CA53A224220AADE572E /* Spectral-SemiBoldItalic.ttf */ = {isa = PBXFileReference; name = "Spectral-SemiBoldItalic.ttf"; path = "../assets/fonts/Spectral-SemiBoldItalic.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		82DA9CF8984A416280786B7E /* Spectral.ttf */ = {isa = PBXFileReference; name = "Spectral.ttf"; path = "../assets/fonts/Spectral.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -203,6 +205,7 @@
 				D8F777AD815C4EE4BC9E06A1 /* Spectral-Regular.ttf */,
 				0A952E539D0843A398E491F9 /* Spectral-SemiBold.ttf */,
 				A2628CA53A224220AADE572E /* Spectral-SemiBoldItalic.ttf */,
+				82DA9CF8984A416280786B7E /* Spectral.ttf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -360,6 +363,7 @@
 				71F36DF28802496C8C49B7C9 /* Spectral-Regular.ttf in Resources */,
 				FA7A8EE1EA164CC4AC1FFA35 /* Spectral-SemiBold.ttf in Resources */,
 				385077AEE1624B50B23009F5 /* Spectral-SemiBoldItalic.ttf in Resources */,
+				3FDC8063916640819C90A850 /* Spectral.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

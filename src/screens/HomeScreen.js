@@ -1,8 +1,9 @@
 import * as React from 'react';
 import { View, StyleSheet, StatusBar } from 'react-native';
-import { WebView } from 'react-native-webview';
-import { URL } from '../Constants';
+import { URL } from '../Const';
 import ActionBar from '../widgets/ActionBar';
+import WebVibe from '../widgets/WebVibe';
+import Cache from '../Cache';
 
 var menu_img = require('chessvibe/assets/menu.png');
 var new_game_img = require('chessvibe/assets/new-game.png');
@@ -52,7 +53,7 @@ export default function HomeScreen(props) {
 	}
 
 	// Render
-	let sessionToken = props.navigation.getParam('session_token');
+	let sessionToken = Cache.sessionToken;
 	let sessionScript = `
 		setStorage('session_token', '${ sessionToken }');
 		main();
@@ -62,15 +63,11 @@ export default function HomeScreen(props) {
 	return (
 		<View style={{ flex: 1 }}>
 			<StatusBar hidden={ true }/>
-			<WebView
+			<WebVibe
 				ref={ webref }
-				source={{ uri: URL.FRONTEND + '/mobile?no_action_bar=1' }}
-				style={ styles.view }
-				injectedJavaScript={ sessionScript }
-				javaScriptEnabledAndroid={ true }
-				allowsBackForwardNavigationGestures={ false }
-				userAgent="Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36"
-				onMessage={ (e) => onMessage(e) }/>
+				url={ URL.FRONTEND + '/mobile?no_action_bar=1' }
+				script={ sessionScript }
+				onMessage={ onMessage }/>
 		</View>
 	);
 }
@@ -79,5 +76,6 @@ const styles = StyleSheet.create({
 	view: {
 		alignSelf: 'stretch',
 		flex: 1,
+		backgroundColor: 'black'
 	}
 });

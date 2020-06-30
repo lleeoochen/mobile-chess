@@ -1,4 +1,5 @@
 import { Dimensions } from 'react-native';
+import Cache from './Cache';
 
 export default class Util {
 
@@ -10,6 +11,7 @@ export default class Util {
 				method: method,
 				headers: {
 					'Content-Type': 'application/json',
+					'Authorization': Cache.sessionToken
 				},
 				body: JSON.stringify(body)
 			});

@@ -57,4 +57,8 @@ buck-out/
 
 # CocoaPods
 /ios/Pods/
+
+
 .env
+app.sublime-project
+app.sublime-workspace

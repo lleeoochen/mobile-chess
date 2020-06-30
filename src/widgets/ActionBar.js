@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { View, Text, Image, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
-import { vw, vh } from '../Utilities';
+import { vw, vh } from '../Util';
+import TextVibe from '../widgets/TextVibe';
 
 export default function ActionBar(title, left_img, left_img_on_press, right_img, right_img_on_press) {
 
@@ -14,7 +15,7 @@ export default function ActionBar(title, left_img, left_img_on_press, right_img,
 
 	return {
 		headerTitle: () => (
-			<Text style={ styles.title }>{ title }</Text>
+			<TextVibe style={ styles.title }>{ title }</TextVibe>
 		),
 		headerLeft: () => (
 			<TouchableOpacity style={ styles.btnbox } onPress={ on_left_press }>

@@ -2,9 +2,11 @@ import * as React from 'react';
 import { View, Text, Button, StyleSheet, StatusBar, Image, Dimensions } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import { GoogleSignin, GoogleSigninButton, statusCodes } from '@react-native-community/google-signin';
-import { URL } from '../Constants';
-import Util, { vw, vh } from '../Utilities';
+import { URL } from '../Const';
+import Util, { vw, vh } from '../Util';
+import Cache from '../Cache';
 import FadeInView from '../widgets/FadeInView';
+import TextVibe from '../widgets/TextVibe';
 
 let logoImg = require('chessvibe/assets/logo.jpg');
 
@@ -59,6 +61,7 @@ export default function EntryScreen(props) {
 		try {
 			await GoogleSignin.signOut();
 			await auth().signOut();
+			Cache.sessionToken = '';
 		}
 		catch (error) {
 			console.log(error);
@@ -74,11 +77,8 @@ export default function EntryScreen(props) {
 		let result = await Util.request('POST', URL.BACKEND + '/login', { auth_token: auth_token });
 
 		if (result.session_token) {
-
-			// Go to home screen
-			props.navigation.navigate('Home', {
-				session_token: result.session_token
-			});
+			Cache.sessionToken = result.session_token;
+			props.navigation.navigate('Home');
 		}
 		else {
 			signOut();
@@ -88,7 +88,7 @@ export default function EntryScreen(props) {
 
 	// Render
 	if (props.navigation.getParam('signout')) {
-		return signOut();
+		signOut();
 	}
 
 	if (!user) {
@@ -96,7 +96,7 @@ export default function EntryScreen(props) {
 			<View style={ styles.screen }>
 				<StatusBar hidden={ true }/>
 
-				<Text style={ styles.title }>Chess Vibe</Text>
+				<TextVibe style={ styles.title }>Chess Vibe</TextVibe>
 				<Image style={ styles.logo } source={ logoImg }/>
 
 				<FadeInView style={ styles.googleBtnWrap }>
@@ -115,7 +115,7 @@ export default function EntryScreen(props) {
 		<View style={ styles.screen }>
 			<StatusBar hidden={ true }/>
 
-			<Text style={ styles.title }>Chess Vibe</Text>
+			<TextVibe style={ styles.title }>Chess Vibe</TextVibe>
 			<Image style={ styles.logo } source={ logoImg }/>
 			{/*<Button
 				title="Go to home."
@@ -135,7 +135,6 @@ const styles = StyleSheet.create({
 	},
 	title: {
 		color: 'white',
-		fontFamily: 'Spectral, serif',
 		fontSize: 50,
 		position: 'absolute',
 		top: 50,

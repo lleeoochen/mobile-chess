@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { StatusBar, View, Text, Image, StyleSheet } from 'react-native';
-import { WebView } from 'react-native-webview';
-import { URL } from '../Constants';
+import WebVibe from '../widgets/WebVibe';
+import { URL } from '../Const';
 import ActionBar from '../widgets/ActionBar';
 
 var back_img = require('chessvibe/assets/back.png');
@@ -39,19 +39,12 @@ export default function GameScreen(props) {
 	return (
 		<View style={{ flex: 1 }}>
 			<StatusBar hidden={ true }/>
-			<WebView
+			<WebVibe
 				ref={ webref }
-				source={{ uri: URL.FRONTEND + '/game_mobile?match=' + match + '&no_action_bar=1' }}
-				style={ styles.view }
-				allowsBackForwardNavigationGestures={ false }
-				userAgent="Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36"/>
+				url={ URL.FRONTEND + '/game_mobile?match=' + match + '&no_action_bar=1' }/>
 		</View>
 	);
 }
 
 const styles = StyleSheet.create({
-	view: {
-		alignSelf: 'stretch',
-		flex: 1,
-	}
 });
