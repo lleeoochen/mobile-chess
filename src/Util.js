@@ -1,5 +1,16 @@
 import { Dimensions } from 'react-native';
 import Cache from './Cache';
+import {
+	DB_CHECKMATE_WHITE,
+	DB_CHECKMATE_BLACK,
+	DB_STALEMATE,
+	DB_TIMESUP_WHITE,
+	DB_TIMESUP_BLACK,
+	DB_RESIGN_WHITE,
+	DB_RESIGN_BLACK,
+	DB_DRAW,
+	TEAM
+} from './Const';
 
 export default class Util {
 
@@ -47,4 +58,33 @@ export function formatDate(date, format='%M/%D %h:%m %z') {
 						.replace('%m', minutes || '')
 						.replace('%z', ampm || '');
 	return strTime;
+}
+
+
+
+export function winType(move, team) {
+	if (move == DB_DRAW) {
+		return 0;
+	}
+	else if (move == DB_STALEMATE) {
+		return 1;
+	}
+	else if (move == DB_CHECKMATE_BLACK) {
+		return team == TEAM.B;
+	}
+	else if (move == DB_CHECKMATE_WHITE) {
+		return team == TEAM.W;
+	}
+	else if (move == DB_TIMESUP_BLACK) {
+		return team == TEAM.B;
+	}
+	else if (move == DB_TIMESUP_WHITE) {
+		return team == TEAM.W;
+	}
+	else if (move == DB_RESIGN_BLACK) {
+		return team == TEAM.B ? 2 : undefined;
+	}
+	else if (move == DB_RESIGN_WHITE) {
+		return team == TEAM.W ? 2 : undefined;
+	}
 }

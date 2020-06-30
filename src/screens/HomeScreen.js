@@ -1,13 +1,14 @@
 import * as React from 'react';
-import { View, SafeAreaView, ScrollView, StyleSheet, StatusBar, TouchableOpacity, Image } from 'react-native';
+import { View, SafeAreaView, ScrollView, StyleSheet, StatusBar, TouchableOpacity, Image, Button } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
 
 import ActionBar from '../widgets/ActionBar';
 import WebVibe from '../widgets/WebVibe';
 import TextVibe from '../widgets/TextVibe';
+import ModalVibe from '../widgets/ModalVibe';
 
-import { URL } from '../Const';
-import { formatDate, vw, wh } from '../Util';
+import { URL, TEAM } from '../Const';
+import { formatDate, vw, wh, winType } from '../Util';
 import Cache from '../Cache';
 import Backend from '../Backend';
 
@@ -15,8 +16,6 @@ import Backend from '../Backend';
 var menu_img = require('chessvibe/assets/menu.png');
 var new_game_img = require('chessvibe/assets/new_game.png');
 var new_match_img = require('chessvibe/assets/new_match.png');
-var user = null;
-var user_id = null;
 
 const matchSize = vw((100 - 2 - 6 - 4) / 4);
 const borderRadius = vw();
@@ -31,43 +30,28 @@ HomeScreen.navigationOptions = ({navigation}) => {
 // Home Screen
 export default function HomeScreen(props) {
 	const [allMatches, setMatches] = React.useState([]);
-	const webref = React.useRef(null);
+	const [menuVisible, setMenuVisible] = React.useState(false);
+	const user = React.useRef({});
+	const user_id = React.useRef(null);
 
 	// Mount
 	React.useEffect(() => {
 		props.navigation.setParams({
 			openMenu: () => {
-				const injected = `
-					$('#menu-modal').modal('show');
-					true;
-				`;
-				webref.current.injectJavaScript(injected);
+				setMenuVisible(true);
 			},
 			openCreate: () => {
-				const injected = `
-					$('#new-match-modal').modal('show');
-					true;
-				`;
-				webref.current.injectJavaScript(injected);
 			},
 		});
 
 		Backend.init();
 		Backend.getProfile().then(res => {
-			user = res.data;
-			user_id = res.id;
+			user.current = res.data;
+			user_id.current = res.id;
 			let matches_dict = {};
 			let matches_promises = [];
-			let stats = {
-				draw: 0,
-				stalemate: 0,
-				win: 0,
-				lose: 0,
-				ongoing: 0,
-				resign: 0,
-			};
 
-			user.matches.forEach(match => {
+			user.current.matches.forEach(match => {
 				let [match_id, enemy_id] = match.split('-');
 				enemy_id = enemy_id || 'none';
 				matches_dict[enemy_id] = matches_dict[enemy_id] || [];
@@ -134,6 +118,14 @@ export default function HomeScreen(props) {
 
 	// Render
 	let $containers = [];
+	let stats = {
+		draw: 0,
+		stalemate: 0,
+		win: 0,
+		lose: 0,
+		ongoing: 0,
+		resign: 0,
+	};
 
 	for (let i in allMatches) {
 		let { enemy, matches } = allMatches[i];
@@ -147,6 +139,7 @@ export default function HomeScreen(props) {
 			let d = new Date(match_data.updated);
 			let d_str = formatDate(d, '%M/%D');
 
+			let color = (match_data.black == user_id) ? TEAM.B : TEAM.W;
 			let active = Math.floor(match_data.moves[match_data.moves.length - 1] / 10) != 0;
 			let borderStyle = match_data.black == user_id ? styles.blackBorder : styles.whiteBorder;
 			let colorStyle = active ? styles.greenColor : styles.greyColor;
@@ -166,6 +159,13 @@ export default function HomeScreen(props) {
 						<TextVibe style={ {...styles.matchDate, ...colorStyle} }> { d_str } </TextVibe>
 					</TouchableOpacity>
 				);
+
+				let win = winType(match_data.moves[match_data.moves.length - 1], color);
+				if (win === true) stats.win += 1;
+				else if (win === false) stats.lose += 1;
+				else if (win === 0) stats.draw += 1;
+				else if (win === 1) stats.stalemate += 1;
+				else if (win === 2) stats.resign += 1;
 			}
 		});
 
@@ -201,6 +201,29 @@ export default function HomeScreen(props) {
 			<ScrollView contentContainerStyle={ styles.playerScroll }>
 				{ $containers }
 			</ScrollView>
+
+			{/* Menu Modal */}
+			<ModalVibe
+				isVisible={ menuVisible }
+				onDismiss={ () => setMenuVisible(false) }>
+
+				<TextVibe style={ styles.menuText }>{ user.current.name || '' }</TextVibe>
+				<AutoHeightImage
+					style={ styles.menuImage }
+					width={ vw(30) }
+					source={ user.current.photo ? { uri: user.current.photo + '=c' } : new_match_img }/>
+
+				<TextVibe style={ styles.menuStat }>Win Rate { (stats.win * 100.0 / (stats.win + stats.lose)).toFixed(2) }%.</TextVibe>
+				<TextVibe style={ styles.menuStat }>Win { stats.win } games.</TextVibe>
+				<TextVibe style={ styles.menuStat }>Lose { stats.lose } games.</TextVibe>
+				<TextVibe style={ styles.menuStat }>Draw { stats.draw } games.</TextVibe>
+				<TextVibe style={ styles.menuStat }>Stalemate { stats.stalemate } games.</TextVibe>
+				<TextVibe style={ styles.menuStat }>Resign { stats.draw } games.</TextVibe>
+				<TextVibe style={ styles.menuStat }>Ongoing { stats.ongoing } games.</TextVibe>
+				<TouchableOpacity style={ styles.menuBtn } onPress={ () => setMenuVisible(false) }>
+					<TextVibe style={ styles.menuBtnText }>Logout</TextVibe>
+				</TouchableOpacity>
+			</ModalVibe>
 		</SafeAreaView>
 	);
 }
@@ -247,5 +270,34 @@ const styles = StyleSheet.create({
 					},
 
 						greenColor: { backgroundColor: '#56be68' },
-						greyColor: { backgroundColor: '#7f7f7f' }
+						greyColor: { backgroundColor: '#7f7f7f' },
+
+	menuText: {
+		color: 'white',
+		fontSize: vw(8),
+		textAlign: 'center',
+	},	
+
+	menuImage: {
+		marginVertical: vw(5)
+	},
+
+	menuStat: {
+		color: 'white',
+		fontSize: vw(5),
+	},
+
+	menuBtn: {
+		marginVertical: vw(5),
+		backgroundColor: 'white',
+		padding: vw(2),
+		paddingTop: vw(),
+		borderRadius: borderRadius,
+		width: '100%',
+	},
+
+	menuBtnText: {
+		fontSize: vw(5),
+		textAlign: 'center',
+	}
 });
