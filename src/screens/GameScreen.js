@@ -1,8 +1,7 @@
 import * as React from 'react';
 import { StatusBar, View, SafeAreaView, Text, Image, StyleSheet } from 'react-native';
-import WebVibe from '../widgets/WebVibe';
+import { WebVibe, ActionBar } from 'chessvibe/src/widgets';
 import { URL } from '../Const';
-import ActionBar from '../widgets/ActionBar';
 
 var back_img = require('chessvibe/assets/back.png');
 var theme_img = require('chessvibe/assets/palette.png');

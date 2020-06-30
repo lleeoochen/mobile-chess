@@ -35,12 +35,6 @@ const toolbar_title = vw(8);
 const toolbar_btn_size = vw(10);
 
 const styles = StyleSheet.create({
-	toolbar: {
-		display: 'flex',
-		flexDirection: 'row',
-		justifyContent: 'space-between',
-		backgroundColor: 'black',
-	},
 
 	title: {
 		color: 'white',

@@ -5,31 +5,42 @@ import { vw, wh } from '../Util';
 
 export default function ModalVibe(props) {
 	return (
-		<Modal isVisible={ props.isVisible || false }>
-			<TouchableOpacity style={ styles.menuOutside } onPressOut={ props.onDismiss }>
-				<View style={ styles.menu }>
-					{ props.children }
-				</View>
+		<Modal
+			isVisible={ props.isVisible || false }
+			animationIn={'fadeIn'}
+			animationOut={'fadeOut'} activeOpacity={0}
+			style={ styles.modal }>
+			<TouchableOpacity style={ styles.menuOutside } onPressIn={ props.onDismiss }>
 			</TouchableOpacity>
+			<View style={ styles.menu }>
+				{ props.children }
+			</View>
 		</Modal>
 	);
 }
 
 const styles = StyleSheet.create({
+	modal: {
+		flex: 1,
+		margin: 0
+	},
+
 	menuOutside: {
 		flex: 1,
-		alignItems: 'center',
-		justifyContent: 'center',
 	},
 
 	menu: {
+		position: 'absolute',
 		alignItems: 'center',
 		justifyContent: 'center',
 		padding: '3%',
 		backgroundColor: 'darkslategrey',
-		borderStyle: 'dashed',
+		borderStyle: 'solid',
 		borderColor: 'grey',
 		borderWidth: vw(2),
-		width: '90%'
+		width: '90%',
+		left: '5%',
+		right: '5%',
+		zIndex: 100
 	},
 });

@@ -5,6 +5,7 @@ import { createStackNavigator } from 'react-navigation-stack';
 import Entry from './screens/EntryScreen';
 import Home from './screens/HomeScreen';
 import Game from './screens/GameScreen';
+import { vw } from './Util';
 
 const Navigator = createStackNavigator(
 	{
@@ -18,7 +19,8 @@ const Navigator = createStackNavigator(
 			headerStyle: {
 				backgroundColor: 'black',
 				shadowColor: 'black',
-				shadowRadius: 2,
+				shadowRadius: vw(),
+				height: vw(15),
 			},
 			headerTintColor: 'white',
 			headerTitleStyle: {

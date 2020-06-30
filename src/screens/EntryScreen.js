@@ -1,12 +1,11 @@
 import * as React from 'react';
 import { View, SafeAreaView, Text, Button, StyleSheet, StatusBar, Image, Dimensions } from 'react-native';
-import auth from '@react-native-firebase/auth';
+import { FadeInView, TextVibe } from 'chessvibe/src/widgets';
 import { GoogleSignin, GoogleSigninButton, statusCodes } from '@react-native-community/google-signin';
+import auth from '@react-native-firebase/auth';
 import { URL } from '../Const';
 import Util, { vw, vh } from '../Util';
 import Cache from '../Cache';
-import FadeInView from '../widgets/FadeInView';
-import TextVibe from '../widgets/TextVibe';
 
 let logoImg = require('chessvibe/assets/logo.jpg');
 
