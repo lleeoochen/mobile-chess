@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, Text, Button, StyleSheet, StatusBar, Image, Dimensions } from 'react-native';
+import { View, SafeAreaView, Text, Button, StyleSheet, StatusBar, Image, Dimensions } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import { GoogleSignin, GoogleSigninButton, statusCodes } from '@react-native-community/google-signin';
 import { URL } from '../Const';
@@ -93,7 +93,7 @@ export default function EntryScreen(props) {
 
 	if (!user) {
 		return (
-			<View style={ styles.screen }>
+			<SafeAreaView style={ styles.screen }>
 				<StatusBar hidden={ true }/>
 
 				<TextVibe style={ styles.title }>Chess Vibe</TextVibe>
@@ -107,12 +107,12 @@ export default function EntryScreen(props) {
 						onPress={ () => signIn() }
 						disabled={ signingin }/>
 				</FadeInView>
-			</View>
+			</SafeAreaView>
 		);
 	}
 
 	return (
-		<View style={ styles.screen }>
+		<SafeAreaView style={ styles.screen }>
 			<StatusBar hidden={ true }/>
 
 			<TextVibe style={ styles.title }>Chess Vibe</TextVibe>
@@ -120,7 +120,7 @@ export default function EntryScreen(props) {
 			{/*<Button
 				title="Go to home."
 				onPress={ () => navigateHome() }/>*/}
-		</View>
+		</SafeAreaView>
 	);
 }
 

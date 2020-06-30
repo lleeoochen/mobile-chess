@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { StatusBar, View, Text, Image, StyleSheet } from 'react-native';
+import { StatusBar, View, SafeAreaView, Text, Image, StyleSheet } from 'react-native';
 import WebVibe from '../widgets/WebVibe';
 import { URL } from '../Const';
 import ActionBar from '../widgets/ActionBar';
@@ -37,12 +37,12 @@ export default function GameScreen(props) {
 	let match = props.navigation.getParam('match');
 
 	return (
-		<View style={{ flex: 1 }}>
+		<SafeAreaView style={{ flex: 1 }}>
 			<StatusBar hidden={ true }/>
 			<WebVibe
 				ref={ webref }
 				url={ URL.FRONTEND + '/game_mobile?match=' + match + '&no_action_bar=1' }/>
-		</View>
+		</SafeAreaView>
 	);
 }
 

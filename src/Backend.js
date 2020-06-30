@@ -1,39 +1,55 @@
-import Util from '../Util';
-import Const from '../Const';
+import Util from './Util';
+import Cache from './Cache';
+import { URL } from './Const';
+import io from 'socket.io-client';
 
 export default class Backend {
-	getMatch(id) {
-		return Util.request('GET', '/chess/get_match?id=' + id);
+
+	static socket = null;
+
+	static init() {
+		if (this.socket)
+			this.socket.close();
+
+		this.socket = io(URL.BACKEND, {
+			query: {
+				token: Cache.sessionToken
+			}
+		});
 	}
 
-	getMatches(user, ids) {
-		return Util.request('GET', '/chess/get_matches?ids=' + JSON.stringify(ids) + '&user=' + user);
+	static getMatch(id) {
+		return Util.request('GET', URL.BACKEND + '/chess/get_match?id=' + id);
 	}
 
-	getProfile() {
-		return Util.request('GET', '/chess/get_profile');
+	static getMatches(user, ids) {
+		return Util.request('GET', URL.BACKEND + '/chess/get_matches?ids=' + JSON.stringify(ids) + '&user=' + user);
 	}
 
-	getUser(id) {
-		return Util.request('GET', '/chess/get_user?id=' + id);
+	static getProfile() {
+		return Util.request('GET', URL.BACKEND + '/chess/get_profile');
 	}
 
-	listenMatch(id, resolve) {
+	static getUser(id) {
+		return Util.request('GET', URL.BACKEND + '/chess/get_user?id=' + id);
+	}
+
+	static listenMatch(id, resolve) {
 		this.socket.emit('listen_match', id);
 		this.socket.on('listen_match_' + id, data => {
 			resolve(data);
 		});
 	}
 
-	listenUser(id, resolve) {
+	static listenUser(id, resolve) {
 		this.socket.emit('listen_user', id);
 		this.socket.on('listen_match_' + id, data => {
 			resolve(data);
 		});
 	}
 
-	createMatch(theme, time) {
-		return Util.request('POST', '/chess/create_match', {
+	static createMatch(theme, time) {
+		return Util.request('POST', URL.BACKEND + '/chess/create_match', {
 			theme: Util.packTheme(theme),
 			time: time || MAX_TIME
 		});
