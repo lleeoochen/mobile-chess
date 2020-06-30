@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>364782423342-5gdd9i071pha4sjao8htllghr2l08j2e.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.364782423342-5gdd9i071pha4sjao8htllghr2l08j2e</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>364782423342-u8vs5gs8m9o0et4uq4el09h06nbacgr4.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyDZZfj2xdeA7vd38AyPfsZ54_f4DsYXwmk</string>
+	<key>GCM_SENDER_ID</key>
+	<string>364782423342</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>net.chessvibe</string>
+	<key>PROJECT_ID</key>
+	<string>gamedb-f807e</string>
+	<key>STORAGE_BUCKET</key>
+	<string>gamedb-f807e.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:364782423342:ios:0b191754f397b6cae3bebf</string>
+	<key>DATABASE_URL</key>
+	<string>https://gamedb-f807e.firebaseio.com</string>
+</dict>
+</plist>
