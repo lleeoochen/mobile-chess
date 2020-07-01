@@ -50,7 +50,7 @@ export default class Backend {
 
 	static createMatch(theme, time) {
 		return Util.request('POST', URL.BACKEND + '/chess/create_match', {
-			theme: Util.packTheme(theme),
+			theme: theme,
 			time: time || MAX_TIME
 		});
 	}

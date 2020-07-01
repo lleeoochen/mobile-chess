@@ -3,23 +3,10 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { TextVibe, ModalVibe } from 'chessvibe/src/widgets';
 import AutoHeightImage from 'react-native-auto-height-image';
 import { vw } from 'chessvibe/src/Util';
+import { THEME, TIME } from 'chessvibe/src/Const';
 
 const new_match_img = require('chessvibe/assets/new_match.png');
 const borderRadius = vw();
-
-const THEME = {
-	CLASSIC: 0,
-	WINTER: 1,
-	METAL: 2,
-	NATURE: 3,
-};
-
-const TIME = {
-	FIVE: 0,
-	FIFTEEN: 1,
-	THIRTY: 2,
-	INFINITE: 3,
-};
 
 export default function HomeCreateMenu(props) {
 	let [ theme, setTheme ] = React.useState(THEME.CLASSIC);

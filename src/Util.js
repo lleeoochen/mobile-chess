@@ -44,6 +44,16 @@ export default class Util {
 		});
 	}
 
+	static checkPosition(pos) {
+		if (pos != null && this.inBound(pos.x) && this.inBound(pos.y))
+			return pos;
+		else
+			return null;
+	}
+	static inBound(i) {
+		return i >= 0 && i < BOARD_SIZE;
+	}
+
 	static pack(oldGrid, newGrid, turn) {
 		return oldGrid.x * 10000 + oldGrid.y * 1000 + newGrid.x * 100 + newGrid.y * 10 + (turn == TEAM.W ? 1 : 0);
 	}
@@ -98,6 +108,17 @@ export default class Util {
 		}
 		return THEME_CLASSIC;
 	}
+
+	static packMessage(message, my_team) {
+		return my_team + message;
+	}
+
+	static unpackMessage(data) {
+		return {
+			team: data[0],
+			message: data.slice(1)
+		};
+	}
 }
 
 export function vw(size=1) {
@@ -107,8 +128,6 @@ export function vw(size=1) {
 export function vh(size=1) {
 	return size * Dimensions.get('window').height / 100.0;
 }
-
-
 
 // https://stackoverflow.com/a/8888498
 export function formatDate(date, format='%M/%D %h:%m %z') {
@@ -127,7 +146,17 @@ export function formatDate(date, format='%M/%D %h:%m %z') {
 	return strTime;
 }
 
+export function formatTimer(timer) {
+	let min = Math.floor(timer / 60);
+	let sec = timer - min * 60;
+	min = min < 10 ? '0' + min : min;
+	sec = sec < 10 ? '0' + sec : sec;
+	return min + ":" + sec;
+}
 
+export function gameFinished(match) {
+	return Math.floor(match.moves[match.moves.length - 1] / 10) == 0;
+}
 
 export function winType(move, team) {
 	if (move == DB_DRAW) {
