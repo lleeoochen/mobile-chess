@@ -7,7 +7,8 @@ import { URL, TEAM } from 'chessvibe/src/Const';
 import { formatDate, vw, wh, winType } from 'chessvibe/src/Util';
 import Cache from 'chessvibe/src/Cache';
 import Backend from 'chessvibe/src/Backend';
-import HomeMenu from './HomeMenu';
+import HomeUserMenu from './HomeUserMenu';
+import HomeCreateMenu from './HomeCreateMenu';
 
 var menu_img = require('chessvibe/assets/menu.png');
 var new_game_img = require('chessvibe/assets/new_game.png');
@@ -23,10 +24,12 @@ HomeScreen.navigationOptions = ({navigation}) => {
 	return ActionBar('ChessVibe', menu_img, params.openMenu, new_game_img, params.openCreate);
 };
 
+
 // Home Screen
 export default function HomeScreen(props) {
 	const [allMatches, setMatches] = React.useState([]);
-	const [menuVisible, setMenuVisible] = React.useState(false);
+	const [userMenuVisible, showUserMenu] = React.useState(false);
+	const [createMenuVisible, showCreateMenu] = React.useState(false);
 	const user = React.useRef({});
 	const user_id = React.useRef(null);
 
@@ -34,15 +37,15 @@ export default function HomeScreen(props) {
 	React.useEffect(() => {
 		props.navigation.setParams({
 			openMenu: () => {
-				setMenuVisible(true);
+				showUserMenu(true);
 			},
 			openCreate: () => {
+				showCreateMenu(true)
 			},
 		});
 
 		fetchMatches();
 	}, []);
-
 
 	// Render function
 	function render() {
@@ -52,15 +55,24 @@ export default function HomeScreen(props) {
 		return (
 			<SafeAreaView style={ styles.view }>
 				<StatusBar hidden={ true }/>
+
 				<ScrollView contentContainerStyle={ styles.playerScroll }>
 					{ $containers }
 				</ScrollView>
 
-				<HomeMenu
-					visible={ menuVisible }
-					onDismiss={ () => setMenuVisible(false) }
+				<HomeUserMenu
+					visible={ userMenuVisible }
+					onDismiss={ () => showUserMenu(false) }
 					user={ user.current }
 					stats={ stats }/>
+
+				<HomeCreateMenu
+					visible={ createMenuVisible }
+					onDismiss={ () => showCreateMenu(false) }
+					onSubmit={ (theme, time) => {
+						showCreateMenu(false);
+						createMatch(theme, time);
+					} }/>
 			</SafeAreaView>
 		);
 	}
@@ -87,6 +99,14 @@ export default function HomeScreen(props) {
 	function navigateGame(match) {
 		props.navigation.navigate('Game', {
 			match: match
+		});
+	}
+
+	// Create new match
+	function createMatch(theme, time) {
+		Backend.createMatch(theme, time).then(match => {
+			fetchMatches();
+			navigateGame(match);
 		});
 	}
 

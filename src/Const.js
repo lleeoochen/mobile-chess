@@ -9,7 +9,7 @@ export const URL = Object.freeze({
 // });
 
 export const TEAM = {B: "B", W: "W", None:"N"};
-
+export const BOARD_SIZE = 8;
 
 export const DB_CHECKMATE_WHITE = 0;
 export const DB_CHECKMATE_BLACK = 1;
@@ -20,3 +20,7 @@ export const DB_RESIGN_WHITE = 5;
 export const DB_RESIGN_BLACK = 6;
 export const DB_DRAW = 7;
 
+export const DB_THEME_CLASSIC = 0;
+export const DB_THEME_WINTER = 1;
+export const DB_THEME_METAL = 2;
+export const DB_THEME_NATURE = 3;

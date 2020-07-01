@@ -7,7 +7,7 @@ import { vw } from 'chessvibe/src/Util';
 const new_match_img = require('chessvibe/assets/new_match.png');
 const borderRadius = vw();
 
-export default function HomeMenu(props) {
+export default function HomeUserMenu(props) {
 
 	let { visible, onDismiss, user, stats } = props;
 

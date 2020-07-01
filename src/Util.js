@@ -9,7 +9,19 @@ import {
 	DB_RESIGN_WHITE,
 	DB_RESIGN_BLACK,
 	DB_DRAW,
-	TEAM
+
+	TEAM,
+	BOARD_SIZE,
+
+	THEME_CLASSIC,
+	THEME_WINTER,
+	THEME_METAL,
+	THEME_NATURE,
+
+	DB_THEME_CLASSIC,
+	DB_THEME_WINTER,
+	DB_THEME_METAL,
+	DB_THEME_NATURE,
 } from './Const';
 
 export default class Util {
@@ -30,6 +42,61 @@ export default class Util {
 			let result = await response.json();
 			resolve(result);
 		});
+	}
+
+	static pack(oldGrid, newGrid, turn) {
+		return oldGrid.x * 10000 + oldGrid.y * 1000 + newGrid.x * 100 + newGrid.y * 10 + (turn == TEAM.W ? 1 : 0);
+	}
+
+	static unpack(data, flipped) {
+		let move = {
+			old_x: Math.floor(data / 10000),
+			old_y: Math.floor((data % 10000) / 1000),
+			new_x: Math.floor((data % 1000) / 100),
+			new_y: Math.floor((data % 100) / 10),
+			turn: (Math.floor((data % 10) / 1) == 1) ? TEAM.W : TEAM.B
+		};
+
+		if (flipped) {
+			move.old_x = BOARD_SIZE - move.old_x - 1;
+			move.new_x = BOARD_SIZE - move.new_x - 1;
+			move.old_y = BOARD_SIZE - move.old_y - 1;
+			move.new_y = BOARD_SIZE - move.new_y - 1;
+		}
+
+		return move;
+	}
+
+	static packTheme(theme) {
+		if (theme == THEME_CLASSIC) {
+			return DB_THEME_CLASSIC;
+		}
+		else if (theme == THEME_WINTER) {
+			return DB_THEME_WINTER;
+		}
+		else if (theme == THEME_METAL) {
+			return DB_THEME_METAL;
+		}
+		else if (theme == THEME_NATURE) {
+			return DB_THEME_NATURE;
+		}
+		return DB_THEME_CLASSIC;
+	}
+
+	static unpackTheme(data) {
+		if (data == DB_THEME_CLASSIC) {
+			return THEME_CLASSIC;
+		}
+		else if (data == DB_THEME_WINTER) {
+			return THEME_WINTER;
+		}
+		else if (data == DB_THEME_METAL) {
+			return THEME_METAL;
+		}
+		else if (data == DB_THEME_NATURE) {
+			return THEME_NATURE;
+		}
+		return THEME_CLASSIC;
 	}
 }
 
