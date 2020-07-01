@@ -62,17 +62,23 @@ export default function HomeScreen(props) {
 
 				<HomeUserMenu
 					visible={ userMenuVisible }
-					onDismiss={ () => showUserMenu(false) }
 					user={ user.current }
-					stats={ stats }/>
+					stats={ stats }
+					onDismiss={ () => showUserMenu(false) }
+					onLogout={() => {
+						showUserMenu(false);
+						props.navigation.navigate('Entry', {
+							signout: true
+						});
+					}}/>
 
 				<HomeCreateMenu
 					visible={ createMenuVisible }
 					onDismiss={ () => showCreateMenu(false) }
-					onSubmit={ (theme, time) => {
+					onSubmit={(theme, time) => {
 						showCreateMenu(false);
 						createMatch(theme, time);
-					} }/>
+					}}/>
 			</SafeAreaView>
 		);
 	}

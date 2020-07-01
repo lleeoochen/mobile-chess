@@ -9,7 +9,7 @@ const borderRadius = vw();
 
 export default function HomeUserMenu(props) {
 
-	let { visible, onDismiss, user, stats } = props;
+	let { visible, onDismiss, onLogout, user, stats } = props;
 
 	return (
 		<ModalVibe
@@ -29,7 +29,7 @@ export default function HomeUserMenu(props) {
 			<TextVibe style={ styles.menuStat }>Stalemate { stats.stalemate } games.</TextVibe>
 			<TextVibe style={ styles.menuStat }>Resign { stats.draw } games.</TextVibe>
 			<TextVibe style={ styles.menuStat }>Ongoing { stats.ongoing } games.</TextVibe>
-			<TouchableOpacity style={ styles.menuBtn } onPress={ onDismiss }>
+			<TouchableOpacity style={ styles.menuBtn } onPress={ onLogout }>
 				<TextVibe style={ styles.menuBtnText }>Logout</TextVibe>
 			</TouchableOpacity>
 		</ModalVibe>
