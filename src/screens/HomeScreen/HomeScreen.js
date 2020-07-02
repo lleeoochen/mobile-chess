@@ -37,7 +37,7 @@ export default function HomeScreen(props) {
 	React.useEffect(() => {
 		props.navigation.setParams({
 			openMenu: () => {
-				showUserMenu(true);
+				showUsserMenu(true);
 			},
 			openCreate: () => {
 				showCreateMenu(true)
@@ -83,9 +83,7 @@ export default function HomeScreen(props) {
 		);
 	}
 
-
 	// ====================== Functions ======================
-
 
 	// Message from WebView
 	function onMessage(event) {

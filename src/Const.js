@@ -26,7 +26,7 @@ export const THEME_CLASSIC = {
 		DESKTOP:            "#494949",
 		MOBILE:             "#89898980",
 	},
-	BACKGROUND_IMAGE:       "./assets/background.jpg",
+	BACKGROUND_IMAGE:       require("chessvibe/assets/background.jpg"),
 	NAME_TITLE_COLOR:       "white"
 };
 
@@ -42,7 +42,7 @@ export const THEME_WINTER = {
 		DESKTOP:            "#494949",
 		MOBILE:             "#FFFFFF33",
 	},
-	BACKGROUND_IMAGE:       "./assets/background_winter.jpg",
+	BACKGROUND_IMAGE:       require("chessvibe/assets/background_winter.jpg"),
 	NAME_TITLE_COLOR:       "white",
 };
 
@@ -58,7 +58,7 @@ export const THEME_METAL = {
 		DESKTOP:            "#494949",
 		MOBILE:             "#89898980",
 	},
-	BACKGROUND_IMAGE:       "./assets/background_metal.jpg",
+	BACKGROUND_IMAGE:       require("chessvibe/assets/background_metal.jpg"),
 	NAME_TITLE_COLOR:       "white"
 };
 
@@ -74,7 +74,7 @@ export const THEME_NATURE = {
 		DESKTOP:            "#494949",
 		MOBILE:             "#00000080",
 	},
-	BACKGROUND_IMAGE:       "./assets/background_nature.jpg",
+	BACKGROUND_IMAGE:       require("chessvibe/assets/background_nature.jpg"),
 	NAME_TITLE_COLOR:       "black",
 };
 
