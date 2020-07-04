@@ -6,7 +6,7 @@ import { BOARD_SIZE, TEAM, CHESS } from 'chessvibe/src/Const';
 
 
 export default function ChessBoard(props) {
-	const board = useSelector(state => state.game.chessboard);
+	const board = useSelector(state => state.game.chessboard.slice());
 
 	// Mount
 	React.useEffect(() => {

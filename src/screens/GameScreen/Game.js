@@ -149,14 +149,14 @@ export default class Game {
 
 	//Handle chess event with (x, y) click coordinate
 	async handleChessEvent(x, y) {
-		// if ((user_id != match.black && user_id != match.white) || my_team != turn || Util.gameFinished(match))
+		// if ((user_id != match.black && user_id != match.white) || this.team != turn || Util.gameFinished(match))
 		// if (this.team != this.turn || Util.gameFinished(match))
 		// 	return;
 
 		//Initalize important variables
 		let newGrid = this.chessboard[x][y];
 		let isLegal = this.isLegalMove(newGrid);
-		isLegal = isLegal && isKingSafe(this.oldGrid, newGrid);
+		isLegal = isLegal && this.isKingSafe(this.team, this.oldGrid, newGrid);
 
 		first_move = false;
 
@@ -197,7 +197,7 @@ export default class Game {
 			// });
 
 			this.moveChess(this.oldGrid, newGrid);
-			if (my_team == Const.TEAM.B)
+			if (this.team == Const.TEAM.B)
 				this.black_timer += 1
 			else
 				this.white_timer += 1
@@ -435,6 +435,8 @@ export default class Game {
 
 		// Clear old grid piece
 		oldGrid.piece = -1;
+
+		this.colorLatestMove(oldGrid, newGrid);
 	}
 
 	movePassantPawn(oldGrid, newGrid) {
@@ -570,6 +572,15 @@ export default class Game {
 		}
 		this.baseboard[newGrid.x][newGrid.y] = color;
 
+		Store.dispatch(Reducer.initGame(this));
+	}
+
+	//Set last move grid color
+	colorLatestMove(oldGrid, newGrid) {
+		this.clearMoves();
+
+		this.baseboard[oldGrid.x][oldGrid.y] = Const.COLOR_LAST_MOVE;
+		this.baseboard[newGrid.x][newGrid.y] = Const.COLOR_LAST_MOVE;
 		Store.dispatch(Reducer.initGame(this));
 	}
 }

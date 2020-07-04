@@ -4,7 +4,7 @@ import { StatusBar, SafeAreaView, StyleSheet } from 'react-native';
 import { initGame, updateTheme } from 'chessvibe/src/redux/Reducer';
 import { ActionBar } from 'chessvibe/src/widgets';
 import Store from 'chessvibe/src/redux/Store';
-import { THEME_WINTER, THEME_CLASSIC, TEAM } from 'chessvibe/src/Const';
+import { THEME, TEAM } from 'chessvibe/src/Const';
 import { vw } from 'chessvibe/src/Util';
 
 import BaseBoard from './_BaseBoard';
@@ -33,12 +33,18 @@ export default function GameScreen(props) {
 		props.navigation.setParams({
 			goBack: () => {
 				// props.navigation.goBack();
-				console.log(Store.getState().game.baseboard[0][6]);
+				console.log(Store.getState().game.chessboard[0][4]);
+				console.log(Store.getState().game.chessboard[0][6]);
 				// console.log(Store.getState());
 			},
 			changeTheme: () => {
 				let theme = Store.getState().theme;
-				Store.dispatch(updateTheme( theme == THEME_WINTER ? THEME_CLASSIC : THEME_WINTER ));
+				if (theme == THEME.CLASSIC) theme = THEME.WINTER;
+				else if (theme == THEME.WINTER) theme = THEME.METAL;
+				else if (theme == THEME.METAL) theme = THEME.NATURE;
+				else if (theme == THEME.NATURE) theme = THEME.CLASSIC;
+
+				Store.dispatch(updateTheme( theme ));
 			},
 		});
 

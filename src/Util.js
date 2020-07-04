@@ -14,10 +14,7 @@ import {
 	TEAM,
 	BOARD_SIZE,
 
-	THEME_CLASSIC,
-	THEME_WINTER,
-	THEME_METAL,
-	THEME_NATURE,
+	THEME,
 
 	DB_THEME_CLASSIC,
 	DB_THEME_WINTER,
@@ -79,16 +76,16 @@ export default class Util {
 	}
 
 	static packTheme(theme) {
-		if (theme == THEME_CLASSIC) {
+		if (theme == THEME.CLASSIC) {
 			return DB_THEME_CLASSIC;
 		}
-		else if (theme == THEME_WINTER) {
+		else if (theme == THEME.WINTER) {
 			return DB_THEME_WINTER;
 		}
-		else if (theme == THEME_METAL) {
+		else if (theme == THEME.METAL) {
 			return DB_THEME_METAL;
 		}
-		else if (theme == THEME_NATURE) {
+		else if (theme == THEME.NATURE) {
 			return DB_THEME_NATURE;
 		}
 		return DB_THEME_CLASSIC;
@@ -96,18 +93,18 @@ export default class Util {
 
 	static unpackTheme(data) {
 		if (data == DB_THEME_CLASSIC) {
-			return THEME_CLASSIC;
+			return THEME.CLASSIC;
 		}
 		else if (data == DB_THEME_WINTER) {
-			return THEME_WINTER;
+			return THEME.WINTER;
 		}
 		else if (data == DB_THEME_METAL) {
-			return THEME_METAL;
+			return THEME.METAL;
 		}
 		else if (data == DB_THEME_NATURE) {
-			return THEME_NATURE;
+			return THEME.NATURE;
 		}
-		return THEME_CLASSIC;
+		return THEME.CLASSIC;
 	}
 
 	static packMessage(message, my_team) {

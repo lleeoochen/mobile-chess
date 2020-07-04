@@ -29,69 +29,71 @@ export const CHESS_IMAGE = {
 	WPawn:   require("chessvibe/assets/WPawn.png"),
 };
 
-export const THEME_CLASSIC = {
-	ID:                     "classic",
-	COLOR_BOARD_LIGHT:      "#E6BF83",
-	COLOR_BOARD_DARK:       "#8B4513",
-	COLOR_HIGHLIGHT_LIGHT:  "#9E93E1",
-	COLOR_HIGHLIGHT_DARK:   "#7B68EE",
-	COLOR_LAST_MOVE_LIGHT:  "#FDFD84",
-	COLOR_LAST_MOVE_DARK:   "#EFEF6E",
-	COLOR_UTILITY: {
-		DESKTOP:            "#494949",
-		MOBILE:             "#89898980",
+export const THEME = Object.freeze({
+	CLASSIC: {
+		ID:                     "classic",
+		COLOR_BOARD_LIGHT:      "#E6BF83",
+		COLOR_BOARD_DARK:       "#8B4513",
+		COLOR_HIGHLIGHT_LIGHT:  "#9E93E1",
+		COLOR_HIGHLIGHT_DARK:   "#7B68EE",
+		COLOR_LAST_MOVE_LIGHT:  "#FDFD84",
+		COLOR_LAST_MOVE_DARK:   "#EFEF6E",
+		COLOR_UTILITY: {
+			DESKTOP:            "#494949",
+			MOBILE:             "#89898980",
+		},
+		BACKGROUND_IMAGE:       require("chessvibe/assets/background.jpg"),
+		NAME_TITLE_COLOR:       "white"
 	},
-	BACKGROUND_IMAGE:       require("chessvibe/assets/background.jpg"),
-	NAME_TITLE_COLOR:       "white"
-};
 
-export const THEME_WINTER = {
-	ID:                     "winter",
-	COLOR_BOARD_LIGHT:      "#00B3DE",
-	COLOR_BOARD_DARK:       "#3D507B",
-	COLOR_HIGHLIGHT_LIGHT:  "#CC5E7C",
-	COLOR_HIGHLIGHT_DARK:   "#D63460",
-	COLOR_LAST_MOVE_LIGHT:  "#FDFD84",
-	COLOR_LAST_MOVE_DARK:   "#EFEF6E",
-	COLOR_UTILITY: {
-		DESKTOP:            "#494949",
-		MOBILE:             "#FFFFFF33",
+	WINTER: {
+		ID:                     "winter",
+		COLOR_BOARD_LIGHT:      "#00B3DE",
+		COLOR_BOARD_DARK:       "#3D507B",
+		COLOR_HIGHLIGHT_LIGHT:  "#CC5E7C",
+		COLOR_HIGHLIGHT_DARK:   "#D63460",
+		COLOR_LAST_MOVE_LIGHT:  "#FDFD84",
+		COLOR_LAST_MOVE_DARK:   "#EFEF6E",
+		COLOR_UTILITY: {
+			DESKTOP:            "#494949",
+			MOBILE:             "#FFFFFF33",
+		},
+		BACKGROUND_IMAGE:       require("chessvibe/assets/background_winter.jpg"),
+		NAME_TITLE_COLOR:       "white",
 	},
-	BACKGROUND_IMAGE:       require("chessvibe/assets/background_winter.jpg"),
-	NAME_TITLE_COLOR:       "white",
-};
 
-export const THEME_METAL = {
-	ID:                     "metal",
-	COLOR_BOARD_LIGHT:      "#d2d2d2",
-	COLOR_BOARD_DARK:       "#5a5858",
-	COLOR_HIGHLIGHT_LIGHT:  "#9e93e1",
-	COLOR_HIGHLIGHT_DARK:   "#7B68EE",
-	COLOR_LAST_MOVE_LIGHT:  "#FDFD84",
-	COLOR_LAST_MOVE_DARK:   "#EFEF6E",
-	COLOR_UTILITY: {
-		DESKTOP:            "#494949",
-		MOBILE:             "#89898980",
+	METAL: {
+		ID:                     "metal",
+		COLOR_BOARD_LIGHT:      "#d2d2d2",
+		COLOR_BOARD_DARK:       "#5a5858",
+		COLOR_HIGHLIGHT_LIGHT:  "#9e93e1",
+		COLOR_HIGHLIGHT_DARK:   "#7B68EE",
+		COLOR_LAST_MOVE_LIGHT:  "#FDFD84",
+		COLOR_LAST_MOVE_DARK:   "#EFEF6E",
+		COLOR_UTILITY: {
+			DESKTOP:            "#494949",
+			MOBILE:             "#89898980",
+		},
+		BACKGROUND_IMAGE:       require("chessvibe/assets/background_metal.jpg"),
+		NAME_TITLE_COLOR:       "white"
 	},
-	BACKGROUND_IMAGE:       require("chessvibe/assets/background_metal.jpg"),
-	NAME_TITLE_COLOR:       "white"
-};
 
-export const THEME_NATURE = {
-	ID:                     "nature",
-	COLOR_BOARD_LIGHT:      "#c7da61",
-	COLOR_BOARD_DARK:       "#437149",
-	COLOR_HIGHLIGHT_LIGHT:  "#9e93e1",
-	COLOR_HIGHLIGHT_DARK:   "#7B68EE",
-	COLOR_LAST_MOVE_LIGHT:  "#BB92AB",
-	COLOR_LAST_MOVE_DARK:   "#905E7C",
-	COLOR_UTILITY: {
-		DESKTOP:            "#494949",
-		MOBILE:             "#00000080",
+	NATURE: {
+		ID:                     "nature",
+		COLOR_BOARD_LIGHT:      "#c7da61",
+		COLOR_BOARD_DARK:       "#437149",
+		COLOR_HIGHLIGHT_LIGHT:  "#9e93e1",
+		COLOR_HIGHLIGHT_DARK:   "#7B68EE",
+		COLOR_LAST_MOVE_LIGHT:  "#BB92AB",
+		COLOR_LAST_MOVE_DARK:   "#905E7C",
+		COLOR_UTILITY: {
+			DESKTOP:            "#494949",
+			MOBILE:             "#00000080",
+		},
+		BACKGROUND_IMAGE:       require("chessvibe/assets/background_nature.jpg"),
+		NAME_TITLE_COLOR:       "black",
 	},
-	BACKGROUND_IMAGE:       require("chessvibe/assets/background_nature.jpg"),
-	NAME_TITLE_COLOR:       "black",
-};
+});
 
 export const COLOR_ORIGINAL = 0;
 export const COLOR_HIGHLIGHT = 1;
@@ -130,7 +132,7 @@ export const LAST_VISITED_KEY = 'last_visited';
 export const SESSION_TOKEN = 'session_token';
 
 
-export const THEME = {
+export const THEME_ID = {
 	CLASSIC: 0,
 	WINTER: 1,
 	METAL: 2,

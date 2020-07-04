@@ -3,20 +3,20 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { TextVibe, ModalVibe } from 'chessvibe/src/widgets';
 import AutoHeightImage from 'react-native-auto-height-image';
 import { vw } from 'chessvibe/src/Util';
-import { THEME, TIME } from 'chessvibe/src/Const';
+import { THEME_ID, TIME } from 'chessvibe/src/Const';
 
 const new_match_img = require('chessvibe/assets/new_match.png');
 const borderRadius = vw();
 
 export default function HomeCreateMenu(props) {
-	let [ theme, setTheme ] = React.useState(THEME.CLASSIC);
+	let [ theme, setTheme ] = React.useState(THEME_ID.CLASSIC);
 	let [ time, setTime ] = React.useState(TIME.FIFTEEN);
 	let { visible, onDismiss, onSubmit } = props;
 
-	let styleClassic = { ...styles.menuBtn, ...styles.classic, ...(theme == THEME.CLASSIC ? styles.selected : {}) };
-	let styleWinter  = { ...styles.menuBtn, ...styles.winter, ...(theme == THEME.WINTER ? styles.selected : {}) };
-	let styleMetal   = { ...styles.menuBtn, ...styles.metal, ...(theme == THEME.METAL ? styles.selected : {}) };
-	let styleNature  = { ...styles.menuBtn, ...styles.nature, ...(theme == THEME.NATURE ? styles.selected : {}) };
+	let styleClassic = { ...styles.menuBtn, ...styles.classic, ...(theme == THEME_ID.CLASSIC ? styles.selected : {}) };
+	let styleWinter  = { ...styles.menuBtn, ...styles.winter, ...(theme == THEME_ID.WINTER ? styles.selected : {}) };
+	let styleMetal   = { ...styles.menuBtn, ...styles.metal, ...(theme == THEME_ID.METAL ? styles.selected : {}) };
+	let styleNature  = { ...styles.menuBtn, ...styles.nature, ...(theme == THEME_ID.NATURE ? styles.selected : {}) };
 
 	let styleFive     = { ...styles.menuBtn, ...(time == TIME.FIVE ? styles.selected : {}) };
 	let styleFifteen  = { ...styles.menuBtn, ...(time == TIME.FIFTEEN ? styles.selected : {}) };
@@ -30,16 +30,16 @@ export default function HomeCreateMenu(props) {
 
 			<TextVibe style={ styles.menuText }> Theme </TextVibe>
 			<View style={ styles.menuContainer }>
-				<TouchableOpacity style={ styleClassic } onPress={ () => setTheme(THEME.CLASSIC) }>
+				<TouchableOpacity style={ styleClassic } onPress={ () => setTheme(THEME_ID.CLASSIC) }>
 					<TextVibe style={ styles.menuBtnText }>Classic</TextVibe>
 				</TouchableOpacity>
-				<TouchableOpacity style={ styleWinter } onPress={ () => setTheme(THEME.WINTER) }>
+				<TouchableOpacity style={ styleWinter } onPress={ () => setTheme(THEME_ID.WINTER) }>
 					<TextVibe style={ styles.menuBtnText }>Winter</TextVibe>
 				</TouchableOpacity>
-				<TouchableOpacity style={ styleMetal } onPress={ () => setTheme(THEME.METAL) }>
+				<TouchableOpacity style={ styleMetal } onPress={ () => setTheme(THEME_ID.METAL) }>
 					<TextVibe style={ styles.menuBtnText }>Metal</TextVibe>
 				</TouchableOpacity>
-				<TouchableOpacity style={ styleNature } onPress={ () => setTheme(THEME.NATURE) }>
+				<TouchableOpacity style={ styleNature } onPress={ () => setTheme(THEME_ID.NATURE) }>
 					<TextVibe style={ styles.menuBtnText }>Nature</TextVibe>
 				</TouchableOpacity>
 			</View>
