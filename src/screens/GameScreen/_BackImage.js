@@ -6,8 +6,15 @@ import AutoHeightImage from 'react-native-auto-height-image';
 export default function BackImage(props) {
 	const theme = useSelector(state => state.theme);
 	return (
-		<ImageBackground source={ theme.BACKGROUND_IMAGE } style={ props.style }>
+		<ImageBackground source={ theme.BACKGROUND_IMAGE } style={ [props.style, styles.image] }>
 			{ props.children }
 		</ImageBackground>
 	);
 }
+
+const styles = StyleSheet.create({
+	image: {
+		height: '100%',
+		zIndex: -100,
+	}
+});

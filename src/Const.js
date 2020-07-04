@@ -4,7 +4,6 @@ export const URL = Object.freeze({
 });
 
 
-
 export const CHESS = {King: "King", Queen: "Queen", Rook: "Rook", Bishop: "Bishop", Knight: "Knight", Pawn: "Pawn", None: "None"};
 export const VALUE = {King: 200, Queen: 9, Rook: 5, Bishop: 3, Knight: 3, Pawn: 1, None: 0};
 export const TEAM = {B: "B", W: "W", None:"N"};
@@ -13,6 +12,22 @@ export const BOARD_SIZE = 8;
 
 export const MATCHES_TABLE = "chess_matches";
 export const USERS_TABLE = "chess_users";
+
+export const CHESS_IMAGE = {
+	BKing:   require("chessvibe/assets/BKing.png"),
+	BQueen:  require("chessvibe/assets/BQueen.png"),
+	BRook:   require("chessvibe/assets/BRook.png"),
+	BBishop: require("chessvibe/assets/BBishop.png"),
+	BKnight: require("chessvibe/assets/BKnight.png"),
+	BPawn:   require("chessvibe/assets/BPawn.png"),
+
+	WKing:   require("chessvibe/assets/WKing.png"),
+	WQueen:  require("chessvibe/assets/WQueen.png"),
+	WRook:   require("chessvibe/assets/WRook.png"),
+	WBishop: require("chessvibe/assets/WBishop.png"),
+	WKnight: require("chessvibe/assets/WKnight.png"),
+	WPawn:   require("chessvibe/assets/WPawn.png"),
+};
 
 export const THEME_CLASSIC = {
 	ID:                     "classic",

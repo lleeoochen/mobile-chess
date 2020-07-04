@@ -1,4 +1,5 @@
 import { Dimensions } from 'react-native';
+import store from 'chessvibe/src/redux/Store';
 import Cache from './Cache';
 import {
 	DB_CHECKMATE_WHITE,
@@ -183,4 +184,10 @@ export function winType(move, team) {
 	else if (move == DB_RESIGN_WHITE) {
 		return team == TEAM.W ? 2 : undefined;
 	}
+}
+
+export function piece(grid) {
+	if (grid != null && grid.piece != null)
+		return store.getState().game.pieces[grid.piece];
+	return null;
 }

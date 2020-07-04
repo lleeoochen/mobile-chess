@@ -1,0 +1,28 @@
+import * as React from 'react';
+import { StatusBar, View, SafeAreaView, Text, Image, StyleSheet } from 'react-native';
+import { useSelector, shallowEqual } from 'react-redux';
+import Store from 'chessvibe/src/redux/Store';
+import * as Reducer from 'chessvibe/src/redux/Reducer';
+import { vw, vh } from 'chessvibe/src/Util';
+import * as Const from 'chessvibe/src/Const';
+
+
+export default function BaseBoardGrid(props) {
+	let { x, y, color, isLight, theme, style } = props;
+	let gridColor = useSelector(state => state.game.baseboard[x][y]);
+
+	// Set highlight color
+	if (gridColor == Const.COLOR_HIGHLIGHT)
+		color = isLight ? theme.COLOR_HIGHLIGHT_LIGHT : theme.COLOR_HIGHLIGHT_DARK;
+
+	// Set lastmove color
+	if (gridColor == Const.COLOR_LAST_MOVE)
+		color = isLight ? theme.COLOR_LAST_MOVE_LIGHT : theme.COLOR_LAST_MOVE_DARK;
+
+	return (
+		<View style={[
+			style,
+			{ backgroundColor: color },
+		]}/>
+	);
+}

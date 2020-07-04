@@ -1,39 +1,37 @@
-import { THEME_CLASSIC } from 'chessvibe/src/Const';
+import { THEME_CLASSIC, TEAM } from 'chessvibe/src/Const';
+import Game from 'chessvibe/src/screens/GameScreen/Game';
 
 // Action types
-export const BOARD_COLORS = 'boardColors';
-export const BOARD_PIECES = 'boardPieces';
+export const INIT_GAME = 'initGame';
 export const THEME = 'theme';
+export const FILL_GRIDS = 'fillGrids';
 
 const initState = {
-	[BOARD_COLORS]: [[], [], [], [], [], [], [], []],
-	[BOARD_PIECES]: [[], [], [], [], [], [], [], []],
-	[THEME]: THEME_CLASSIC,
+	game: new Game(TEAM.B),
+	theme: THEME_CLASSIC,
 };
 
 
 // Actions
-export const updateBoardColors = createAction(BOARD_COLORS);
-function reduceBoardColors(state, action) {
-	return reduce(state, action);
-}
-
-export const updateBoardPieces = createAction(BOARD_PIECES);
-function reduceBoardPieces(state, action) {
-	return reduce(state, action);
+export const initGame = createAction(INIT_GAME);
+function reduceInitGame(state, action) {
+	let oldGame = state.game;
+	let changes = action.data;
+	return { ...state, game: { ...oldGame, ...changes } };
 }
 
 export const updateTheme = createAction(THEME);
 function reduceTheme(state, action) {
-	return reduce(state, action);
+	let data = action.data;
+	return {...state, ...{ theme: data }};
 }
 
 
 // Reducer
 export default function Reducer(state = initState, action) {
+	// console.log('Action Reducer', !action.data || action.data.baseboard);
 	switch (action.type) {
-		case BOARD_COLORS: return reduceBoardColors(state, action);
-		case BOARD_PIECES: return reduceBoardPieces(state, action);
+		case INIT_GAME:    return reduceInitGame(state, action);
 		case THEME:        return reduceTheme(state, action);
 		default: return state;
 	}
@@ -41,25 +39,11 @@ export default function Reducer(state = initState, action) {
 
 
 // Action generator
-function createAction(type, ...argNames) {
+function createAction(type) {
 	return function (...args) {
 		const action = { type };
-		// argNames.forEach((arg, index) => {
-		// 	action[argNames[index]] = args[index]
-		// });
-		action[type] = args[0];
+		action.data = args[0];
 		return action;
 	}
 }
 
-// Reduce helper
-function reduce(state, action) {
-	let { type, ...params } = action;
-	let old_val = state[type];
-	let new_val = params[type];
-
-	if (JSON.stringify(old_val) !== JSON.stringify(new_val)) {
-		state[type] = new_val;
-	}
-	return state;
-}

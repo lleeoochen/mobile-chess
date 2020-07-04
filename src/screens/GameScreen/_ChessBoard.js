@@ -1,34 +1,31 @@
 import * as React from 'react';
 import { StatusBar, View, SafeAreaView, Text, Image, StyleSheet } from 'react-native';
 import { useSelector, shallowEqual } from 'react-redux';
-import Store from 'chessvibe/src/redux/Store';
-import * as Reducer from 'chessvibe/src/redux/Reducer';
-import { vw, vh } from 'chessvibe/src/Util';
-import * as Const from 'chessvibe/src/Const';
-
-import BaseBoardGrid from './_BaseBoardGrid';
+import { vw, vh, piece } from 'chessvibe/src/Util';
+import { BOARD_SIZE, TEAM, CHESS } from 'chessvibe/src/Const';
 
 
-export default function BaseBoard(props) {
-	const theme = useSelector(state => state.theme);
+export default function ChessBoard(props) {
+	const board = useSelector(state => state.game.chessboard);
+
+	// Mount
+	React.useEffect(() => {
+	}, []);
 
 	// Render
 	let grids = [];
 
-	for (let x = 0; x < Const.BOARD_SIZE; x++) {
-		for (let y = 0; y < Const.BOARD_SIZE; y++) {
-			let isLight = (y % 2 != 0) ^ (x % 2 == 0);
-			let color = isLight ? theme.COLOR_BOARD_LIGHT : theme.COLOR_BOARD_DARK;
-
-			grids.push(
-				<BaseBoardGrid
-					x={x}
-					y={y}
-					style={[styles.grid, styles['x' + x], styles['y' + y]]}
-					color={color}
-					isLight={isLight}
-					theme={theme}/>
-			);
+	if (board) {
+		for (let x = 0; x < BOARD_SIZE; x++) {
+			for (let y = 0; y < BOARD_SIZE; y++) {
+				if (piece(board[x][y])) {
+					grids.push(
+						<Image
+							source={ piece(board[x][y]).image }
+							style={ [styles.grid, styles['x' + x], styles['y' + y]] } />
+					);
+				}
+			}
 		}
 	}
 
@@ -39,6 +36,9 @@ export default function BaseBoard(props) {
 	);
 }
 
+
+
+// Styles
 const margin_size = vw(1);
 const cell_size = (vw(100) - 4 * margin_size) / 8;
 

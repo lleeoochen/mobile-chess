@@ -1,33 +1,19 @@
 import * as React from 'react';
-import { StatusBar, View, SafeAreaView, Text, Image, StyleSheet } from 'react-native';
-import { useSelector, shallowEqual } from 'react-redux';
-import Store from 'chessvibe/src/redux/Store';
-import * as Reducer from 'chessvibe/src/redux/Reducer';
+import { TouchableOpacity, View, StyleSheet } from 'react-native';
+import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import { vw, vh } from 'chessvibe/src/Util';
-import * as Const from 'chessvibe/src/Const';
-
-import BaseBoardGrid from './_BaseBoardGrid';
+import { BOARD_SIZE } from 'chessvibe/src/Const';
 
 
 export default function BaseBoard(props) {
-	const theme = useSelector(state => state.theme);
-
-	// Render
 	let grids = [];
 
-	for (let x = 0; x < Const.BOARD_SIZE; x++) {
-		for (let y = 0; y < Const.BOARD_SIZE; y++) {
-			let isLight = (y % 2 != 0) ^ (x % 2 == 0);
-			let color = isLight ? theme.COLOR_BOARD_LIGHT : theme.COLOR_BOARD_DARK;
-
+	for (let x = 0; x < BOARD_SIZE; x++) {
+		for (let y = 0; y < BOARD_SIZE; y++) {
 			grids.push(
-				<BaseBoardGrid
-					x={x}
-					y={y}
-					style={[styles.grid, styles['x' + x], styles['y' + y]]}
-					color={color}
-					isLight={isLight}
-					theme={theme}/>
+				<TouchableOpacity
+					style={ [styles.grid, styles['x' + x], styles['y' + y]] }
+					onPress={ () => props.onPress(x, y) }/>
 			);
 		}
 	}
@@ -64,7 +50,6 @@ const styles = StyleSheet.create({
 	grid: {
 		width: cell_size,
 		height: cell_size,
-		// transition: .2s all ease;
-		position: 'absolute'
+		position: 'absolute',
 	}
 });
