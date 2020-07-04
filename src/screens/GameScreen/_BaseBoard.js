@@ -24,6 +24,7 @@ export default function BaseBoard(props) {
 				<BaseBoardGrid
 					x={x}
 					y={y}
+					key={x + '-' + y}
 					style={[styles.grid, styles['x' + x], styles['y' + y]]}
 					color={color}
 					isLight={isLight}

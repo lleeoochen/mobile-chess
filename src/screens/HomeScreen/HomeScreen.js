@@ -183,9 +183,10 @@ export default function HomeScreen(props) {
 			let $active_matches = [];
 			let $inactive_matches = [];
 
-			matches.forEach(match => {
+			matches.forEach((match, j) => {
 				let match_name = match[0];
 				let match_data = match[1];
+				Cache.theme[match_name] = match_data.theme;
 
 				let d = new Date(match_data.updated);
 				let d_str = formatDate(d, '%M/%D');
@@ -197,7 +198,7 @@ export default function HomeScreen(props) {
 
 				if (active) {
 					$active_matches.push(
-						<TouchableOpacity style={ {...styles.matchView, ...borderStyle} } onPress={() => navigateGame(match_name)}>
+						<TouchableOpacity key={ j } style={ {...styles.matchView, ...borderStyle} } onPress={() => navigateGame(match_name)}>
 							<AutoHeightImage width={ matchSize - vw(2) } source={ enemy.photo ? { uri: enemy.photo + '=c' } : new_match_img }/>
 							<TextVibe style={ {...styles.matchDate, ...colorStyle} }> { d_str } </TextVibe>
 						</TouchableOpacity>
@@ -205,7 +206,7 @@ export default function HomeScreen(props) {
 				}
 				else {
 					$inactive_matches.push(
-						<TouchableOpacity style={ {...styles.matchView, ...borderStyle} } onPress={() => navigateGame(match_name)}>
+						<TouchableOpacity key={ j } style={ {...styles.matchView, ...borderStyle} } onPress={() => navigateGame(match_name)}>
 							<AutoHeightImage width={ matchSize - vw(2) } source={ enemy.photo ? { uri: enemy.photo + '=c' } : new_match_img }/>
 							<TextVibe style={ {...styles.matchDate, ...colorStyle} }> { d_str } </TextVibe>
 						</TouchableOpacity>
@@ -222,7 +223,7 @@ export default function HomeScreen(props) {
 
 			if (enemy.name) {
 				$containers.push(
-					<View style={ styles.playerBox }>
+					<View key={ i } style={ styles.playerBox }>
 						<TextVibe style={ styles.playerName }>{ enemy.name }</TextVibe>
 						<ScrollView
 							horizontal={ true }>
@@ -234,7 +235,7 @@ export default function HomeScreen(props) {
 			}
 			else {
 				$containers.unshift(
-					<View style={ styles.playerBox }>
+					<View key={ i } style={ styles.playerBox }>
 						<TextVibe style={ styles.playerName }>New Matches</TextVibe>
 						<ScrollView
 							horizontal={ true }>

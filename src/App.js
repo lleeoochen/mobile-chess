@@ -30,6 +30,7 @@ const Navigator = createStackNavigator(
 			headerTitleStyle: {
 				fontWeight: 'bold',
 			},
+			gestureEnabled: false,
 		},
 	}
 );

@@ -173,16 +173,18 @@ export default class Game {
 		// 	unmoveChess();
 		// }
 
+		let breakloop = false;
 		while (this.moves_applied < match.moves.length) {
 			let flipped = this.turn == this.team ? this.downward : !this.downward;
 			let move = Util.unpack(match.moves[this.moves_applied], flipped);
 
-			// await new Promise((resolve, reject) => {
-			// 	setTimeout(() => {
-					this.moveChess(this.chessboard[move.old_x][move.old_y], this.chessboard[move.new_x][move.new_y]);
-			// 		resolve();
-			// 	}, 100);
-			// });
+			await new Promise((resolve, reject) => {
+				setTimeout(() => {
+					breakloop = !this.moveChess(this.chessboard[move.old_x][move.old_y], this.chessboard[move.new_x][move.new_y]);
+					resolve();
+				}, 100);
+			});
+			if (breakloop) break;
 		}
 	}
 
@@ -426,7 +428,7 @@ export default class Game {
 
 	//Move chess from oldGrid to newGrid
 	moveChess(oldGrid, newGrid) {
-		if (this.get_piece(oldGrid) == null) return;
+		if (this.get_piece(oldGrid) == null) return false;
 		let team = this.get_piece(oldGrid).team;
 
 		this.stackEatenPiece(oldGrid, newGrid, newGrid, newGrid.piece, false, Const.FLAG_NONE);
@@ -460,6 +462,8 @@ export default class Game {
 
 		this.moves_applied ++;
 		// this.updateGame();
+
+		return true;
 	}
 
 	movePassantPawn(oldGrid, newGrid) {

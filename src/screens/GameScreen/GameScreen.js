@@ -32,6 +32,8 @@ export default function GameScreen(props) {
 
 	// Mount
 	React.useEffect(() => {
+		Store.dispatch(updateTheme( Util.unpackTheme(Cache.theme[match_id]) ));
+
 		let game = gameRef.current;
 		Backend.init();
 
@@ -51,6 +53,8 @@ export default function GameScreen(props) {
 				else if (theme == THEME.NATURE) theme = THEME.CLASSIC;
 
 				Backend.changeTheme( theme );
+
+				Cache.theme[match_id] = Util.packTheme(theme);
 				Store.dispatch(updateTheme( theme ));
 			},
 		});
@@ -115,27 +119,17 @@ export default function GameScreen(props) {
 	}
 
 	// Render
-	function render() {
-		return (
-			<SafeAreaView style={{ flex: 1 }}>
-				<StatusBar hidden={ true }/>
+	return (
+		<SafeAreaView style={{ flex: 1 }}>
+			<StatusBar hidden={ true }/>
 
-				<BackImage style={ styles.outerCanvas }>
-					<BaseBoard style={ styles.baseBoard }/>
-					<ChessBoard style={ styles.baseBoard }/>
-					<ClickBoard style={ styles.baseBoard } onPress={ handleChessEvent }/>
-				</BackImage>
-			</SafeAreaView>
-		);
-	}
-
-	// ====================== Functions ======================
-
-
-	// ====================== Redux Functions ======================
-
-	// Render
-	return render();
+			<BackImage style={ styles.outerCanvas }>
+				<BaseBoard style={ styles.baseBoard }/>
+				<ChessBoard style={ styles.baseBoard }/>
+				<ClickBoard style={ styles.baseBoard } onPress={ handleChessEvent }/>
+			</BackImage>
+		</SafeAreaView>
+	);
 }
 
 

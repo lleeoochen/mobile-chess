@@ -1,4 +1,5 @@
 export default {
 	sessionToken: '',
-	userID: ''
+	userID: '',
+	theme: {},
 };

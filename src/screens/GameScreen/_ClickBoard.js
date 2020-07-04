@@ -5,13 +5,14 @@ import { vw, vh } from 'chessvibe/src/Util';
 import { BOARD_SIZE } from 'chessvibe/src/Const';
 
 
-export default function BaseBoard(props) {
+export default function ClickBoard(props) {
 	let grids = [];
 
 	for (let x = 0; x < BOARD_SIZE; x++) {
 		for (let y = 0; y < BOARD_SIZE; y++) {
 			grids.push(
 				<TouchableOpacity
+					key={x + '-' + y}
 					style={ [styles.grid, styles['x' + x], styles['y' + y]] }
 					onPress={ () => props.onPress(x, y) }/>
 			);

@@ -50,6 +50,7 @@ export default function ChessBoard(props) {
 				if (oldx == x && oldy == y) {
 					mypiece = (
 						<Image
+							key={x + '-' + y}
 							source={ piece(board[x][y]).image }
 							style={ [styles.grid, styles['x' + x], styles['y' + y]] } />
 					);
@@ -66,6 +67,7 @@ export default function ChessBoard(props) {
 
 					mypiece = (
 						<Animated.Image
+							key={x + '-' + y}
 							source={ piece(board[x][y]).image }
 							style={[ styles.grid, transform ]} />
 					);
