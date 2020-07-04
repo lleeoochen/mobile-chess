@@ -37,7 +37,7 @@ export default function HomeScreen(props) {
 	React.useEffect(() => {
 		props.navigation.setParams({
 			openMenu: () => {
-				showUsserMenu(true);
+				showUserMenu(true);
 			},
 			openCreate: () => {
 				showCreateMenu(true)

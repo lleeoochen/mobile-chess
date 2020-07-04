@@ -16,6 +16,10 @@ export default class Backend {
 				token: Cache.sessionToken
 			}
 		});
+
+		this.socket.on('error', (error) => {
+			console.log("SOCKET ERROR: ", error);
+		});
 	}
 
 	static getMatch(id) {
@@ -43,7 +47,7 @@ export default class Backend {
 
 	static listenUser(id, resolve) {
 		this.socket.emit('listen_user', id);
-		this.socket.on('listen_match_' + id, data => {
+		this.socket.on('listen_user_' + id, data => {
 			resolve(data);
 		});
 	}

@@ -1,17 +1,27 @@
 import { THEME, TEAM } from 'chessvibe/src/Const';
-import Game from 'chessvibe/src/screens/GameScreen/Game';
+// import Game from 'chessvibe/src/screens/GameScreen/Game';
 
 // Action types
 export const ACTION_INIT_GAME = 'initGame';
 export const ACTION_THEME = 'theme';
+export const ACTION_RESET = 'reset';
 
 const initState = {
-	game: new Game(TEAM.B),
+	game: {
+		chessboard: [[], [], [], [], [], [], [], []],
+		baseboard: [[], [], [], [], [], [], [], []],
+	},
 	theme: THEME.CLASSIC,
 };
 
 
 // Actions
+export const reset = createAction(ACTION_RESET);
+function reduceReset(state, action) {
+	console.log("Reducer", initState.theme);
+	return initState;
+}
+
 export const initGame = createAction(ACTION_INIT_GAME);
 function reduceInitGame(state, action) {
 	let oldGame = state.game;
@@ -32,6 +42,7 @@ export default function Reducer(state = initState, action) {
 	switch (action.type) {
 		case ACTION_INIT_GAME:    return reduceInitGame(state, action);
 		case ACTION_THEME:        return reduceTheme(state, action);
+		case ACTION_RESET:        return reduceReset(state, action);
 		default: return state;
 	}
 }

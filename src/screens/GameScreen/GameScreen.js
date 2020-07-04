@@ -1,12 +1,15 @@
 import * as React from 'react';
 import { StatusBar, SafeAreaView, StyleSheet } from 'react-native';
+import { StackActions } from 'react-navigation';
 
-import { initGame, updateTheme } from 'chessvibe/src/redux/Reducer';
+import { initGame, updateTheme, reset } from 'chessvibe/src/redux/Reducer';
 import { ActionBar } from 'chessvibe/src/widgets';
 import Store from 'chessvibe/src/redux/Store';
 import { THEME, TEAM } from 'chessvibe/src/Const';
-import { vw } from 'chessvibe/src/Util';
+import Util, { vw } from 'chessvibe/src/Util';
 
+import Cache from 'chessvibe/src/Cache';
+import Backend from 'chessvibe/src/GameBackend';
 import BaseBoard from './_BaseBoard';
 import ChessBoard from './_ChessBoard';
 import ClickBoard from './_ClickBoard';
@@ -15,7 +18,6 @@ import Game from './Game';
 
 var back_img = require('chessvibe/assets/back.png');
 var theme_img = require('chessvibe/assets/palette.png');
-var game;
 
 // Navigation
 GameScreen.navigationOptions = ({ navigation }) => {
@@ -25,17 +27,21 @@ GameScreen.navigationOptions = ({ navigation }) => {
 
 // Game Screen
 export default function GameScreen(props) {
-	let webref = React.useRef(null);
+	let gameRef = React.useRef(null);
 	let match_id = props.navigation.getParam('match');
 
 	// Mount
 	React.useEffect(() => {
+		let game = gameRef.current;
+		Backend.init();
+
 		props.navigation.setParams({
 			goBack: () => {
-				// props.navigation.goBack();
-				console.log(Store.getState().game.chessboard[0][4]);
-				console.log(Store.getState().game.chessboard[0][6]);
-				// console.log(Store.getState());
+				if (game)
+					game.ends();
+				Store.dispatch(reset());
+				Backend.socket.disconnect();
+				props.navigation.dispatch(StackActions.pop());
 			},
 			changeTheme: () => {
 				let theme = Store.getState().theme;
@@ -44,18 +50,67 @@ export default function GameScreen(props) {
 				else if (theme == THEME.METAL) theme = THEME.NATURE;
 				else if (theme == THEME.NATURE) theme = THEME.CLASSIC;
 
+				Backend.changeTheme( theme );
 				Store.dispatch(updateTheme( theme ));
 			},
 		});
 
 		// Initialize game
-		game = new Game(TEAM.B);
-		Store.dispatch(initGame(game));
+		Backend.listenMatch(Cache.userID, match_id, async (match, team) => {
+			if (!game) {
+				gameRef.current = new Game(team);
+				game = gameRef.current;
+				Store.dispatch(initGame(game));
+			}
+
+			Store.dispatch(updateTheme( Util.unpackTheme(match.theme) ));
+
+			// if (hidden) {
+			// 	$('#game-content').removeClass('hidden');
+			// 	hidden = false;
+			// }
+
+			// await updatePlayerData();
+
+			// updateMatchChat();
+
+			// updateUtilityButtons();
+
+			if (match.moves.length > 0 && Util.gameFinished(match)) {
+				clearInterval(game.interval);
+
+				// showHtml('#invite-panel', false);
+				// showHtml('#game-panel', false);
+				// showHtml('#theme-panel', false);
+				// showHtml('#review-panel', true);
+				// updateReviewButtons();
+				// showEnding();
+				return false;
+			}
+
+			// if (first_load) {
+			// 	await new Promise((resolve, reject) => {
+			// 		setTimeout(() => { resolve() }, 500);
+			// 	});
+			// 	first_load = false;
+			// }
+
+			await game.updateMatchMoves(match);
+
+			// updateMatchUndo();
+			
+			// updateMatchDraw();
+
+			// if (match.black && match.white && game.timer_enable) {
+			if (match.black && match.white) {
+				game.updateMatchTimer(match);
+			}
+		});
 	}, []);
 
 	function handleChessEvent(x, y) {
-		if (game) {
-			game.handleChessEvent(x, y);
+		if (gameRef.current) {
+			gameRef.current.handleChessEvent(x, y);
 		}
 	}
 

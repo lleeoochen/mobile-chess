@@ -4,7 +4,7 @@ import * as Const   from 'chessvibe/src/Const';
 import Util         from 'chessvibe/src/Util';
 import PieceFactory from './actors/piecefactory';
 import Grid         from './actors/grid';
-
+import Backend      from 'chessvibe/src/GameBackend';
 
 export default class Game {
 
@@ -28,7 +28,7 @@ export default class Game {
 		this.passant_stack = [];
 		this.id = 0;
 		this.pieces = {};
-		this.turn = Const.TEAM.B;
+		this.turn = Const.TEAM.W;
 		this.team = team;
 		this.downward = false;
 
@@ -37,50 +37,13 @@ export default class Game {
 
 		this.black_timer = Const.MAX_TIME;
 		this.white_timer = Const.MAX_TIME;
+		this.interval = null;
+
+		this.ended = false;
 
 		this.initBoard();
 		this.initPieces();
 	}
-
-	// update(match, player) {
-	// 	// while (this.moves_applied > match.moves.length) {
-	// 	// 	unmoveChess();
-	// 	// }
-	// 	if (this.moves_applied > match.moves.length) {
-	// 		this.init();
-	// 		player = undefined;
-	// 	}
-
-	// 	// Apply existing moves
-	// 	while (this.moves_applied < match.moves.length) {
-	// 		let move = Util.unpack(match.moves[this.moves_applied]);
-	// 		let oldGrid = this.chessboard[move.old_x][move.old_y];
-	// 		let newGrid = this.chessboard[move.new_x][move.new_y];
-
-	// 		let cond1 = (move.turn == this.turn);
-	// 		let cond2 = this.turn == Const.TEAM.B ? (match.black == player) : (match.white == player);
-	// 		if (player == undefined) cond2 = true;
-
-	// 		let cond3 = this.isValidMove(oldGrid, newGrid);
-	// 		console.log(cond1, cond2, cond3);
-
-	// 		if (cond1 && cond2 && cond3) {
-	// 			this.moveChess(oldGrid, newGrid);
-	// 			this.moves_applied += 1;
-	// 			this.switchTurn();
-
-	// 			console.log(move);
-	// 			console.log(this.toStr());
-	// 		}
-	// 		else {
-	// 			console.log(move, ' --------- Invalid.');
-	// 			console.log(this.toStr());
-	// 			return false;
-	// 		}
-	// 	}
-
-	// 	return true;
-	// }
 
 	//Intialize chessboard background
 	initBoard(){
@@ -100,8 +63,8 @@ export default class Game {
 		let white_pawn_pos = 6;
 
 		let downward = this.team == Const.TEAM.W ? this.downward : !this.downward;
-		let king_x = downward ? 4 : 3;
-		let queen_x = downward ? 3 : 4;
+		let king_x = downward ? 3 : 4;
+		let queen_x = downward ? 4 : 3;
 
 		if (downward) {
 			black_pos = 7;
@@ -162,12 +125,12 @@ export default class Game {
 
 		//Action0 - Castle
 		if (this.canCastle(this.oldGrid, newGrid)) {
-			// database.updateChessboard(this.oldGrid, newGrid, turn, black_timer, white_timer).catch(err => {
-			// 	fillGrid(this.oldGrid, Const.COLOR_ORIGINAL);
-			// 	unmoveChess();
-			// 	clearMoves();
-			// 	this.oldGrid = null;
-			// });
+			Backend.updateChessboard(this.oldGrid, newGrid, this.turn, this.black_timer, this.white_timer).catch(err => {
+				this.clearMoves();
+				this.fillGrid(this.oldGrid, Const.COLOR_ORIGINAL);
+				this.unmoveChess();
+				this.oldGrid = null;
+			});
 
 			this.moveChess(this.oldGrid, newGrid);
 			this.oldGrid = null;
@@ -189,12 +152,12 @@ export default class Game {
 
 		//Action3 - Move Piece by clicking on empty grid or eat enemy by clicking on legal grid. Switch turn.
 		else if (this.oldGrid != null && this.get_piece(this.oldGrid) != null && isLegal) {
-			// database.updateChessboard(this.oldGrid, newGrid, turn, black_timer, white_timer).catch(err => {
-			// 	fillGrid(this.oldGrid, Const.COLOR_ORIGINAL);
-			// 	unmoveChess();
-			// 	clearMoves();
-			// 	this.oldGrid = null;
-			// });
+			Backend.updateChessboard(this.oldGrid, newGrid, this.turn, this.black_timer, this.white_timer).catch(err => {
+				this.clearMoves();
+				this.fillGrid(this.oldGrid, Const.COLOR_ORIGINAL);
+				this.unmoveChess();
+				this.oldGrid = null;
+			});
 
 			this.moveChess(this.oldGrid, newGrid);
 			if (this.team == Const.TEAM.B)
@@ -203,6 +166,60 @@ export default class Game {
 				this.white_timer += 1
 			this.oldGrid = null;
 		}
+	}
+
+	async updateMatchMoves(match) {
+		// while (this.moves_applied > match.moves.length) {
+		// 	unmoveChess();
+		// }
+
+		while (this.moves_applied < match.moves.length) {
+			let flipped = this.turn == this.team ? this.downward : !this.downward;
+			let move = Util.unpack(match.moves[this.moves_applied], flipped);
+
+			// await new Promise((resolve, reject) => {
+			// 	setTimeout(() => {
+					this.moveChess(this.chessboard[move.old_x][move.old_y], this.chessboard[move.new_x][move.new_y]);
+			// 		resolve();
+			// 	}, 100);
+			// });
+		}
+	}
+
+	updateMatchTimer(match) {
+		let t1 = new Date(match.updated);
+		let t2 = new Date();
+		let time_since_last_move = Math.floor((t2.getTime() - t1.getTime()) / 1000);
+
+		if (this.turn == Const.TEAM.B) {
+			this.white_timer = match.white_timer;
+			this.black_timer = match.black_timer - time_since_last_move;
+		}
+		else {
+			this.black_timer = match.black_timer;
+			this.white_timer = match.white_timer - time_since_last_move;
+		}
+
+		// // Many magic numbers.. please fix in the future.
+		// let network_delay = 1000 - new Date().getMilliseconds();
+		// if (network_delay > 270) {
+		// 	if (turn == TEAM.B) {
+		// 		black_timer --;
+		// 	}
+		// 	else {
+		// 		white_timer --;
+		// 	}
+		// }
+
+		// setTimeout(() => {
+		// 	clearInterval(this.interval);
+		// 	this.countDown();
+		// 	// enableHtml('#add-time-btn .utility-btn', true);
+
+		// 	this.interval = setInterval(function() {
+		// 		this.countDown();
+		// 	}, 1000);
+		// }, network_delay);
 	}
 
 	isValidMove(oldGrid, newGrid) {
@@ -409,6 +426,7 @@ export default class Game {
 
 	//Move chess from oldGrid to newGrid
 	moveChess(oldGrid, newGrid) {
+		if (this.get_piece(oldGrid) == null) return;
 		let team = this.get_piece(oldGrid).team;
 
 		this.stackEatenPiece(oldGrid, newGrid, newGrid, newGrid.piece, false, Const.FLAG_NONE);
@@ -437,6 +455,11 @@ export default class Game {
 		oldGrid.piece = -1;
 
 		this.colorLatestMove(oldGrid, newGrid);
+
+		this.switchTurn();
+
+		this.moves_applied ++;
+		// this.updateGame();
 	}
 
 	movePassantPawn(oldGrid, newGrid) {
@@ -554,7 +577,7 @@ export default class Game {
 
 	fillGrid(grid, color) {
 		this.baseboard[grid.x][grid.y] = color;
-		Store.dispatch(Reducer.initGame(this));
+		this.updateGame();
 	}
 
 
@@ -572,7 +595,7 @@ export default class Game {
 		}
 		this.baseboard[newGrid.x][newGrid.y] = color;
 
-		Store.dispatch(Reducer.initGame(this));
+		this.updateGame();
 	}
 
 	//Set last move grid color
@@ -581,6 +604,14 @@ export default class Game {
 
 		this.baseboard[oldGrid.x][oldGrid.y] = Const.COLOR_LAST_MOVE;
 		this.baseboard[newGrid.x][newGrid.y] = Const.COLOR_LAST_MOVE;
+		this.updateGame();
+	}
+
+	updateGame() {
 		Store.dispatch(Reducer.initGame(this));
+	}
+
+	ends() {
+		this.ended = true;
 	}
 }

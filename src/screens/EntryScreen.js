@@ -34,6 +34,7 @@ export default function EntryScreen(props) {
 		// Handle user state changes
 		auth().onAuthStateChanged(async (user) => {
 			setUser(user);
+
 			if (user) {
 				navigateHome();
 			}
@@ -79,6 +80,7 @@ export default function EntryScreen(props) {
 
 		if (result.session_token) {
 			Cache.sessionToken = result.session_token;
+			Cache.userID = auth().currentUser.uid;
 			props.navigation.navigate('Home');
 		}
 		else {

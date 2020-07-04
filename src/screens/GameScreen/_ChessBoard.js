@@ -1,37 +1,86 @@
 import * as React from 'react';
-import { StatusBar, View, SafeAreaView, Text, Image, StyleSheet } from 'react-native';
+import { StatusBar, View, SafeAreaView, Text, Image, StyleSheet, Animated } from 'react-native';
 import { useSelector, shallowEqual } from 'react-redux';
 import { vw, vh, piece } from 'chessvibe/src/Util';
 import { BOARD_SIZE, TEAM, CHESS } from 'chessvibe/src/Const';
 
 
 export default function ChessBoard(props) {
+	const oldPieces = React.useRef({});
 	const board = useSelector(state => state.game.chessboard.slice());
 
 	// Mount
 	React.useEffect(() => {
 	}, []);
 
-	// Render
-	let grids = [];
 
-	if (board) {
-		for (let x = 0; x < BOARD_SIZE; x++) {
-			for (let y = 0; y < BOARD_SIZE; y++) {
-				if (piece(board[x][y])) {
-					grids.push(
+	// Animation
+	function interpolation(orig, dest) {
+		const val = new Animated.Value(0);
+
+		Animated.timing(val, {
+			toValue: 1,
+			duration: 150,
+			useNativeDriver: true,
+		}).start();
+
+		const translation = val.interpolate({
+			inputRange: [0, 1],
+			outputRange: [orig * cell_size, dest * cell_size]
+		});
+
+		return translation;
+	}
+
+
+	// Render
+	let pieces = [];
+
+	for (let x = 0; x < BOARD_SIZE; x++) {
+		for (let y = 0; y < BOARD_SIZE; y++) {
+
+			if (piece(board[x][y])) {
+				// Get piece's previous location
+				let prevPiece = oldPieces.current[board[x][y].piece];
+				let oldx = prevPiece ? prevPiece.x : x;
+				let oldy = prevPiece ? prevPiece.y : y;
+				let mypiece;
+
+				// Without animation
+				if (oldx == x && oldy == y) {
+					mypiece = (
 						<Image
 							source={ piece(board[x][y]).image }
 							style={ [styles.grid, styles['x' + x], styles['y' + y]] } />
 					);
 				}
+
+				// With animation
+				else {
+					let transform = {
+						transform: [
+							{ translateX: interpolation(oldx, x) },
+							{ translateY: interpolation(oldy, y) },
+						]
+					};
+
+					mypiece = (
+						<Animated.Image
+							source={ piece(board[x][y]).image }
+							style={[ styles.grid, transform ]} />
+					);
+				}
+
+				// Track piece
+				pieces.push(mypiece);
+				oldPieces.current[board[x][y].piece] = { x, y };
 			}
 		}
 	}
 
 	return (
 		<View style={ props.style }>
-		{ grids }
+			{ pieces }
 		</View>
 	);
 }

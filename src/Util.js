@@ -117,6 +117,10 @@ export default class Util {
 			message: data.slice(1)
 		};
 	}
+
+	static gameFinished(match) {
+		return Math.floor(match.moves[match.moves.length - 1] / 10) == 0;
+	}
 }
 
 export function vw(size=1) {
@@ -150,10 +154,6 @@ export function formatTimer(timer) {
 	min = min < 10 ? '0' + min : min;
 	sec = sec < 10 ? '0' + sec : sec;
 	return min + ":" + sec;
-}
-
-export function gameFinished(match) {
-	return Math.floor(match.moves[match.moves.length - 1] / 10) == 0;
 }
 
 export function winType(move, team) {
