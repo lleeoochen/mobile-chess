@@ -23,12 +23,18 @@ export default function BaseBoard(props) {
 			let isLight = (y % 2 != 0) ^ (x % 2 == 0);
 			let color = isLight ? theme.COLOR_BOARD_LIGHT : theme.COLOR_BOARD_DARK;
 
+			let gridStyle = {
+				width: cell_size + (x < Const.BOARD_SIZE - 1 ? vw() : 0), // Prevent gap between cells
+				height: cell_size + (y < Const.BOARD_SIZE - 1 ? vw() : 0),
+				position: 'absolute'
+			};
+
 			grids.push(
 				<BaseBoardGrid
 					x={x}
 					y={y}
 					key={x + '-' + y}
-					style={[styles.grid, styles['x' + x], styles['y' + y]]}
+					style={[gridStyle, styles['x' + x], styles['y' + y]]}
 					color={color}
 					isLight={isLight}
 					theme={theme}/>
@@ -71,13 +77,6 @@ const styles = StyleSheet.create({
 	y5: { top: 5 * cell_size },
 	y6: { top: 6 * cell_size },
 	y7: { top: 7 * cell_size },
-
-	grid: {
-		width: cell_size,
-		height: cell_size,
-		// transition: .2s all ease;
-		position: 'absolute'
-	},
 
 	container: {
 		position: 'absolute'

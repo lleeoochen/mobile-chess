@@ -67,7 +67,7 @@ export default function BasePlayerPanel(props) {
 					{ player && player.name ? player.name : "" }
 				</TextVibe>
 
-				<ScrollView horizontal={ true }>
+				<ScrollView horizontal={ true } contentContainerStyle={ { alignSelf: 'center' } }>
 					{
 						eaten.map((img, i) => {
 							return <AutoHeightImage key={i} width={ vw(5) } source={ img }/>

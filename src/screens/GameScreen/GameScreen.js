@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { StatusBar, SafeAreaView, StyleSheet } from 'react-native';
+import { StatusBar, SafeAreaView, StyleSheet, View, ScrollView } from 'react-native';
 import { StackActions } from 'react-navigation';
 
 import { initGame, updateTheme, updatePlayer, reset } from 'chessvibe/src/redux/Reducer';
@@ -15,6 +15,8 @@ import BaseBoard from './_BaseBoard';
 import ChessBoard from './_ChessBoard';
 import ClickBoard from './_ClickBoard';
 import BackImage from './_BackImage';
+import UtilityPanel from './_UtilityPanel';
+
 import Game from './Game';
 
 var back_img = require('chessvibe/assets/back.png');
@@ -114,7 +116,6 @@ export default function GameScreen(props) {
 	}, []);
 
 	function handleChessEvent(x, y) {
-		console.log(Store.getState().game.eaten);
 		if (gameRef.current) {
 			gameRef.current.handleChessEvent(x, y);
 		}
@@ -125,12 +126,16 @@ export default function GameScreen(props) {
 		<SafeAreaView style={{ flex: 1 }}>
 			<StatusBar hidden={ true }/>
 
-			<BackImage style={ styles.outerCanvas }>
-				<BaseBorder style={ styles.gradient }/>
-				<BaseBoard/>
-				<ChessBoard style={ styles.board }/>
-				<ClickBoard style={ styles.board } onPress={ handleChessEvent }/>
+			<BackImage >
+				<ScrollView contentContainerStyle={ styles.outerCanvas }>
+					<BaseBorder style={ styles.gradient }/>
+					<BaseBoard/>
+					<ChessBoard style={ styles.board }/>
+					<ClickBoard style={ styles.board } onPress={ handleChessEvent }/>
+				</ScrollView>
+				<UtilityPanel style={ styles.utilityPanel }/>
 			</BackImage>
+
 		</SafeAreaView>
 	);
 }
@@ -140,6 +145,8 @@ export default function GameScreen(props) {
 const margin_size = vw(1);
 const cell_size = (vw(100) - 4 * margin_size) / 8;
 const canvas_size = margin_size * 2 + cell_size * 8;
+const panel_height = vw(11);
+const borderRadius = vw();
 
 const styles = StyleSheet.create({
 	outerCanvas: {
@@ -148,6 +155,7 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 		alignItems: 'center',
 		height: '100%',
+		marginBottom: panel_height,
 	},
 	board: {
 		width: canvas_size,
@@ -159,5 +167,19 @@ const styles = StyleSheet.create({
 	gradient: {
 		width: canvas_size,
 		height: canvas_size,
+	},
+	utilityPanel: {
+		flex: 1,
+		flexDirection: 'row',
+		position: 'absolute',
+		bottom: 0,
+		height: panel_height,
+		width: vw(100 - 2),
+		backgroundColor: 'black',
+		paddingLeft: margin_size,
+		paddingRight: margin_size * 0.5,
+		marginHorizontal: vw(),
+		borderTopLeftRadius: borderRadius,
+		borderTopRightRadius: borderRadius,
 	}
 });
