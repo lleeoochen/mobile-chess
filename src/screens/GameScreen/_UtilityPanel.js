@@ -7,10 +7,20 @@ import { TextVibe } from 'chessvibe/src/widgets';
 import AutoHeightImage from 'react-native-auto-height-image';
 import BottomSheet from 'reanimated-bottom-sheet'
 
+// Active match buttons
 const resignImg = require('chessvibe/assets/resign.png');
 const drawImg = require('chessvibe/assets/draw.png');
 const mercyImg = require('chessvibe/assets/mercy.png');
 const timeImg = require('chessvibe/assets/time.png');
+const inviteImg = require('chessvibe/assets/invite.png');
+
+// Inactive match buttons
+const forwardImg = require('chessvibe/assets/forward.png');
+const fastForwardImg = require('chessvibe/assets/fast-forward.png');
+const backwardImg = require('chessvibe/assets/backward.png');
+const fastBackwardImg = require('chessvibe/assets/fast-backward.png');
+const playImg = require('chessvibe/assets/play.png');
+const pauseImg = require('chessvibe/assets/pause.png');
 
 
 export default function UtilityPanel(props) {
@@ -21,33 +31,66 @@ export default function UtilityPanel(props) {
 		color: theme.COLOR_BOARD_LIGHT,
 	};
 
-	let renderHeader = () => {
-		return (
-			<View style={ styles.header }>
-				<View style={ [styles.handle, { backgroundColor: theme.COLOR_BOARD_DARK }] }></View>
+	const actionPanel = (
+		<View style={ styles.panel }>
+			<TouchableOpacity style={ [styles.btn, colorStyle] } onPress={ null }>
+				<TextVibe style={ styles.btnText }>Resign</TextVibe>
+			</TouchableOpacity>
+			<TouchableOpacity style={ [styles.btn, colorStyle] } onPress={ null }>
+				<TextVibe style={ styles.btnText }>Draw</TextVibe>
+			</TouchableOpacity>
+			<TouchableOpacity style={ [styles.btn, colorStyle] } onPress={ null }>
+				<TextVibe style={ styles.btnText }>Mercy</TextVibe>
+			</TouchableOpacity>
+			<TouchableOpacity style={ [styles.btn, colorStyle] } onPress={ null }>
+				<TextVibe style={ styles.btnText }>+15 sec</TextVibe>
+			</TouchableOpacity>
+		</View>
+	);
 
-				<View style={ [styles.panel, { backgroundColor: 'black' }] }>
-					<TouchableOpacity style={ [styles.btn, colorStyle] } onPress={ null }>
-						<TextVibe style={ styles.btnText }>Resign</TextVibe>
-					</TouchableOpacity>
-					<TouchableOpacity style={ [styles.btn, colorStyle] } onPress={ null }>
-						<TextVibe style={ styles.btnText }>Draw</TextVibe>
-					</TouchableOpacity>
-					<TouchableOpacity style={ [styles.btn, colorStyle] } onPress={ null }>
-						<TextVibe style={ styles.btnText }>Mercy</TextVibe>
-					</TouchableOpacity>
-					<TouchableOpacity style={ [styles.btn, colorStyle] } onPress={ null }>
-						<TextVibe style={ styles.btnText }>+15 sec</TextVibe>
-					</TouchableOpacity>
-				</View>
+	const reviewPanel = (
+		<View style={ styles.panel }>
+			<TouchableOpacity style={ [styles.btn, colorStyle] } onPress={ null }>
+				<AutoHeightImage width={ vw(5) } source={ fastBackwardImg }/>
+			</TouchableOpacity>
+			<TouchableOpacity style={ [styles.btn, colorStyle] } onPress={ null }>
+				<AutoHeightImage width={ vw(5) } source={ backwardImg }/>
+			</TouchableOpacity>
+			<TouchableOpacity style={ [styles.btn, colorStyle] } onPress={ null }>
+				<AutoHeightImage width={ vw(5) } source={ playImg }/>
+			</TouchableOpacity>
+			<TouchableOpacity style={ [styles.btn, colorStyle] } onPress={ null }>
+				<AutoHeightImage width={ vw(5) } source={ forwardImg }/>
+			</TouchableOpacity>
+			<TouchableOpacity style={ [styles.btn, colorStyle] } onPress={ null }>
+				<AutoHeightImage width={ vw(5) } source={ fastForwardImg }/>
+			</TouchableOpacity>
+		</View>
+	);
+
+	const invitePanel = (
+		<View style={ styles.panel }>
+			<TouchableOpacity style={ [styles.btn, colorStyle] } onPress={ null }>
+				<AutoHeightImage width={ vw(5) } source={ inviteImg }/>
+			</TouchableOpacity>
+		</View>
+	);
+
+	const pullupViewColor = 'black'; //#000000ba
+
+	const renderHeader = () => {
+		return (
+			<View style={ [styles.header, { backgroundColor: pullupViewColor }] }>
+				<View style={ [styles.handle, { backgroundColor: theme.COLOR_BOARD_DARK }] }></View>
+				{ actionPanel }
 			</View>
 		);
 	};
 
-	let renderContent = () => {
+	const renderContent = () => {
 		return (
-			<View style={ { width: '100%', backgroundColor: 'black', height: '100%' } }>
-
+			<View style={ [styles.content, { backgroundColor: pullupViewColor }] }>
+				{ invitePanel }
 			</View>
 		);
 	};
@@ -69,13 +112,21 @@ export default function UtilityPanel(props) {
 const margin_size = vw();
 const cell_size = (vw(100) - 4 * margin_size) / 8;
 const borderRadius = vw();
-const panel_height = vw(11);
+const panel_height = vw(10);
 
 const styles = StyleSheet.create({
 
 	pullupView: {
-		shadowColor: 'black',
-		shadowRadius: vw(5),
+
+		shadowColor: "#000",
+		shadowOffset: {
+			width: 0,
+			height: 6,
+		},
+		shadowOpacity: 0.37,
+		shadowRadius: 7.49,
+
+		elevation: 12,
 	},
 
 		header: {
@@ -86,37 +137,38 @@ const styles = StyleSheet.create({
 			position: 'absolute',
 			bottom: 0,
 			width: '100%',
-			backgroundColor: 'black',
 			borderTopLeftRadius: borderRadius,
 			borderTopRightRadius: borderRadius,
 		},
 
-		handle: {
-			flex: 1,
-			backgroundColor: 'grey',
-			color: 'blue',
-			width: vw(20),
-			height: vw(),
-			marginTop: vw(),
-			borderRadius: vw(),
-		},
+			handle: {
+				flex: 1,
+				color: 'blue',
+				width: vw(20),
+				height: vw(),
+				marginVertical: vw(),
+				borderRadius: vw(),
+			},
 
-		panel: {
-			height: panel_height,
-			flex: 1,
-			flexDirection: 'row',
-			paddingLeft: margin_size,
-			paddingRight: margin_size * 0.5,
-		},
+			panel: {
+				height: panel_height,
+				flexDirection: 'row',
+				paddingLeft: margin_size,
+				paddingRight: margin_size * 0.5,
+				marginBottom: vw(),
+			},
+
+			content: {
+				width: '100%',
+				height: '100%',
+				backgroundColor: 'black',
+			},
 
 	btn: {
 		flex: 1,
 		alignItems: 'center',
 		justifyContent: 'center',
-		marginBottom: vw(),
 		marginRight: vw(0.5),
-		marginTop: vw(),
-		padding: vw(),
 		borderRadius: borderRadius,
 		backgroundColor: 'white',
 	},
@@ -125,6 +177,5 @@ const styles = StyleSheet.create({
 			fontSize: vw(5),
 			textAlign: 'center',
 			color: 'white',
-			lineHeight: vw(7)
 		},
 });

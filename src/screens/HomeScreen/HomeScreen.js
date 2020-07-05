@@ -285,7 +285,6 @@ const styles = StyleSheet.create({
 				},
 
 				matchView: {
-					backgroundColor: 'orange',
 					width: matchSize,
 					marginRight: vw(),
 					borderRadius: borderRadius,

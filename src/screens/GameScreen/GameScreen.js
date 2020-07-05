@@ -7,7 +7,7 @@ import { initGame, updateTheme, updatePlayer, reset } from 'chessvibe/src/redux/
 import { ActionBar } from 'chessvibe/src/widgets';
 import Store from 'chessvibe/src/redux/Store';
 import { THEME, TEAM } from 'chessvibe/src/Const';
-import Util, { vw } from 'chessvibe/src/Util';
+import Util, { vw, vh } from 'chessvibe/src/Util';
 
 import Cache from 'chessvibe/src/Cache';
 import Backend from 'chessvibe/src/GameBackend';
@@ -154,8 +154,8 @@ export default function GameScreen(props) {
 					<BaseBoard/>
 					<ChessBoard style={ styles.board }/>
 					<ClickBoard style={ styles.board } onPress={ handleChessEvent }/>
-			        { renderShadow() }
 				</ScrollView>
+		        { renderShadow() }
 				<UtilityPanel style={ styles.utilityPanel } callbackNode={ fall }/>
 			</BackImage>
 
@@ -194,12 +194,11 @@ const styles = StyleSheet.create({
 		height: panel_height,
 		marginHorizontal: vw(),
 	},
-
-
 	shadowContainer: {
-		...StyleSheet.absoluteFillObject,
 		backgroundColor: '#000',
 		position: 'absolute',
 		flex: 1,
+		width: vw(100),
+		height: vh(100),
 	},
 });
