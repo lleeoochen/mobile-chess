@@ -10,6 +10,7 @@ import Util, { vw } from 'chessvibe/src/Util';
 
 import Cache from 'chessvibe/src/Cache';
 import Backend from 'chessvibe/src/GameBackend';
+import BaseBorder from './_BaseBorder';
 import BaseBoard from './_BaseBoard';
 import ChessBoard from './_ChessBoard';
 import ClickBoard from './_ClickBoard';
@@ -69,12 +70,7 @@ export default function GameScreen(props) {
 
 			Store.dispatch(updateTheme( Util.unpackTheme(match.theme) ));
 
-			// if (hidden) {
-			// 	$('#game-content').removeClass('hidden');
-			// 	hidden = false;
-			// }
-
-			// await updatePlayerData();
+			// await game.updatePlayerData();
 
 			// updateMatchChat();
 
@@ -124,9 +120,10 @@ export default function GameScreen(props) {
 			<StatusBar hidden={ true }/>
 
 			<BackImage style={ styles.outerCanvas }>
-				<BaseBoard style={ styles.baseBoard }/>
-				<ChessBoard style={ styles.baseBoard }/>
-				<ClickBoard style={ styles.baseBoard } onPress={ handleChessEvent }/>
+				<BaseBorder style={ styles.gradient }/>
+				<BaseBoard style={ styles.board }/>
+				<ChessBoard style={ styles.board }/>
+				<ClickBoard style={ styles.board } onPress={ handleChessEvent }/>
 			</BackImage>
 		</SafeAreaView>
 	);
@@ -146,11 +143,15 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		height: '100%',
 	},
-	baseBoard: {
+	board: {
 		width: canvas_size,
 		height: canvas_size,
-		borderColor: 'white',
+		position: 'absolute',
 		borderWidth: margin_size,
-		position: 'absolute'
+		borderColor: 'transparent',
+	},
+	gradient: {
+		width: canvas_size,
+		height: canvas_size,
 	}
 });

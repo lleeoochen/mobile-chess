@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View } from 'react-native';
+import { View, SafeAreaView } from 'react-native';
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 import { Provider } from 'react-redux';
@@ -43,7 +43,9 @@ export default class App extends React.Component {
 	render() {
 		return (
 			<Provider store={store}>
+				<SafeAreaView style={{ flex: 1, backgroundColor: 'black' }}>
 				<Container/>
+				</SafeAreaView>
 			</Provider>
 		);
 	}

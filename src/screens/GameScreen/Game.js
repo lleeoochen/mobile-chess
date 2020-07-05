@@ -30,6 +30,7 @@ export default class Game {
 		this.pieces = {};
 		this.turn = Const.TEAM.W;
 		this.team = team;
+		this.enemy = team == Const.TEAM.W ? Const.TEAM.B : Const.TEAM.W;
 		this.downward = false;
 
 		this.oldGrid = null;
@@ -40,6 +41,11 @@ export default class Game {
 		this.interval = null;
 
 		this.ended = false;
+
+		this.stats = {
+			B: Const.STATS_MAX,
+			W: Const.STATS_MAX
+		};
 
 		this.initBoard();
 		this.initPieces();
@@ -442,6 +448,9 @@ export default class Game {
 		this.moveCastleKing(oldGrid, newGrid);
 
 		// Remove newGrid piece if being eaten
+		if (this.get_piece(newGrid)) {
+			this.stats[this.get_piece(newGrid).team] -= Const.VALUE[this.get_piece(newGrid).type];
+		}
 		newGrid.piece = oldGrid.piece;
 
 		//====================== Update Miscs =======================
@@ -557,6 +566,8 @@ export default class Game {
 
 				this.initEachPiece(this.id++, newGrid.x, newGrid.y, this.get_piece(newGrid).team, Const.CHESS.Queen);
 			}
+
+			this.stats[this.get_piece(newGrid).team] += Const.VALUE[Const.CHESS.Queen] - Const.VALUE[Const.CHESS.Pawn];
 		}
 	}
 
