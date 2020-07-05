@@ -5,6 +5,7 @@ import Util         from 'chessvibe/src/Util';
 import PieceFactory from './actors/piecefactory';
 import Grid         from './actors/grid';
 import Backend      from 'chessvibe/src/GameBackend';
+import Cache        from 'chessvibe/src/Cache';
 
 export default class Game {
 
@@ -45,6 +46,11 @@ export default class Game {
 		this.stats = {
 			B: Const.STATS_MAX,
 			W: Const.STATS_MAX
+		};
+
+		this.eaten = {
+			B: [],
+			W: []
 		};
 
 		this.initBoard();
@@ -118,9 +124,8 @@ export default class Game {
 
 	//Handle chess event with (x, y) click coordinate
 	async handleChessEvent(x, y) {
-		// if ((user_id != match.black && user_id != match.white) || this.team != turn || Util.gameFinished(match))
-		// if (this.team != this.turn || Util.gameFinished(match))
-		// 	return;
+		if (this.team != this.turn || this.ended)
+			return;
 
 		//Initalize important variables
 		let newGrid = this.chessboard[x][y];
@@ -228,6 +233,24 @@ export default class Game {
 		// 		this.countDown();
 		// 	}, 1000);
 		// }, network_delay);
+	}
+
+	async updatePlayerData(match) {
+		let blackPlayer = Store.getState().blackPlayer;
+		let whitePlayer = Store.getState().whitePlayer;
+
+		if (blackPlayer && whitePlayer) return;
+
+		if (!blackPlayer && match.black) {
+			blackPlayer = (await Backend.getUser(match.black)).data;
+		}
+		if (!whitePlayer && match.white) {
+			whitePlayer = (await Backend.getUser(match.white)).data;
+		}
+
+		Cache.users[match.black] = blackPlayer;
+		Cache.users[match.white] = whitePlayer;
+		Store.dispatch(Reducer.updatePlayer( { blackPlayer, whitePlayer } ));
 	}
 
 	isValidMove(oldGrid, newGrid) {
@@ -449,6 +472,7 @@ export default class Game {
 
 		// Remove newGrid piece if being eaten
 		if (this.get_piece(newGrid)) {
+			this.eaten[this.get_piece(oldGrid).team].push(this.get_piece(newGrid).image);
 			this.stats[this.get_piece(newGrid).team] -= Const.VALUE[this.get_piece(newGrid).type];
 		}
 		newGrid.piece = oldGrid.piece;

@@ -5,6 +5,7 @@ import { THEME, TEAM } from 'chessvibe/src/Const';
 export const ACTION_INIT_GAME = 'initGame';
 export const ACTION_THEME = 'theme';
 export const ACTION_RESET = 'reset';
+export const ACTION_PLAYER = 'player';
 
 const initState = {
 	game: {
@@ -12,6 +13,8 @@ const initState = {
 		baseboard: [[], [], [], [], [], [], [], []],
 	},
 	theme: THEME.CLASSIC,
+	blackPlayer: null,
+	whitePlayer: null,
 };
 
 
@@ -35,6 +38,12 @@ function reduceTheme(state, action) {
 	return {...state, ...{ theme: data }};
 }
 
+export const updatePlayer = createAction(ACTION_PLAYER);
+function reducePlayer(state, action) {
+	let data = action.data;
+	return {...state, ...data};
+}
+
 
 // Reducer
 export default function Reducer(state = initState, action) {
@@ -43,6 +52,7 @@ export default function Reducer(state = initState, action) {
 		case ACTION_INIT_GAME:    return reduceInitGame(state, action);
 		case ACTION_THEME:        return reduceTheme(state, action);
 		case ACTION_RESET:        return reduceReset(state, action);
+		case ACTION_PLAYER:        return reducePlayer(state, action);
 		default: return state;
 	}
 }

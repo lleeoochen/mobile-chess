@@ -7,10 +7,13 @@ import { vw, vh } from 'chessvibe/src/Util';
 import * as Const from 'chessvibe/src/Const';
 
 import BaseBoardGrid from './_BaseBoardGrid';
+import BasePlayerPanel from './_BasePlayerPanel';
 
 
 export default function BaseBoard(props) {
 	const theme = useSelector(state => state.theme);
+	const downward = useSelector(state => state.game.downward);
+	const team = useSelector(state => state.game.team);
 
 	// Render
 	let grids = [];
@@ -33,15 +36,22 @@ export default function BaseBoard(props) {
 		}
 	}
 
+	let blackTop = team == Const.TEAM.W ? !downward : downward;
+
 	return (
-		<View style={ props.style }>
-		{ grids }
+		<View style={ styles.container }>
+			<BasePlayerPanel color={ blackTop ? "black" : "white" } pos={ 'top' }/>
+			<View style={ styles.board }>
+				{ grids }
+			</View>
+			<BasePlayerPanel color={ blackTop ? "white" : "black" } pos={ 'bottom' }/>
 		</View>
 	);
 }
 
 const margin_size = vw(1);
 const cell_size = (vw(100) - 4 * margin_size) / 8;
+const canvas_size = margin_size * 2 + cell_size * 8;
 
 const styles = StyleSheet.create({
 	x0: { left: 0 * cell_size },
@@ -67,5 +77,16 @@ const styles = StyleSheet.create({
 		height: cell_size,
 		// transition: .2s all ease;
 		position: 'absolute'
-	}
+	},
+
+	container: {
+		position: 'absolute'
+	},
+
+	board: {
+		width: canvas_size,
+		height: canvas_size,
+		borderWidth: margin_size,
+		borderColor: 'transparent',
+	},
 });

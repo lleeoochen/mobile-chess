@@ -2,7 +2,7 @@ import * as React from 'react';
 import { StatusBar, SafeAreaView, StyleSheet } from 'react-native';
 import { StackActions } from 'react-navigation';
 
-import { initGame, updateTheme, reset } from 'chessvibe/src/redux/Reducer';
+import { initGame, updateTheme, updatePlayer, reset } from 'chessvibe/src/redux/Reducer';
 import { ActionBar } from 'chessvibe/src/widgets';
 import Store from 'chessvibe/src/redux/Store';
 import { THEME, TEAM } from 'chessvibe/src/Const';
@@ -65,12 +65,16 @@ export default function GameScreen(props) {
 			if (!game) {
 				gameRef.current = new Game(team);
 				game = gameRef.current;
+				Store.dispatch(updatePlayer({
+					blackPlayer: Cache.users[match.black],
+					whitePlayer: Cache.users[match.white],
+				}));
 				Store.dispatch(initGame(game));
 			}
 
 			Store.dispatch(updateTheme( Util.unpackTheme(match.theme) ));
 
-			// await game.updatePlayerData();
+			await game.updatePlayerData(match);
 
 			// updateMatchChat();
 
@@ -85,6 +89,7 @@ export default function GameScreen(props) {
 				// showHtml('#review-panel', true);
 				// updateReviewButtons();
 				// showEnding();
+				game.ends();
 				return false;
 			}
 
@@ -109,6 +114,7 @@ export default function GameScreen(props) {
 	}, []);
 
 	function handleChessEvent(x, y) {
+		console.log(Store.getState().game.eaten);
 		if (gameRef.current) {
 			gameRef.current.handleChessEvent(x, y);
 		}
@@ -121,7 +127,7 @@ export default function GameScreen(props) {
 
 			<BackImage style={ styles.outerCanvas }>
 				<BaseBorder style={ styles.gradient }/>
-				<BaseBoard style={ styles.board }/>
+				<BaseBoard/>
 				<ChessBoard style={ styles.board }/>
 				<ClickBoard style={ styles.board } onPress={ handleChessEvent }/>
 			</BackImage>
