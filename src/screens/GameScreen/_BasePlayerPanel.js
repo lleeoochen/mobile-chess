@@ -83,7 +83,6 @@ const styles = StyleSheet.create({
 		flex: 1,
 		flexDirection: 'row',
 		width: canvas_size,
-		backgroundColor: 'orange',
 		borderWidth: margin_size,
 	},
 
@@ -92,7 +91,6 @@ const styles = StyleSheet.create({
 			borderBottomWidth: 0,
 			borderTopLeftRadius: vw(0.75),
 			borderTopRightRadius: vw(0.75),
-
 		},
 		bottomPanel: {
 			borderColor: 'black',

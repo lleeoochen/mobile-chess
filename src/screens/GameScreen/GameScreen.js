@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { StatusBar, SafeAreaView, StyleSheet, View, ScrollView } from 'react-native';
 import { StackActions } from 'react-navigation';
+import Animated from 'react-native-reanimated'
 
 import { initGame, updateTheme, updatePlayer, reset } from 'chessvibe/src/redux/Reducer';
 import { ActionBar } from 'chessvibe/src/widgets';
@@ -32,6 +33,7 @@ GameScreen.navigationOptions = ({ navigation }) => {
 export default function GameScreen(props) {
 	let gameRef = React.useRef(null);
 	let match_id = props.navigation.getParam('match');
+	let fall = new Animated.Value(1);
 
 	// Mount
 	React.useEffect(() => {
@@ -121,6 +123,26 @@ export default function GameScreen(props) {
 		}
 	}
 
+	const renderShadow = () => {
+	    const animatedShadowOpacity = fall.interpolate({
+			inputRange: [0, 1],
+			outputRange: [0.5, 0],
+	    });
+
+	    console.log(animatedShadowOpacity);
+
+	    return (
+			<Animated.View
+		        style={[
+					styles.shadowContainer,
+					{
+						opacity: animatedShadowOpacity,
+					},
+		        ]}
+			/>
+	    )
+	};
+
 	// Render
 	return (
 		<SafeAreaView style={{ flex: 1 }}>
@@ -132,8 +154,9 @@ export default function GameScreen(props) {
 					<BaseBoard/>
 					<ChessBoard style={ styles.board }/>
 					<ClickBoard style={ styles.board } onPress={ handleChessEvent }/>
+			        { renderShadow() }
 				</ScrollView>
-				<UtilityPanel style={ styles.utilityPanel }/>
+				<UtilityPanel style={ styles.utilityPanel } callbackNode={ fall }/>
 			</BackImage>
 
 		</SafeAreaView>
@@ -155,7 +178,6 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 		alignItems: 'center',
 		height: '100%',
-		marginBottom: panel_height,
 	},
 	board: {
 		width: canvas_size,
@@ -169,17 +191,15 @@ const styles = StyleSheet.create({
 		height: canvas_size,
 	},
 	utilityPanel: {
-		flex: 1,
-		flexDirection: 'row',
-		position: 'absolute',
-		bottom: 0,
 		height: panel_height,
-		width: vw(100 - 2),
-		backgroundColor: 'black',
-		paddingLeft: margin_size,
-		paddingRight: margin_size * 0.5,
 		marginHorizontal: vw(),
-		borderTopLeftRadius: borderRadius,
-		borderTopRightRadius: borderRadius,
-	}
+	},
+
+
+	shadowContainer: {
+		...StyleSheet.absoluteFillObject,
+		backgroundColor: '#000',
+		position: 'absolute',
+		flex: 1,
+	},
 });

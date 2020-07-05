@@ -43,7 +43,7 @@ export const THEME = Object.freeze({
 			MOBILE:             "#89898980",
 		},
 		BACKGROUND_IMAGE:       require("chessvibe/assets/background.jpg"),
-		NAME_TITLE_COLOR:       "black"
+		NAME_TITLE_COLOR:       "white"
 	},
 
 	WINTER: {
@@ -59,7 +59,7 @@ export const THEME = Object.freeze({
 			MOBILE:             "#FFFFFF33",
 		},
 		BACKGROUND_IMAGE:       require("chessvibe/assets/background_winter.jpg"),
-		NAME_TITLE_COLOR:       "black",
+		NAME_TITLE_COLOR:       "white",
 	},
 
 	METAL: {
@@ -75,7 +75,7 @@ export const THEME = Object.freeze({
 			MOBILE:             "#89898980",
 		},
 		BACKGROUND_IMAGE:       require("chessvibe/assets/background_metal.jpg"),
-		NAME_TITLE_COLOR:       "black"
+		NAME_TITLE_COLOR:       "white"
 	},
 
 	NATURE: {
