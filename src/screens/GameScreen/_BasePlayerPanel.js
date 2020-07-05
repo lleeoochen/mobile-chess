@@ -46,8 +46,6 @@ export default function BasePlayerPanel(props) {
 		fontSize: vw(5),
 	};
 
-	console.log(eaten);
-
 	return (
 		<View
 			style={[

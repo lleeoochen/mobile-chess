@@ -5,6 +5,7 @@ import { vw, vh } from 'chessvibe/src/Util';
 import { BOARD_SIZE } from 'chessvibe/src/Const';
 import { TextVibe } from 'chessvibe/src/widgets';
 import AutoHeightImage from 'react-native-auto-height-image';
+import BottomSheet from 'reanimated-bottom-sheet'
 
 const resignImg = require('chessvibe/assets/resign.png');
 const drawImg = require('chessvibe/assets/draw.png');
@@ -20,21 +21,39 @@ export default function UtilityPanel(props) {
 		color: theme.COLOR_BOARD_LIGHT,
 	};
 
+	let renderHeader = () => {
+		return (
+			<View style={ [props.style, { backgroundColor: '#000000E2' }] }>
+				<TouchableOpacity style={ [styles.btn, colorStyle] } onPress={ null }>
+					<TextVibe style={ styles.btnText }>Resign</TextVibe>
+				</TouchableOpacity>
+				<TouchableOpacity style={ [styles.btn, colorStyle] } onPress={ null }>
+					<TextVibe style={ styles.btnText }>Draw</TextVibe>
+				</TouchableOpacity>
+				<TouchableOpacity style={ [styles.btn, colorStyle] } onPress={ null }>
+					<TextVibe style={ styles.btnText }>Mercy</TextVibe>
+				</TouchableOpacity>
+				<TouchableOpacity style={ [styles.btn, colorStyle] } onPress={ null }>
+					<TextVibe style={ styles.btnText }>+15 sec</TextVibe>
+				</TouchableOpacity>
+			</View>
+		);
+	};
+
+	let renderContent = () => {
+		return (
+			<View style={ { width: vw(100 - 2), backgroundColor: '#000000E2', height: '100%', marginLeft: vw(), } }>
+
+			</View>
+		);
+	};
+
 	return (
-		<View style={ props.style }>
-			<TouchableOpacity style={ [styles.btn, colorStyle] } onPress={ null }>
-				<TextVibe style={ styles.btnText }>Resign</TextVibe>
-			</TouchableOpacity>
-			<TouchableOpacity style={ [styles.btn, colorStyle] } onPress={ null }>
-				<TextVibe style={ styles.btnText }>Draw</TextVibe>
-			</TouchableOpacity>
-			<TouchableOpacity style={ [styles.btn, colorStyle] } onPress={ null }>
-				<TextVibe style={ styles.btnText }>Mercy</TextVibe>
-			</TouchableOpacity>
-			<TouchableOpacity style={ [styles.btn, colorStyle] } onPress={ null }>
-				<TextVibe style={ styles.btnText }>+15 sec</TextVibe>
-			</TouchableOpacity>
-		</View>
+		<BottomSheet
+			snapPoints = {[vh(50), 0]}
+			renderContent = { renderContent }
+			renderHeader = { renderHeader }
+        />
 	);
 }
 
@@ -48,8 +67,9 @@ const styles = StyleSheet.create({
 		flex: 1,
 		alignItems: 'center',
 		justifyContent: 'center',
-		marginVertical: vw(),
+		marginBottom: vw(),
 		marginRight: vw(0.5),
+		marginTop: vw(3),
 		padding: vw(2),
 		borderRadius: borderRadius,
 		backgroundColor: 'white',

@@ -145,7 +145,7 @@ export default function GameScreen(props) {
 const margin_size = vw(1);
 const cell_size = (vw(100) - 4 * margin_size) / 8;
 const canvas_size = margin_size * 2 + cell_size * 8;
-const panel_height = vw(11);
+const panel_height = vw(13);
 const borderRadius = vw();
 
 const styles = StyleSheet.create({
