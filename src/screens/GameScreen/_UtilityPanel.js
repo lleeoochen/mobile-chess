@@ -6,6 +6,7 @@ import { BOARD_SIZE } from 'chessvibe/src/Const';
 import { TextVibe } from 'chessvibe/src/widgets';
 import AutoHeightImage from 'react-native-auto-height-image';
 import BottomSheet from 'reanimated-bottom-sheet'
+// import { TouchableOpacity } from 'react-native-gesture-handler';
 
 // Active match buttons
 const resignImg = require('chessvibe/assets/resign.png');
@@ -22,6 +23,10 @@ const fastBackwardImg = require('chessvibe/assets/fast-backward.png');
 const playImg = require('chessvibe/assets/play.png');
 const pauseImg = require('chessvibe/assets/pause.png');
 
+const margin_size = vw();
+const cell_size = (vw(100) - 4 * margin_size) / 8;
+const borderRadius = vw();
+const panel_height = 50;
 
 export default function UtilityPanel(props) {
 	const theme = useSelector(state => state.theme);
@@ -99,7 +104,7 @@ export default function UtilityPanel(props) {
 		<View style={ props.style }>
 			<BottomSheet
 				initialSnap={ 1 }
-				snapPoints = { [vh(60), 0] }
+				snapPoints = { [vh(60), panel_height] }
 		        callbackNode={ props.callbackNode }
 				renderContent = { renderContent }
 				renderHeader = { renderHeader }
@@ -109,15 +114,9 @@ export default function UtilityPanel(props) {
 	);
 }
 
-const margin_size = vw();
-const cell_size = (vw(100) - 4 * margin_size) / 8;
-const borderRadius = vw();
-const panel_height = vw(10);
-
 const styles = StyleSheet.create({
 
 	pullupView: {
-
 		shadowColor: "#000",
 		shadowOffset: {
 			width: 0,
@@ -134,7 +133,8 @@ const styles = StyleSheet.create({
 			flexDirection: 'column',
 			justifyContent: 'center',
 			alignItems: 'center',
-			position: 'absolute',
+			// position: 'absolute',
+			height: panel_height,
 			bottom: 0,
 			width: '100%',
 			borderTopLeftRadius: borderRadius,
@@ -142,7 +142,6 @@ const styles = StyleSheet.create({
 		},
 
 			handle: {
-				flex: 1,
 				color: 'blue',
 				width: vw(20),
 				height: vw(),
@@ -151,7 +150,8 @@ const styles = StyleSheet.create({
 			},
 
 			panel: {
-				height: panel_height,
+				flexShrink: 1,
+				height: panel_height - vw(4),
 				flexDirection: 'row',
 				paddingLeft: margin_size,
 				paddingRight: margin_size * 0.5,
