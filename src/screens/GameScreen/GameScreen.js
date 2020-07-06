@@ -148,14 +148,14 @@ export default function GameScreen(props) {
 		<SafeAreaView style={{ flex: 1 }}>
 			<StatusBar hidden={ true }/>
 
-			<BackImage >
+			<BackImage>
 				<ScrollView contentContainerStyle={ styles.outerCanvas }>
 					<BaseBorder style={ styles.gradient }/>
 					<BaseBoard/>
 					<ChessBoard style={ styles.board }/>
 					<ClickBoard style={ styles.board } onPress={ handleChessEvent }/>
-				</ScrollView>
 		        { renderShadow() }
+				</ScrollView>
 				<UtilityPanel style={ styles.utilityPanel } callbackNode={ fall }/>
 			</BackImage>
 

@@ -21,5 +21,6 @@ const styles = StyleSheet.create({
 	image: {
 		height: '100%',
 		zIndex: -100,
+		backgroundColor: 'black',
 	}
 });
