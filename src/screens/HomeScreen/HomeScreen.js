@@ -3,16 +3,12 @@ import { View, SafeAreaView, ScrollView, StyleSheet, StatusBar, TouchableOpacity
 import { ActionBar, WebVibe, TextVibe, ModalVibe } from 'chessvibe/src/widgets';
 import AutoHeightImage from 'react-native-auto-height-image';
 
-import { URL, TEAM } from 'chessvibe/src/Const';
+import { URL, TEAM, IMAGE } from 'chessvibe/src/Const';
 import { formatDate, vw, wh, winType } from 'chessvibe/src/Util';
 import Cache from 'chessvibe/src/Cache';
 import Backend from 'chessvibe/src/Backend';
 import HomeUserMenu from './HomeUserMenu';
 import HomeCreateMenu from './HomeCreateMenu';
-
-var menu_img = require('chessvibe/assets/menu.png');
-var new_game_img = require('chessvibe/assets/new_game.png');
-var new_match_img = require('chessvibe/assets/new_match.png');
 
 const matchSize = vw((100 - 2 - 6 - 4) / 4);
 const borderRadius = vw();
@@ -21,7 +17,7 @@ const borderRadius = vw();
 // Navigation
 HomeScreen.navigationOptions = ({navigation}) => {
 	const { params = {} } = navigation.state;
-	return ActionBar('ChessVibe', menu_img, params.openMenu, new_game_img, params.openCreate);
+	return ActionBar('ChessVibe', IMAGE.MENU, params.openMenu, IMAGE.NEW_GAME, params.openCreate);
 };
 
 
@@ -199,7 +195,7 @@ export default function HomeScreen(props) {
 				if (active) {
 					$active_matches.push(
 						<TouchableOpacity key={ j } style={ {...styles.matchView, ...borderStyle} } onPress={() => navigateGame(match_name)}>
-							<AutoHeightImage width={ matchSize - vw(2) } source={ enemy.photo ? { uri: enemy.photo + '=c' } : new_match_img }/>
+							<AutoHeightImage width={ matchSize - vw(2) } source={ enemy.photo ? { uri: enemy.photo + '=c' } : IMAGE.NEW_MATCH }/>
 							<TextVibe style={ {...styles.matchDate, ...colorStyle} }> { d_str } </TextVibe>
 						</TouchableOpacity>
 					);
@@ -207,7 +203,7 @@ export default function HomeScreen(props) {
 				else {
 					$inactive_matches.push(
 						<TouchableOpacity key={ j } style={ {...styles.matchView, ...borderStyle} } onPress={() => navigateGame(match_name)}>
-							<AutoHeightImage width={ matchSize - vw(2) } source={ enemy.photo ? { uri: enemy.photo + '=c' } : new_match_img }/>
+							<AutoHeightImage width={ matchSize - vw(2) } source={ enemy.photo ? { uri: enemy.photo + '=c' } : IMAGE.NEW_MATCH }/>
 							<TextVibe style={ {...styles.matchDate, ...colorStyle} }> { d_str } </TextVibe>
 						</TouchableOpacity>
 					);

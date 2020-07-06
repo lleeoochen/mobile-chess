@@ -13,7 +13,15 @@ export const BOARD_SIZE = 8;
 export const MATCHES_TABLE = "chess_matches";
 export const USERS_TABLE = "chess_users";
 
-export const CHESS_IMAGE = {
+export const IMAGE = {
+	// General images
+	BACK:      require('chessvibe/assets/back.png'),
+	THEME:     require('chessvibe/assets/palette.png'),
+	MENU:      require('chessvibe/assets/menu.png'),
+	NEW_GAME:  require('chessvibe/assets/new_game.png'),
+	NEW_MATCH: require('chessvibe/assets/new_match.png'),
+
+	// Chess pieces
 	BKing:   require("chessvibe/assets/BKing.png"),
 	BQueen:  require("chessvibe/assets/BQueen.png"),
 	BRook:   require("chessvibe/assets/BRook.png"),
@@ -27,6 +35,21 @@ export const CHESS_IMAGE = {
 	WBishop: require("chessvibe/assets/WBishop.png"),
 	WKnight: require("chessvibe/assets/WKnight.png"),
 	WPawn:   require("chessvibe/assets/WPawn.png"),
+
+	// Review buttons
+	FORWARD:      require('chessvibe/assets/forward.png'),
+	FASTFORWARD:  require('chessvibe/assets/fast-forward.png'),
+	BACKWARD:     require('chessvibe/assets/backward.png'),
+	FASTBACKWARD: require('chessvibe/assets/fast-backward.png'),
+	PLAY:         require('chessvibe/assets/play.png'),
+	PAUSE:        require('chessvibe/assets/pause.png'),
+
+	// Action buttons
+	RESIGN: require('chessvibe/assets/resign.png'),
+	DRAW:   require('chessvibe/assets/draw.png'),
+	MERCY:  require('chessvibe/assets/mercy.png'),
+	TIME:   require('chessvibe/assets/time.png'),
+	INVITE: require('chessvibe/assets/invite.png'),
 };
 
 export const THEME = Object.freeze({

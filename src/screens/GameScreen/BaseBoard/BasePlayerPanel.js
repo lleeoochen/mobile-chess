@@ -9,7 +9,7 @@ import { vw, vh } from 'chessvibe/src/Util';
 import * as Const from 'chessvibe/src/Const';
 import { ActionBar, WebVibe, TextVibe, ModalVibe } from 'chessvibe/src/widgets';
 
-import BaseBoardGrid from './_BaseBoardGrid';
+import BaseBoardGrid from './BaseBoardGrid';
 
 var new_match_img = require('chessvibe/assets/new_match.png');
 

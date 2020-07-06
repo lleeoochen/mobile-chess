@@ -6,8 +6,8 @@ import * as Reducer from 'chessvibe/src/redux/Reducer';
 import { vw, vh } from 'chessvibe/src/Util';
 import * as Const from 'chessvibe/src/Const';
 
-import BaseBoardGrid from './_BaseBoardGrid';
-import BasePlayerPanel from './_BasePlayerPanel';
+import BaseBoardGrid from './BaseBoardGrid';
+import BasePlayerPanel from './BasePlayerPanel';
 
 
 export default function BaseBoard(props) {

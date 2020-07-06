@@ -6,27 +6,23 @@ import Animated from 'react-native-reanimated'
 import { initGame, updateTheme, updatePlayer, reset } from 'chessvibe/src/redux/Reducer';
 import { ActionBar } from 'chessvibe/src/widgets';
 import Store from 'chessvibe/src/redux/Store';
-import { THEME, TEAM } from 'chessvibe/src/Const';
+import { THEME, TEAM, IMAGE } from 'chessvibe/src/Const';
 import Util, { vw, vh } from 'chessvibe/src/Util';
 
 import Cache from 'chessvibe/src/Cache';
 import Backend from 'chessvibe/src/GameBackend';
-import BaseBorder from './_BaseBorder';
-import BaseBoard from './_BaseBoard';
-import ChessBoard from './_ChessBoard';
-import ClickBoard from './_ClickBoard';
-import BackImage from './_BackImage';
-import UtilityPanel from './_UtilityPanel';
+import { BaseBoard, BaseBorder } from './BaseBoard';
+import ChessBoard from './ChessBoard';
+import ClickBoard from './ClickBoard';
+import BackImage from './BackImage';
+import UtilityArea from './UtilityArea';
 
 import Game from './Game';
-
-var back_img = require('chessvibe/assets/back.png');
-var theme_img = require('chessvibe/assets/palette.png');
 
 // Navigation
 GameScreen.navigationOptions = ({ navigation }) => {
 	const { params = {} } = navigation.state;
-	return ActionBar('Match', back_img, params.goBack, theme_img, params.changeTheme);
+	return ActionBar('Match', IMAGE.BACK, params.goBack, IMAGE.THEME, params.changeTheme);
 };
 
 // Game Screen
@@ -40,6 +36,7 @@ export default function GameScreen(props) {
 		Store.dispatch(updateTheme( Util.unpackTheme(Cache.theme[match_id]) ));
 
 		let game = gameRef.current;
+		let first_load = true;
 		Backend.init();
 
 		props.navigation.setParams({
@@ -97,12 +94,12 @@ export default function GameScreen(props) {
 				return false;
 			}
 
-			// if (first_load) {
-			// 	await new Promise((resolve, reject) => {
-			// 		setTimeout(() => { resolve() }, 500);
-			// 	});
-			// 	first_load = false;
-			// }
+			if (first_load) {
+				await new Promise((resolve, reject) => {
+					setTimeout(() => { resolve() }, 500);
+				});
+				first_load = false;
+			}
 
 			await game.updateMatchMoves(match);
 
@@ -124,23 +121,21 @@ export default function GameScreen(props) {
 	}
 
 	const renderShadow = () => {
-	    const animatedShadowOpacity = fall.interpolate({
+		const animatedShadowOpacity = fall.interpolate({
 			inputRange: [0, 1],
 			outputRange: [0.5, 0],
-	    });
+		});
 
-	    console.log(animatedShadowOpacity);
-
-	    return (
+		return (
 			<Animated.View
-		        style={[
+				style={[
 					styles.shadowContainer,
 					{
 						opacity: animatedShadowOpacity,
 					},
-		        ]}
+				]}
 			/>
-	    )
+		)
 	};
 
 	// Render
@@ -154,9 +149,9 @@ export default function GameScreen(props) {
 					<BaseBoard/>
 					<ChessBoard style={ styles.board }/>
 					<ClickBoard style={ styles.board } onPress={ handleChessEvent }/>
-		        { renderShadow() }
+				{ renderShadow() }
 				</ScrollView>
-				<UtilityPanel style={ styles.utilityPanel } callbackNode={ fall }/>
+				<UtilityArea style={ styles.utilityArea } callbackNode={ fall }/>
 			</BackImage>
 
 		</SafeAreaView>
@@ -190,7 +185,7 @@ const styles = StyleSheet.create({
 		width: canvas_size,
 		height: canvas_size,
 	},
-	utilityPanel: {
+	utilityArea: {
 		height: panel_height,
 		marginHorizontal: vw(),
 	},

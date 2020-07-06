@@ -2,33 +2,21 @@ import * as React from 'react';
 import { TouchableOpacity, View, StyleSheet } from 'react-native';
 import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import { vw, vh } from 'chessvibe/src/Util';
-import { BOARD_SIZE } from 'chessvibe/src/Const';
+import { BOARD_SIZE, IMAGE } from 'chessvibe/src/Const';
 import { TextVibe } from 'chessvibe/src/widgets';
 import AutoHeightImage from 'react-native-auto-height-image';
 import BottomSheet from 'reanimated-bottom-sheet'
 // import { TouchableOpacity } from 'react-native-gesture-handler';
 
-// Active match buttons
-const resignImg = require('chessvibe/assets/resign.png');
-const drawImg = require('chessvibe/assets/draw.png');
-const mercyImg = require('chessvibe/assets/mercy.png');
-const timeImg = require('chessvibe/assets/time.png');
-const inviteImg = require('chessvibe/assets/invite.png');
-
-// Inactive match buttons
-const forwardImg = require('chessvibe/assets/forward.png');
-const fastForwardImg = require('chessvibe/assets/fast-forward.png');
-const backwardImg = require('chessvibe/assets/backward.png');
-const fastBackwardImg = require('chessvibe/assets/fast-backward.png');
-const playImg = require('chessvibe/assets/play.png');
-const pauseImg = require('chessvibe/assets/pause.png');
-
 const margin_size = vw();
 const cell_size = (vw(100) - 4 * margin_size) / 8;
 const borderRadius = vw();
-const panel_height = 50;
 
-export default function UtilityPanel(props) {
+const header_height = 70;
+const handle_height = 20 + vw(3);
+const panel_height = header_height - handle_height;
+
+export default function UtilityArea(props) {
 	const theme = useSelector(state => state.theme);
 
 	let colorStyle = {
@@ -37,7 +25,7 @@ export default function UtilityPanel(props) {
 	};
 
 	const actionPanel = (
-		<View style={ styles.panel }>
+		<View style={ [styles.panel, styles.headerPanel] }>
 			<TouchableOpacity style={ [styles.btn, colorStyle] } onPress={ null }>
 				<TextVibe style={ styles.btnText }>Resign</TextVibe>
 			</TouchableOpacity>
@@ -54,21 +42,21 @@ export default function UtilityPanel(props) {
 	);
 
 	const reviewPanel = (
-		<View style={ styles.panel }>
+		<View style={ [styles.panel, styles.headerPanel] }>
 			<TouchableOpacity style={ [styles.btn, colorStyle] } onPress={ null }>
-				<AutoHeightImage width={ vw(5) } source={ fastBackwardImg }/>
+				<AutoHeightImage width={ vw(5) } source={ IMAGE.FASTBACKWARD }/>
 			</TouchableOpacity>
 			<TouchableOpacity style={ [styles.btn, colorStyle] } onPress={ null }>
-				<AutoHeightImage width={ vw(5) } source={ backwardImg }/>
+				<AutoHeightImage width={ vw(5) } source={ IMAGE.BACKWARD }/>
 			</TouchableOpacity>
 			<TouchableOpacity style={ [styles.btn, colorStyle] } onPress={ null }>
-				<AutoHeightImage width={ vw(5) } source={ playImg }/>
+				<AutoHeightImage width={ vw(5) } source={ IMAGE.PLAY }/>
 			</TouchableOpacity>
 			<TouchableOpacity style={ [styles.btn, colorStyle] } onPress={ null }>
-				<AutoHeightImage width={ vw(5) } source={ forwardImg }/>
+				<AutoHeightImage width={ vw(5) } source={ IMAGE.FORWARD }/>
 			</TouchableOpacity>
 			<TouchableOpacity style={ [styles.btn, colorStyle] } onPress={ null }>
-				<AutoHeightImage width={ vw(5) } source={ fastForwardImg }/>
+				<AutoHeightImage width={ vw(5) } source={ IMAGE.FASTFORWARD }/>
 			</TouchableOpacity>
 		</View>
 	);
@@ -76,25 +64,23 @@ export default function UtilityPanel(props) {
 	const invitePanel = (
 		<View style={ styles.panel }>
 			<TouchableOpacity style={ [styles.btn, colorStyle] } onPress={ null }>
-				<AutoHeightImage width={ vw(5) } source={ inviteImg }/>
+				<AutoHeightImage width={ vw(5) } source={ IMAGE.INVITE }/>
 			</TouchableOpacity>
 		</View>
 	);
 
-	const pullupViewColor = 'black'; //#000000ba
-
 	const renderHeader = () => {
 		return (
-			<View style={ [styles.header, { backgroundColor: pullupViewColor }] }>
-				<View style={ [styles.handle, { backgroundColor: theme.COLOR_BOARD_DARK }] }></View>
-				{ actionPanel }
+			<View style={ [styles.header] }>
+				<View style={ [styles.handle] }></View>
+				{ reviewPanel }
 			</View>
 		);
 	};
 
 	const renderContent = () => {
 		return (
-			<View style={ [styles.content, { backgroundColor: pullupViewColor }] }>
+			<View style={ [styles.content] }>
 				{ invitePanel }
 			</View>
 		);
@@ -104,7 +90,7 @@ export default function UtilityPanel(props) {
 		<View style={ props.style }>
 			<BottomSheet
 				initialSnap={ 1 }
-				snapPoints = { [vh(60), panel_height] }
+				snapPoints = { [vh(80), header_height] }
 		        callbackNode={ props.callbackNode }
 				renderContent = { renderContent }
 				renderHeader = { renderHeader }
@@ -133,36 +119,45 @@ const styles = StyleSheet.create({
 			flexDirection: 'column',
 			justifyContent: 'center',
 			alignItems: 'center',
-			// position: 'absolute',
-			height: panel_height,
+			height: header_height,
 			bottom: 0,
 			width: '100%',
-			borderTopLeftRadius: borderRadius,
-			borderTopRightRadius: borderRadius,
+			paddingTop: 20,
+			backgroundColor: 'transparent',
 		},
 
 			handle: {
-				color: 'blue',
-				width: vw(20),
-				height: vw(),
-				marginVertical: vw(),
-				borderRadius: vw(),
-			},
-
-			panel: {
-				flexShrink: 1,
-				height: panel_height - vw(4),
-				flexDirection: 'row',
-				paddingLeft: margin_size,
-				paddingRight: margin_size * 0.5,
-				marginBottom: vw(),
-			},
-
-			content: {
-				width: '100%',
-				height: '100%',
 				backgroundColor: 'black',
+				width: vw(20),
+				height: vw(1),
+				marginTop: vw(),
+				borderRadius: vw(),
+				marginVertical: vw(),
 			},
+
+			headerPanel: {
+				height: panel_height,
+				backgroundColor: 'black',
+				borderTopLeftRadius: borderRadius,
+				borderTopRightRadius: borderRadius,
+				paddingVertical: vw(),
+			},
+
+		content: {
+			width: '100%',
+			height: '100%',
+			backgroundColor: 'black',
+		},
+
+		panel: {
+			flexShrink: 1,
+			height: panel_height,
+			flexDirection: 'row',
+			paddingLeft: margin_size,
+			paddingRight: margin_size * 0.5,
+			marginBottom: 0,
+			paddingBottom: vw(),
+		},
 
 	btn: {
 		flex: 1,

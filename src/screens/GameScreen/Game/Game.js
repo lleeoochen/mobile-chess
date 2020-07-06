@@ -2,8 +2,8 @@ import Store        from 'chessvibe/src/redux/Store';
 import * as Reducer from 'chessvibe/src/redux/Reducer';
 import * as Const   from 'chessvibe/src/Const';
 import Util         from 'chessvibe/src/Util';
-import PieceFactory from './actors/piecefactory';
-import Grid         from './actors/grid';
+import PieceFactory from './piecefactory';
+import Grid         from './grid';
 import Backend      from 'chessvibe/src/GameBackend';
 import Cache        from 'chessvibe/src/Cache';
 
@@ -115,7 +115,7 @@ export default class Game {
 	//Intialize each chess piece
 	initEachPiece(id, x, y, team, type) {
 		this.chessboard[x][y].piece = id;
-		this.pieces[id] = PieceFactory.createPiece(team, type, Const.CHESS_IMAGE[team + type]);
+		this.pieces[id] = PieceFactory.createPiece(team, type, Const.IMAGE[team + type]);
 
 		if (type == Const.CHESS.King)
 			this.king_grid[team] = this.chessboard[x][y];

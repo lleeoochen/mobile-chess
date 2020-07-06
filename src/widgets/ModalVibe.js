@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
 import Modal from 'react-native-modal';
 import { vw, wh } from '../Util';
 
@@ -7,11 +7,15 @@ export default function ModalVibe(props) {
 	return (
 		<Modal
 			isVisible={ props.isVisible || false }
-			animationIn={'fadeIn'}
-			animationOut={'fadeOut'} activeOpacity={0}
+			// animationIn={'fadeIn'}
+			// animationOut={'fadeOut'}
+			activeOpacity={ 0 }
+			hideModalContentWhileAnimating={ true }
+			backdropTransitionOutTiming={ 0 }
 			style={ styles.modal }>
-			<TouchableOpacity style={ styles.menuOutside } onPressIn={ props.onDismiss }>
-			</TouchableOpacity>
+			<TouchableWithoutFeedback onPress={ props.onDismiss }>
+				<View style={ styles.menuOutside }></View>
+			</TouchableWithoutFeedback>
 			<View style={ styles.menu }>
 				{ props.children }
 			</View>
