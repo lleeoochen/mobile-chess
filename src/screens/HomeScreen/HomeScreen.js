@@ -27,7 +27,6 @@ export default function HomeScreen(props) {
 	const [userMenuVisible, showUserMenu] = React.useState(false);
 	const [createMenuVisible, showCreateMenu] = React.useState(false);
 	const user = React.useRef({});
-	const user_id = React.useRef(null);
 
 	// Mount
 	React.useEffect(() => {
@@ -113,9 +112,8 @@ export default function HomeScreen(props) {
 	// Fetch user matches
 	function fetchMatches() {
 		Backend.init();
-		Backend.getProfile().then(res => {
+		Backend.listenProfile(res => {
 			user.current = res.data;
-			user_id.current = res.id;
 			let matches_dict = {};
 			let matches_promises = [];
 
@@ -187,15 +185,15 @@ export default function HomeScreen(props) {
 				let d = new Date(match_data.updated);
 				let d_str = formatDate(d, '%M/%D');
 
-				let color = (match_data.black == user_id) ? TEAM.B : TEAM.W;
+				let color = (match_data.black == Cache.userID) ? TEAM.B : TEAM.W;
 				let active = Math.floor(match_data.moves[match_data.moves.length - 1] / 10) != 0;
-				let borderStyle = match_data.black == user_id.current ? styles.blackBorder : styles.whiteBorder;
+				let borderStyle = match_data.black == Cache.userID ? styles.blackBorder : styles.whiteBorder;
 				let colorStyle = active ? styles.greenColor : styles.greyColor;
 
 				if (active) {
 					$active_matches.push(
 						<TouchableOpacity key={ j } style={ {...styles.matchView, ...borderStyle} } onPress={() => navigateGame(match_name)}>
-							<AutoHeightImage width={ matchSize - vw(2) } source={ enemy.photo ? { uri: enemy.photo + '=c' } : IMAGE.NEW_MATCH }/>
+							<AutoHeightImage width={ matchSize } source={ enemy.photo ? { uri: enemy.photo + '=c' } : IMAGE.NEW_MATCH } style={ styles.matchImg }/>
 							<TextVibe style={ {...styles.matchDate, ...colorStyle} }> { d_str } </TextVibe>
 						</TouchableOpacity>
 					);
@@ -203,7 +201,7 @@ export default function HomeScreen(props) {
 				else {
 					$inactive_matches.push(
 						<TouchableOpacity key={ j } style={ {...styles.matchView, ...borderStyle} } onPress={() => navigateGame(match_name)}>
-							<AutoHeightImage width={ matchSize - vw(2) } source={ enemy.photo ? { uri: enemy.photo + '=c' } : IMAGE.NEW_MATCH }/>
+							<AutoHeightImage width={ matchSize } source={ enemy.photo ? { uri: enemy.photo + '=c' } : IMAGE.NEW_MATCH } style={ styles.matchImg }/>
 							<TextVibe style={ {...styles.matchDate, ...colorStyle} }> { d_str } </TextVibe>
 						</TouchableOpacity>
 					);
@@ -282,13 +280,24 @@ const styles = StyleSheet.create({
 
 				matchView: {
 					width: matchSize,
-					marginRight: vw(),
+					marginRight: vw(2),
 					borderRadius: borderRadius,
-					borderWidth: vw(),
+					shadowColor: "#000",
+					shadowOffset: {
+						width: 0,
+						height: 1,
+					},
+					shadowOpacity: 0.22,
+					shadowRadius: 2.22,
+
+					elevation: 3,
 				},
 
 					blackBorder: { borderColor: 'black' },
 					whiteBorder: { borderColor: 'white' },
+
+					matchImg: {
+					},
 
 					matchDate: {
 						textAlign: 'center',

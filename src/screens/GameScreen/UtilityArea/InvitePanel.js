@@ -28,12 +28,12 @@ export default function InvitePanel(props) {
 			onPress={ async () => {
 				Clipboard.setString(URL.FRONTEND + '/game?match=' + game.match_id);
 				showCopiedModal(true);
-				setTimeout(() => {
-					showCopiedModal(false);
-				}, 2000);
+				// setTimeout(() => {
+				// 	showCopiedModal(false);
+				// }, 2000);
 			} }>
 			<AutoHeightImage width={ vw(5) } source={ IMAGE.INVITE }/>
-			<TextVibe style={ styles.btnText }>Invite</TextVibe>
+			<TextVibe style={ [styles.btnText, styles.ml2] }>Invite</TextVibe>
 		</ButtonVibe>
 	);
 
@@ -52,6 +52,9 @@ function renderCopiedDialog(visible, setVisible) {
 			onDismiss={ () => setVisible(false) }>
 			<View style={ styles.squareBack }></View>
 			<TextVibe style={ styles.text }>Invite Link Copied!</TextVibe>
+			<ButtonVibe style={ styles.cancelBtn } onPress={ () => setVisible(false) }>
+				<TextVibe style={ [styles.btnText, styles.black] }>Okay</TextVibe>
+			</ButtonVibe>
 		</ModalVibe>
 	);
 }
@@ -60,7 +63,7 @@ const styles = StyleSheet.create({
 
 	btn: {
 		flex: 1,
-		// marginRight: vw(0.5),
+		marginRight: vw(0.5),
 		flexDirection: 'row',
 	},
 
@@ -68,12 +71,29 @@ const styles = StyleSheet.create({
 			fontSize: vw(5),
 			textAlign: 'center',
 			color: 'white',
+		},
+
+		ml2: {
 			marginLeft: vw(2),
 		},
 
+		cancelBtn: {
+			backgroundColor: 'white',
+			paddingVertical: vw(),
+			paddingHorizontal: vw(3),
+			margin: vw(),
+		},
+
 	text: {
-		fontSize: vw(7),
+		fontSize: vw(5),
 		textAlign: 'center',
 		color: 'white',
+		backgroundColor: 'darkslategrey',
+		paddingHorizontal: vw(2),
+		marginBottom: vw(5),
+	},
+
+	black: {
+		color: 'black',
 	},
 });

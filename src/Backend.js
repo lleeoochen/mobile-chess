@@ -52,6 +52,13 @@ export default class Backend {
 		});
 	}
 
+	static listenProfile(resolve) {
+		this.socket.emit('listen_profile');
+		this.socket.on('listen_profile', data => {
+			resolve(data);
+		});
+	}
+
 	static createMatch(theme, time) {
 		return Util.request('POST', URL.BACKEND + '/chess/create_match', {
 			theme: theme,

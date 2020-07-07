@@ -4,6 +4,7 @@ import ModalVibe from './ModalVibe';
 import TextVibe from './TextVibe';
 import WebVibe from './WebVibe';
 import ButtonVibe from './ButtonVibe';
+import KeyboardVibe from './KeyboardVibe';
 
 
 export {
@@ -13,4 +14,5 @@ export {
 	TextVibe,
 	WebVibe,
 	ButtonVibe,
+	KeyboardVibe,
 };

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { StatusBar, SafeAreaView, StyleSheet, View, ScrollView } from 'react-native';
+import { StatusBar, SafeAreaView, StyleSheet, View, ScrollView, KeyboardAvoidingView } from 'react-native';
 import { StackActions } from 'react-navigation';
 import Animated from 'react-native-reanimated'
 
@@ -73,7 +73,7 @@ export default function GameScreen(props) {
 			}
 
 			game.match = match;
-			Store.dispatch(initGame(game));
+			Store.dispatch(initGame( game ));
 
 			Store.dispatch(updateTheme( Util.unpackTheme(match.theme) ));
 
@@ -93,6 +93,7 @@ export default function GameScreen(props) {
 				// updateReviewButtons();
 				// showEnding();
 				game.ends();
+				Store.dispatch(initGame( game ));
 				return false;
 			}
 
@@ -125,7 +126,7 @@ export default function GameScreen(props) {
 	const renderShadow = () => {
 		const animatedShadowOpacity = fall.interpolate({
 			inputRange: [0, 1],
-			outputRange: [0.5, 0],
+			outputRange: [0.4, 0],
 		});
 
 		return (
@@ -143,22 +144,28 @@ export default function GameScreen(props) {
 	// Render
 	return (
 		<SafeAreaView style={{ flex: 1 }}>
-			<StatusBar hidden={ true }/>
 
-			<BackImage>
-				<ScrollView contentContainerStyle={ styles.outerCanvas }>
-					<BaseBorder style={ styles.gradient }/>
-					<BaseBoard/>
-					<ChessBoard style={ styles.board }/>
-					{ renderShadow() }
-					<ClickBoard style={ styles.board } onPress={ handleChessEvent }/>
-				</ScrollView>
-				<UtilityArea
-					style={ styles.utilityArea }
-					callbackNode={ fall }
-					game={ game }/>
-			</BackImage>
+			<KeyboardAvoidingView
+				behavior={Platform.OS == "ios" ? "padding" : "height"}
+				keyboardVerticalOffset={ vw(15) }
+				style={styles.container}>
+				<StatusBar hidden={ true }/>
 
+				<BackImage>
+					<ScrollView contentContainerStyle={ styles.outerCanvas }>
+						<BaseBorder style={ styles.gradient }/>
+						<BaseBoard/>
+						<ChessBoard style={ styles.board }/>
+						{ renderShadow() }
+						<ClickBoard style={ styles.board } onPress={ handleChessEvent }/>
+					</ScrollView>
+					<UtilityArea
+						style={ styles.utilityArea }
+						callbackNode={ fall }
+						game={ game }/>
+				</BackImage>
+
+			</KeyboardAvoidingView>
 		</SafeAreaView>
 	);
 }
@@ -192,7 +199,7 @@ const styles = StyleSheet.create({
 	},
 	utilityArea: {
 		height: panel_height,
-		marginHorizontal: vw(),
+		// marginHorizontal: vw(),
 	},
 	shadowContainer: {
 		backgroundColor: '#000',

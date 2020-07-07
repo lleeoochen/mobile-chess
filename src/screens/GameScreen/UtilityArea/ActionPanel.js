@@ -183,7 +183,7 @@ const styles = StyleSheet.create({
 			},
 
 	text: {
-		fontSize: vw(7),
+		fontSize: vw(5),
 		textAlign: 'center',
 		color: 'white',
 		backgroundColor: 'darkslategrey',
