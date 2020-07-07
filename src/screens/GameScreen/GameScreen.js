@@ -145,7 +145,7 @@ export default function GameScreen(props) {
 	var isIOS = Platform.OS === 'ios';
 	var topSpace = isIOS ? getStatusBarHeight() : 0;
 	var bottomSpace = isIOS ? getBottomSpace() : 0;
-	var offset = 0;
+	var offset = vw(15);
 
 	if (isIOS) {
 		if (isIphoneX()) {
