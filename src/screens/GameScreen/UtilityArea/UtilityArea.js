@@ -112,6 +112,7 @@ const styles = StyleSheet.create({
 		bottom: 0,
 		width: '100%',
 		paddingTop: 20,
+		marginBottom: vw(-1),
 		backgroundColor: 'transparent',
 	},
 
@@ -136,6 +137,7 @@ const styles = StyleSheet.create({
 		width: '100%',
 		height: '100%',
 		backgroundColor: utilityBackground,
+		paddingTop: vw(1),
 	},
 
 		sectionTitle: {

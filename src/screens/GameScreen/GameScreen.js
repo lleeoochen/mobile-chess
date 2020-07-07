@@ -221,6 +221,7 @@ const styles = StyleSheet.create({
 	utilityArea: {
 		height: panel_height,
 		// marginHorizontal: vw(),
+		backgroundColor: 'black',
 	},
 	shadowContainer: {
 		backgroundColor: '#000',

@@ -5,15 +5,14 @@ export default function TextVibe(props) {
 	let { style, children, ...attributes } = props;
 	if (!Array.isArray(style)) style = [style];
 
+	const textStyle = {
+		fontFamily: 'Spectral',
+		lineHeight: props.style.fontSize ? props.style.fontSize * 1.5 : null,
+	};
+
 	return (
-		<Text style={ {...styles.text, ...Object.assign({}, ...style)} } {...attributes}>
+		<Text style={ {...textStyle, ...Object.assign({}, ...style)} } {...attributes}>
 			{ children }
 		</Text>
 	);
 }
-
-const styles = StyleSheet.create({
-	text: {
-		fontFamily: 'Spectral'
-	}
-});
