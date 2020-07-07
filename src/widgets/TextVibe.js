@@ -7,7 +7,7 @@ export default function TextVibe(props) {
 
 	const textStyle = {
 		fontFamily: 'Spectral',
-		lineHeight: props.style.fontSize ? props.style.fontSize * 1.5 : null,
+		lineHeight: Platform.OS === 'android' && props.style.fontSize ? props.style.fontSize * 1.5 : null,
 	};
 
 	return (

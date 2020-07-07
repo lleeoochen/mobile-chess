@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
 			fontSize: vw(5),
 			textAlign: 'center',
 			color: 'white',
-			paddingBottom: vw(),
+			paddingBottom: Platform.OS === 'android' ? vw() : 0,
 		},
 
 		ml2: {
