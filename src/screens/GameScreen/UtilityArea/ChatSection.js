@@ -26,7 +26,7 @@ export default function ChatSection(props) {
 	let colorBlack = { backgroundColor: 'black' };
 
 	return (
-		<View style={ [props.style, colorDark] }>
+		<View style={ [props.style] }>
 			<View style={ styles.chatDivider }/>
 			<ScrollView
 				ref={ contentRef }
@@ -74,7 +74,6 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		alignItems: 'center',
 		height: panel_height + vw(),
-		backgroundColor: 'blue',
 		borderBottomLeftRadius: borderRadius,
 		borderBottomRightRadius: borderRadius,
 	},
@@ -93,9 +92,8 @@ const styles = StyleSheet.create({
 		},
 
 		chatSend: {
-			paddingHorizontal: margin_size * 3,
+			width: vw(15),
 			height: panel_height - vw(),
-			borderTopLeftRadius: 0,
-			borderBottomLeftRadius: 0,
+			borderRadius: 0,
 		},
 });

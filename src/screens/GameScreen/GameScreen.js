@@ -2,6 +2,7 @@ import * as React from 'react';
 import { StatusBar, SafeAreaView, StyleSheet, View, ScrollView, KeyboardAvoidingView } from 'react-native';
 import { StackActions } from 'react-navigation';
 import Animated from 'react-native-reanimated'
+import { isIphoneX, getStatusBarHeight, getBottomSpace } from 'react-native-iphone-x-helper';
 
 import { initGame, updateTheme, updatePlayer, reset } from 'chessvibe/src/redux/Reducer';
 import { ActionBar } from 'chessvibe/src/widgets';
@@ -141,15 +142,31 @@ export default function GameScreen(props) {
 		)
 	};
 
+	var isIOS = Platform.OS === 'ios';
+	var topSpace = isIOS ? getStatusBarHeight() : 0;
+	var bottomSpace = isIOS ? getBottomSpace() : 0;
+	var offset = 0;
+
+	if (isIOS) {
+		if (isIphoneX()) {
+			offset = vw(10);
+		}
+		else {
+			offset = vw(9.7);
+		}
+	}
+
+	const headerHeight = topSpace + offset + bottomSpace;
+
 	// Render
 	return (
-		<SafeAreaView style={{ flex: 1 }}>
+		<KeyboardAvoidingView
+			behavior={Platform.OS == "ios" ? "padding" : "height"}
+			keyboardVerticalOffset={ headerHeight }
+			style={styles.container}>
 
-			<KeyboardAvoidingView
-				behavior={Platform.OS == "ios" ? "padding" : "height"}
-				keyboardVerticalOffset={ vw(15) }
-				style={styles.container}>
-				<StatusBar hidden={ true }/>
+			<StatusBar hidden={ true }/>
+			<SafeAreaView style={{ flex: 1 }}>
 
 				<BackImage>
 					<ScrollView contentContainerStyle={ styles.outerCanvas }>
@@ -165,8 +182,8 @@ export default function GameScreen(props) {
 						game={ game }/>
 				</BackImage>
 
-			</KeyboardAvoidingView>
-		</SafeAreaView>
+			</SafeAreaView>
+		</KeyboardAvoidingView>
 	);
 }
 
@@ -179,6 +196,10 @@ const panel_height = 50 - vw(4);
 const borderRadius = vw();
 
 const styles = StyleSheet.create({
+	container: {
+		flex: 1,
+	},
+
 	outerCanvas: {
 		flex: 1,
 		height: canvas_size,

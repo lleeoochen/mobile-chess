@@ -163,6 +163,6 @@ const styles = StyleSheet.create({
 		marginTop: 0,
 		marginBottom: margin_size,
 		borderRadius: borderRadius,
-		backgroundColor: '#3D507B',
+		backgroundColor: '#C1C1C1',
 	},
 });

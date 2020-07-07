@@ -770,7 +770,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = net.chessvibe;
+				PRODUCT_BUNDLE_IDENTIFIER = net.chessvibe.debug;
 				PRODUCT_NAME = ChessVibe;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -794,7 +794,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = net.chessvibe;
+				PRODUCT_BUNDLE_IDENTIFIER = net.chessvibe.debug;
 				PRODUCT_NAME = ChessVibe;
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
