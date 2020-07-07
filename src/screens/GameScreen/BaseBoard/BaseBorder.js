@@ -4,7 +4,7 @@ import { useSelector, shallowEqual } from 'react-redux';
 import LinearGradient from 'react-native-linear-gradient';
 import Store from 'chessvibe/src/redux/Store';
 import * as Reducer from 'chessvibe/src/redux/Reducer';
-import { vw, vh } from 'chessvibe/src/Util';
+import { vw, vh, strict_equal } from 'chessvibe/src/Util';
 import * as Const from 'chessvibe/src/Const';
 
 
@@ -12,9 +12,7 @@ export default function BaseBorder(props) {
 	const team = useSelector(state => state.game.team);
 	const enemy = useSelector(state => state.game.enemy);
 	const downward = useSelector(state => state.game.downward);
-	const stats = useSelector(state => state.game.stats, (a, b) => {
-		JSON.stringify(a) === JSON.stringify(b);
-	});
+	const stats = useSelector(state => state.game.stats, strict_equal);
 
 
 	// Render

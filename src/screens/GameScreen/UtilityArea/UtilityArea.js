@@ -1,12 +1,15 @@
 import * as React from 'react';
 import { TouchableOpacity, View, StyleSheet } from 'react-native';
 import { useSelector, useDispatch, shallowEqual } from 'react-redux';
-import { vw, vh } from 'chessvibe/src/Util';
+import { vw, vh, strict_equal } from 'chessvibe/src/Util';
 import { BOARD_SIZE, IMAGE } from 'chessvibe/src/Const';
 import { TextVibe } from 'chessvibe/src/widgets';
 import AutoHeightImage from 'react-native-auto-height-image';
-import BottomSheet from 'reanimated-bottom-sheet'
-// import { TouchableOpacity } from 'react-native-gesture-handler';
+import BottomSheet from 'reanimated-bottom-sheet';
+
+import ActionPanel from './ActionPanel';
+import ReviewPanel from './ReviewPanel';
+import InvitePanel from './InvitePanel';
 
 const margin_size = vw();
 const cell_size = (vw(100) - 4 * margin_size) / 8;
@@ -18,70 +21,48 @@ const panel_height = header_height - handle_height;
 
 export default function UtilityArea(props) {
 	const theme = useSelector(state => state.theme);
+	const game = useSelector(state => state.game, strict_equal);
 
-	let colorStyle = {
-		backgroundColor: theme.COLOR_BOARD_DARK,
-		color: theme.COLOR_BOARD_LIGHT,
-	};
-
-	const actionPanel = (
-		<View style={ [styles.panel, styles.headerPanel] }>
-			<TouchableOpacity style={ [styles.btn, colorStyle] } onPress={ null }>
-				<TextVibe style={ styles.btnText }>Resign</TextVibe>
-			</TouchableOpacity>
-			<TouchableOpacity style={ [styles.btn, colorStyle] } onPress={ null }>
-				<TextVibe style={ styles.btnText }>Draw</TextVibe>
-			</TouchableOpacity>
-			<TouchableOpacity style={ [styles.btn, colorStyle] } onPress={ null }>
-				<TextVibe style={ styles.btnText }>Mercy</TextVibe>
-			</TouchableOpacity>
-			<TouchableOpacity style={ [styles.btn, colorStyle] } onPress={ null }>
-				<TextVibe style={ styles.btnText }>+15 sec</TextVibe>
-			</TouchableOpacity>
-		</View>
-	);
-
-	const reviewPanel = (
-		<View style={ [styles.panel, styles.headerPanel] }>
-			<TouchableOpacity style={ [styles.btn, colorStyle] } onPress={ null }>
-				<AutoHeightImage width={ vw(5) } source={ IMAGE.FASTBACKWARD }/>
-			</TouchableOpacity>
-			<TouchableOpacity style={ [styles.btn, colorStyle] } onPress={ null }>
-				<AutoHeightImage width={ vw(5) } source={ IMAGE.BACKWARD }/>
-			</TouchableOpacity>
-			<TouchableOpacity style={ [styles.btn, colorStyle] } onPress={ null }>
-				<AutoHeightImage width={ vw(5) } source={ IMAGE.PLAY }/>
-			</TouchableOpacity>
-			<TouchableOpacity style={ [styles.btn, colorStyle] } onPress={ null }>
-				<AutoHeightImage width={ vw(5) } source={ IMAGE.FORWARD }/>
-			</TouchableOpacity>
-			<TouchableOpacity style={ [styles.btn, colorStyle] } onPress={ null }>
-				<AutoHeightImage width={ vw(5) } source={ IMAGE.FASTFORWARD }/>
-			</TouchableOpacity>
-		</View>
-	);
-
-	const invitePanel = (
-		<View style={ styles.panel }>
-			<TouchableOpacity style={ [styles.btn, colorStyle] } onPress={ null }>
-				<AutoHeightImage width={ vw(5) } source={ IMAGE.INVITE }/>
-			</TouchableOpacity>
-		</View>
-	);
+	const actionPanel = <ActionPanel game={ props.game } style={ [styles.panel, styles.headerPanel] }/>;
+	const reviewPanel = <ReviewPanel game={ props.game } style={ [styles.panel, styles.headerPanel] }/>;
+	const invitePanel = <InvitePanel game={ props.game } style={ [styles.panel, styles.headerPanel] }/>;
 
 	const renderHeader = () => {
+		if (!game || !game.match) return <View/>;
+		let panel;
+
+		if (game.ended) {
+			panel = reviewPanel;
+		}
+		else if (!game.match.white) {
+			panel = invitePanel;
+		}
+		else {
+			panel = actionPanel
+		}
+
 		return (
 			<View style={ [styles.header] }>
 				<View style={ [styles.handle] }></View>
-				{ reviewPanel }
+				{ panel }
 			</View>
 		);
 	};
 
 	const renderContent = () => {
+		if (!game || !game.match) return <View/>;
+		let panel;
+
+		if (!game.match.white) {
+			panel = <View/>;
+		}
+		else {
+			panel = invitePanel;
+		}
+
 		return (
 			<View style={ [styles.content] }>
-				{ invitePanel }
+				{ panel }
 			</View>
 		);
 	};
@@ -128,9 +109,8 @@ const styles = StyleSheet.create({
 
 			handle: {
 				backgroundColor: 'black',
-				width: vw(20),
-				height: vw(1),
-				marginTop: vw(),
+				width: vw(18),
+				height: vw(),
 				borderRadius: vw(),
 				marginVertical: vw(),
 			},
@@ -157,20 +137,5 @@ const styles = StyleSheet.create({
 			paddingRight: margin_size * 0.5,
 			marginBottom: 0,
 			paddingBottom: vw(),
-		},
-
-	btn: {
-		flex: 1,
-		alignItems: 'center',
-		justifyContent: 'center',
-		marginRight: vw(0.5),
-		borderRadius: borderRadius,
-		backgroundColor: 'white',
-	},
-
-		btnText: {
-			fontSize: vw(5),
-			textAlign: 'center',
-			color: 'white',
 		},
 });

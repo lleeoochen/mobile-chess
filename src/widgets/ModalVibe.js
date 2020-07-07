@@ -41,10 +41,11 @@ const styles = StyleSheet.create({
 		backgroundColor: 'darkslategrey',
 		borderStyle: 'solid',
 		borderColor: 'grey',
-		borderWidth: vw(2),
+		borderWidth: vw(),
+		borderRadius: vw(),
 		width: '90%',
 		left: '5%',
 		right: '5%',
-		zIndex: 100
+		zIndex: 100,
 	},
 });

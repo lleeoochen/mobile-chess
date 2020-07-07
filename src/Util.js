@@ -188,3 +188,7 @@ export function piece(grid) {
 		return store.getState().game.pieces[grid.piece];
 	return null;
 }
+
+export function strict_equal(a, b) {
+	return JSON.stringify(a) === JSON.stringify(b);
+};

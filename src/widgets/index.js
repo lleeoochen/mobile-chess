@@ -3,6 +3,7 @@ import FadeInView from './FadeInView';
 import ModalVibe from './ModalVibe';
 import TextVibe from './TextVibe';
 import WebVibe from './WebVibe';
+import ButtonVibe from './ButtonVibe';
 
 
 export {
@@ -11,4 +12,5 @@ export {
 	ModalVibe,
 	TextVibe,
 	WebVibe,
+	ButtonVibe,
 };

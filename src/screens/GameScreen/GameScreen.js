@@ -27,7 +27,7 @@ GameScreen.navigationOptions = ({ navigation }) => {
 
 // Game Screen
 export default function GameScreen(props) {
-	let gameRef = React.useRef(null);
+	let [game, setGame] = React.useState(null);
 	let match_id = props.navigation.getParam('match');
 	let fall = new Animated.Value(1);
 
@@ -35,7 +35,6 @@ export default function GameScreen(props) {
 	React.useEffect(() => {
 		Store.dispatch(updateTheme( Util.unpackTheme(Cache.theme[match_id]) ));
 
-		let game = gameRef.current;
 		let first_load = true;
 		Backend.init();
 
@@ -64,14 +63,17 @@ export default function GameScreen(props) {
 		// Initialize game
 		Backend.listenMatch(Cache.userID, match_id, async (match, team) => {
 			if (!game) {
-				gameRef.current = new Game(team);
-				game = gameRef.current;
+				game = new Game(team, match_id, match);
+				setGame(game);
 				Store.dispatch(updatePlayer({
 					blackPlayer: Cache.users[match.black],
 					whitePlayer: Cache.users[match.white],
 				}));
 				Store.dispatch(initGame(game));
 			}
+
+			game.match = match;
+			Store.dispatch(initGame(game));
 
 			Store.dispatch(updateTheme( Util.unpackTheme(match.theme) ));
 
@@ -104,7 +106,7 @@ export default function GameScreen(props) {
 			await game.updateMatchMoves(match);
 
 			// updateMatchUndo();
-			
+
 			// updateMatchDraw();
 
 			// if (match.black && match.white && game.timer_enable) {
@@ -115,8 +117,8 @@ export default function GameScreen(props) {
 	}, []);
 
 	function handleChessEvent(x, y) {
-		if (gameRef.current) {
-			gameRef.current.handleChessEvent(x, y);
+		if (game) {
+			game.handleChessEvent(x, y);
 		}
 	}
 
@@ -148,10 +150,13 @@ export default function GameScreen(props) {
 					<BaseBorder style={ styles.gradient }/>
 					<BaseBoard/>
 					<ChessBoard style={ styles.board }/>
+					{ renderShadow() }
 					<ClickBoard style={ styles.board } onPress={ handleChessEvent }/>
-				{ renderShadow() }
 				</ScrollView>
-				<UtilityArea style={ styles.utilityArea } callbackNode={ fall }/>
+				<UtilityArea
+					style={ styles.utilityArea }
+					callbackNode={ fall }
+					game={ game }/>
 			</BackImage>
 
 		</SafeAreaView>
@@ -163,7 +168,7 @@ export default function GameScreen(props) {
 const margin_size = vw(1);
 const cell_size = (vw(100) - 4 * margin_size) / 8;
 const canvas_size = margin_size * 2 + cell_size * 8;
-const panel_height = 50;
+const panel_height = 50 - vw(4);
 const borderRadius = vw();
 
 const styles = StyleSheet.create({

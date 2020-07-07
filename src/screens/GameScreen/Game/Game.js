@@ -9,11 +9,7 @@ import Cache        from 'chessvibe/src/Cache';
 
 export default class Game {
 
-	constructor(team) {
-		this.init(team);
-	}
-
-	init(team) {
+	constructor(team, match_id, match) {
 		// White's side of chessboard
 		this.chessboard = [[],[],[],[],[],[],[],[]];
 		this.baseboard = [[],[],[],[],[],[],[],[]];
@@ -41,6 +37,8 @@ export default class Game {
 		this.white_timer = Const.MAX_TIME;
 		this.interval = null;
 
+		this.match_id = match_id;
+		this.match = match;
 		this.ended = false;
 
 		this.stats = {
@@ -652,5 +650,62 @@ export default class Game {
 
 	ends() {
 		this.ended = true;
+	}
+
+
+
+
+
+
+
+	onInviteClick() {
+		let e = document.createElement('textarea');
+		e.value = window.location.href;
+		document.body.appendChild(e);
+		e.select();
+		document.execCommand('copy');
+		document.body.removeChild(e);
+
+		$('#invite-modal').modal('show');
+
+		// Magic that allows mobile device to select link on 1 click
+		selectText('invite-link');
+	}
+
+	onResignClick() {
+		swal({
+			text: "Resign match?",
+			animation: false,
+			buttons: [
+			  'Cancel',
+			  'Resign'
+			],
+		}).then((toResign) => {
+			if (toResign) {
+				database.resign(my_team == TEAM.W ? TEAM.B : TEAM.W);
+			}
+		});
+	}
+
+	onDrawClick() {
+		database.askDraw();
+	}
+
+	onUndoClick() {
+		database.askUndo();
+	}
+
+	onAddTimeClick() {
+		if (my_team == TEAM.W) {
+			black_timer += 16;
+			database.updateTimer(match.black_timer + 15, match.white_timer);
+		}
+		else {
+			white_timer += 16;
+			database.updateTimer(match.black_timer, match.white_timer + 15);
+		}
+
+		showTimer();
+		enableHtml('#add-time-btn .utility-btn', false);
 	}
 }
