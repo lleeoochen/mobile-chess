@@ -1,8 +1,11 @@
 import * as React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { vw, vh } from 'chessvibe/src/Util';
-import { TextVibe, ButtonVibe, ModalVibe } from 'chessvibe/src/widgets';
 import { THEME } from 'chessvibe/src/Const';
+
+import TextVibe from './TextVibe';
+import ButtonVibe from './ButtonVibe';
+import ModalVibe from './ModalVibe';
 
 export default function DialogVibe(props) {
 	let {

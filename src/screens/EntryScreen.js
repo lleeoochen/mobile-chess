@@ -18,6 +18,7 @@ EntryScreen.navigationOptions = ({navigation}) => {
 
 // Entry Screen
 export default function EntryScreen(props) {
+	const [initializing, setInitializing] = React.useState(true);
 	const [signingin, setSigningin] = React.useState(false);
 	const [user, setUser] = React.useState();
 
@@ -32,15 +33,22 @@ export default function EntryScreen(props) {
 	// Mount
 	React.useEffect(() => {
 		// Handle user state changes
-		auth().onAuthStateChanged(async (user) => {
-			setUser(user);
-
-			if (user) {
-				navigateHome();
-			}
-		});
+		const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+		return subscriber;
 	}, []);
 
+
+	function onAuthStateChanged(user) {
+		setUser(user);
+
+		if (initializing) {
+			setInitializing(false);
+		}
+
+		if (user) {
+			navigateHome(user);
+		}
+	}
 
 	// Signin
 	async function signIn() {
@@ -50,7 +58,7 @@ export default function EntryScreen(props) {
 			let { idToken } = await GoogleSignin.signIn();
 			let gCredential = auth.GoogleAuthProvider.credential(idToken);
 
-			await auth().signInWithCredential(gCredential);
+			let res = await auth().signInWithCredential(gCredential);
 		}
 		catch (error) {
 			console.log(error);
@@ -72,7 +80,7 @@ export default function EntryScreen(props) {
 	}
 
 	// Navigate to home
-	async function navigateHome() {
+	async function navigateHome(user) {
 		let auth_token = await auth().currentUser.getIdToken(true);
 
 		// Login with firebase token
@@ -91,8 +99,11 @@ export default function EntryScreen(props) {
 
 	// Render
 	if (props.navigation.getParam('signout')) {
+		props.navigation.setParams({ 'signout': null });
 		signOut();
 	}
+
+	if (initializing) return null;
 
 	if (!user) {
 		return (

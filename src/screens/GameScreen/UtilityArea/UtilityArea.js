@@ -50,6 +50,7 @@ export default function UtilityArea(props) {
 
 		return (
 			<View style={ [styles.content] }>
+				<TextVibe style={ styles.sectionTitle }>Send Invite</TextVibe>
 				<InvitePanel gameRef={ props.gameRef } minimizeDrawer={ minimizeDrawer } style={ [styles.panel] }/>
 				<TextVibe style={ styles.sectionTitle }>Chat Room</TextVibe>
 				<ChatSection style={ styles.chatSection }/>

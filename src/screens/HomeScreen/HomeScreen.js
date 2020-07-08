@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, SafeAreaView, ScrollView, StyleSheet, StatusBar, TouchableOpacity, Image, Button } from 'react-native';
+import { Animated, View, SafeAreaView, ScrollView, StyleSheet, StatusBar, TouchableOpacity, Image, Button } from 'react-native';
 import { ActionBar, WebVibe, TextVibe, ModalVibe } from 'chessvibe/src/widgets';
 import AutoHeightImage from 'react-native-auto-height-image';
 
@@ -27,6 +27,7 @@ export default function HomeScreen(props) {
 	const [userMenuVisible, showUserMenu] = React.useState(false);
 	const [createMenuVisible, showCreateMenu] = React.useState(false);
 	const user = React.useRef({});
+	const fadein = new Animated.Value(0);
 
 	// Mount
 	React.useEffect(() => {
@@ -41,6 +42,16 @@ export default function HomeScreen(props) {
 
 		fetchMatches();
 	}, []);
+
+
+	React.useEffect(() => {
+		Animated.timing(fadein, {
+			toValue: 1,
+			duration: 1000,
+			useNativeDriver: true,
+		})
+		.start();
+	}, [allMatches]);
 
 	// Render function
 	function render() {
@@ -217,26 +228,26 @@ export default function HomeScreen(props) {
 
 			if (enemy.name) {
 				$containers.push(
-					<View key={ i } style={ styles.playerBox }>
+					<Animated.View key={ i } style={ [styles.playerBox, { opacity: fadein }] }>
 						<TextVibe style={ styles.playerName }>{ enemy.name }</TextVibe>
 						<ScrollView
 							horizontal={ true }>
 							{ $active_matches }
 							{ $inactive_matches }
 						</ScrollView>
-					</View>
+					</Animated.View>
 				);
 			}
 			else {
 				$containers.unshift(
-					<View key={ i } style={ styles.playerBox }>
+					<Animated.View key={ i } style={ [styles.playerBox, { opacity: fadein }] }>
 						<TextVibe style={ styles.playerName }>New Matches</TextVibe>
 						<ScrollView
 							horizontal={ true }>
 							{ $active_matches }
 							{ $inactive_matches }
 						</ScrollView>
-					</View>
+					</Animated.View>
 				);
 			}
 		}
