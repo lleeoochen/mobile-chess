@@ -29,7 +29,9 @@ export const initGame = createAction(ACTION_INIT_GAME);
 function reduceInitGame(state, action) {
 	let oldGame = state.game;
 	let changes = action.data;
-	return { ...state, game: { ...oldGame, ...changes } };
+
+	let game = JSON.parse(JSON.stringify({ ...state.game, ...changes }));
+	return { ...state, game: game };
 }
 
 export const updateTheme = createAction(ACTION_THEME);
@@ -47,7 +49,7 @@ function reducePlayer(state, action) {
 
 // Reducer
 export default function Reducer(state = initState, action) {
-	// console.log('Action Reducer', !action.data || action.data.baseboard);
+	// 	console.log('Action Reducer', action.data.stats, state.game.stats);
 	switch (action.type) {
 		case ACTION_INIT_GAME:    return reduceInitGame(state, action);
 		case ACTION_THEME:        return reduceTheme(state, action);

@@ -13,41 +13,103 @@ const borderRadius = vw();
 export default function ActionPanel(props) {
 	const theme = useSelector(state => state.theme);
 	const { gameRef, minimizeDrawer=() => {} } = props;
+	const [updated, update] = React.useState(false);
+	const [playing, setPlaying] = React.useState(false);
+
+
+	async function onFastBackwardClick() {
+		await gameRef.pausePlayback();
+
+		gameRef.stopPlayBack = false;
+		await gameRef.reviewMove(0);
+		gameRef.stopPlayBack = true;
+		update(true);
+	}
+
+	async function onBackwardClick() {
+		await gameRef.pausePlayback();
+
+		gameRef.stopPlayBack = false;
+		await gameRef.reviewMove(gameRef.moves_applied - 1);
+		gameRef.stopPlayBack = true;
+		update(true);
+	}
+
+	async function onForwardClick() {
+		await gameRef.pausePlayback();
+
+		gameRef.stopPlayBack = false;
+		await gameRef.reviewMove(gameRef.moves_applied + 1);
+		gameRef.stopPlayBack = true;
+		update(true);
+	}
+
+	async function onFastForwardClick() {
+		await gameRef.pausePlayback();
+
+		gameRef.stopPlayBack = false;
+		await gameRef.reviewMove(gameRef.match.moves.length - 1);
+		gameRef.stopPlayBack = true;
+		update(true);
+	}
+
+	async function onPlaybackClick() {
+		if (gameRef.playingBack.get()) {
+			setPlaying(false);
+			await gameRef.pausePlayback();
+			return;
+		}
+
+		setPlaying(true);
+
+		gameRef.stopPlayBack = false;
+		await gameRef.reviewMove(gameRef.match.moves.length - 1, 700);
+		gameRef.stopPlayBack = true;
+		update(true);
+
+		setPlaying(false);
+	}
+
 
 	let buttons = [
 		{
 			image: IMAGE.FASTBACKWARD,
-			disabled: gameRef == null,
+			disabled: gameRef == null || gameRef.moves_applied <= 0,
 			onPress: () => {
 				minimizeDrawer();
+				onFastBackwardClick();
 			},
 		},
 		{
 			image: IMAGE.BACKWARD,
-			disabled: gameRef == null,
+			disabled: gameRef == null || gameRef.moves_applied <= 0,
 			onPress: () => {
 				minimizeDrawer();
+				onBackwardClick();
 			},
 		},
 		{
-			image: IMAGE.PLAY,
-			disabled: gameRef == null,
+			image: playing ? IMAGE.PAUSE : IMAGE.PLAY,
+			disabled: gameRef == null || gameRef.moves_applied >= gameRef.match.moves.length - 1,
 			onPress: () => {
 				minimizeDrawer();
+				onPlaybackClick();
 			},
 		},
 		{
 			image: IMAGE.FORWARD,
-			disabled: gameRef == null,
+			disabled: gameRef == null || gameRef.moves_applied >= gameRef.match.moves.length - 1,
 			onPress: () => {
 				minimizeDrawer();
+				onForwardClick();
 			},
 		},
 		{
 			image: IMAGE.FASTFORWARD,
-			disabled: gameRef == null,
+			disabled: gameRef == null || gameRef.moves_applied >= gameRef.match.moves.length - 1,
 			onPress: () => {
 				minimizeDrawer();
+				onFastForwardClick();
 			},
 		},
 	];

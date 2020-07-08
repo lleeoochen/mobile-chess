@@ -18,6 +18,7 @@ export default function ActionPanel(props) {
 	const [drawModalVisible, showDrawModal] = React.useState(false);
 	const [mercyModalVisible, showMercyModal] = React.useState(false);
 
+
 	let buttons = [
 		{
 			text: 'Resign',

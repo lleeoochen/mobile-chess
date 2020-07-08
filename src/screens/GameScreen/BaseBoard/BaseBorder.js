@@ -9,11 +9,14 @@ import * as Const from 'chessvibe/src/Const';
 
 
 export default function BaseBorder(props) {
-	const team = useSelector(state => state.game.team);
-	const enemy = useSelector(state => state.game.enemy);
-	const downward = useSelector(state => state.game.downward);
-	const stats = useSelector(state => state.game.stats, strict_equal);
-
+	const { stats, team, enemy, downward } = useSelector(state => {
+		return {
+			stats: state.game.stats,
+			team: state.game.team,
+			enemy: state.game.enemy,
+			downward: state.game.downward,
+		};
+	}, strict_equal);
 
 	// Render
 	let ratio = 0.5;
@@ -35,7 +38,3 @@ export default function BaseBorder(props) {
 		</LinearGradient>
 	);
 }
-
-
-const styles = StyleSheet.create({
-});

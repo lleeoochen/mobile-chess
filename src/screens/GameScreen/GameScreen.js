@@ -55,7 +55,6 @@ export default function GameScreen(props) {
 				else if (theme == THEME.NATURE) theme = THEME.CLASSIC;
 
 				Backend.changeTheme( theme );
-
 				Cache.theme[match_id] = Util.packTheme(theme);
 				Store.dispatch(updateTheme( theme ));
 			},

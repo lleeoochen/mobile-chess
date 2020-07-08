@@ -41,6 +41,30 @@ export default class Game {
 		this.match = match;
 		this.ended = false;
 
+		// Review variables
+		this.stopPlayBack = false;
+		this.playTimeout = null;
+
+		function PlayingBack() {
+		    var value;
+
+		    this.set = function(v) {
+		        value = v;
+
+		        if (value == false)
+			        Promise.resolve();
+		    }
+
+		    this.get = function() {
+		        return value;
+		    }
+
+		    var promise = new Promise(this.set);
+		}
+		this.playingBack = new PlayingBack();
+		this.playingBack.set(false);
+
+
 		this.stats = {
 			B: Const.STATS_MAX,
 			W: Const.STATS_MAX
@@ -487,12 +511,12 @@ export default class Game {
 		// Clear old grid piece
 		oldGrid.piece = -1;
 
-		this.colorLatestMove(oldGrid, newGrid);
 
 		this.switchTurn();
 
 		this.moves_applied ++;
-		// this.updateGame();
+
+		this.colorLatestMove(oldGrid, newGrid);
 
 		return true;
 	}
@@ -587,9 +611,8 @@ export default class Game {
 				this.stackEatenPiece(oldGrid, newGrid, newGrid, eatenPiece, false, Const.FLAG_PAWN_TO_QUEEN);
 
 				this.initEachPiece(this.id++, newGrid.x, newGrid.y, this.get_piece(newGrid).team, Const.CHESS.Queen);
+				this.stats[this.get_piece(newGrid).team] += Const.VALUE[Const.CHESS.Queen] - Const.VALUE[Const.CHESS.Pawn];
 			}
-
-			this.stats[this.get_piece(newGrid).team] += Const.VALUE[Const.CHESS.Queen] - Const.VALUE[Const.CHESS.Pawn];
 		}
 	}
 
@@ -641,6 +664,7 @@ export default class Game {
 
 		this.baseboard[oldGrid.x][oldGrid.y] = Const.COLOR_LAST_MOVE;
 		this.baseboard[newGrid.x][newGrid.y] = Const.COLOR_LAST_MOVE;
+
 		this.updateGame();
 	}
 
@@ -653,59 +677,189 @@ export default class Game {
 	}
 
 
+	// Unmove chess piece from newGrid to oldGrid
+	unmoveChess() {
+		if (this.moves_stack.length == 0) return;
 
+		this.passant_stack.pop();
+		this.passant_pawn = this.passant_stack[this.passant_stack.length - 1];
 
+		let prev_move = this.unstackEatenPiece();
+		// {
+		// 	old_x: oldGrid.x,
+		// 	old_y: oldGrid.y,
+		// 	new_x: newGrid.x,
+		// 	new_y: newGrid.y,
+		// 	eaten_x: eatenGrid.x,
+		// 	eaten_y: eatenGrid.y,
+		// 	eaten_piece: eatenPiece,
+		// 	flag: flag
+		// }
 
+		let newGrid = this.chessboard[prev_move.new_x][prev_move.new_y];
+		let oldGrid = this.chessboard[prev_move.old_x][prev_move.old_y];
+		let eatenGrid = this.chessboard[prev_move.eaten_x][prev_move.eaten_y];
+		let eaten_piece = prev_move.eaten_piece;
+		let flag = prev_move.flag;
+		// console.log("==================");
+		// console.log("newGrid: " + JSON.stringify(newGrid));
+		// console.log("oldGrid: " + JSON.stringify(oldGrid));
+		// console.log("eaten_grid: " + JSON.stringify(eatenGrid));
+		// console.log("eaten_piece: " + eaten_piece);
 
+		// this.revertMoveHistory();
 
-	onInviteClick() {
-		let e = document.createElement('textarea');
-		e.value = window.location.href;
-		document.body.appendChild(e);
-		e.select();
-		document.execCommand('copy');
-		document.body.removeChild(e);
+		//===================== Special Moves ========================
 
-		$('#invite-modal').modal('show');
+		//Castle Move
+		if (flag == Const.FLAG_KING_CASTLE) {
+			this.unmoveCastleKing(newGrid, oldGrid);
+		}
 
-		// Magic that allows mobile device to select link on 1 click
-		selectText('invite-link');
+		//====================== Redraw Pieces =======================
+
+		//Copy newGrid piece for oldGrid.
+		oldGrid.piece = newGrid.piece;
+
+		//====================== Update Miscs =======================
+
+		//Pawn to Queen Move
+		if (flag == Const.FLAG_PAWN_TO_QUEEN) {
+			this.unmovePawnToQueen(newGrid, oldGrid, eaten_piece);
+		}
+
+		//Update king position
+		this.king_grid[this.get_piece(newGrid).team] = newGrid == this.king_grid[this.get_piece(newGrid).team] ? oldGrid : this.king_grid[this.get_piece(newGrid).team];
+
+		//Clear new grid piece
+		newGrid.piece = -1;
+
+		//Restore piece if being eaten
+		this.unmoveEatPiece(eatenGrid, eaten_piece);
+
+		//Update move counter and switch turn
+		this.moves_applied -= 1;
+
+		//Switch turn
+		this.switchTurn();
+
+		//Show resulting stats
+		// this.updateStats();
+
+		//Color old and new grids
+		this.colorLatestMove(newGrid, oldGrid);
 	}
 
-	onResignClick() {
-		swal({
-			text: "Resign match?",
-			animation: false,
-			buttons: [
-			  'Cancel',
-			  'Resign'
-			],
-		}).then((toResign) => {
-			if (toResign) {
-				database.resign(my_team == TEAM.W ? TEAM.B : TEAM.W);
+	unmoveEatPiece(eatenGrid, eaten_piece) {
+		if (eaten_piece != -1) {
+			this.stats[this.pieces[eaten_piece].team] += Const.VALUE[this.pieces[eaten_piece].type];
+
+			var new_img = this.pieces[eaten_piece].image;
+			var newGridTeam = this.pieces[eaten_piece].team;
+
+			// piecesLayer.appendChild(new_img);
+			// new_img.setAttribute("class", "piece x" + eatenGrid.x + " y" + eatenGrid.y);
+			eatenGrid.piece = eaten_piece;
+
+			// if (newGridTeam == Const.TEAM.B) {
+			// 	$('#blacksEaten').children().last().remove();
+			// }
+			// else {
+			// 	$('#whitesEaten').children().last().remove();
+			// }
+
+			let other_team = this.pieces[eaten_piece].team == Const.TEAM.W ? Const.TEAM.B : Const.TEAM.W;
+			const index = this.eaten[other_team].indexOf(this.pieces[eaten_piece].image);
+			if (index > -1) {
+				this.eaten[other_team].splice(index, 1);
 			}
-		});
-	}
-
-	onDrawClick() {
-		database.askDraw();
-	}
-
-	onUndoClick() {
-		database.askUndo();
-	}
-
-	onAddTimeClick() {
-		if (my_team == TEAM.W) {
-			black_timer += 16;
-			database.updateTimer(match.black_timer + 15, match.white_timer);
 		}
-		else {
-			white_timer += 16;
-			database.updateTimer(match.black_timer, match.white_timer + 15);
+	}
+
+	unmoveCastleKing(newGrid, oldGrid) {
+		// Perform right castle
+		if (oldGrid.x - newGrid.x == -2) {
+			this.chessboard[Const.BOARD_SIZE - 1][newGrid.y].piece = this.chessboard[newGrid.x - 1][newGrid.y].piece;
+			// this.chessboard[Const.BOARD_SIZE - 1][newGrid.y].get_piece().image.setAttribute("class", "piece x" + (Const.BOARD_SIZE - 1) + " y" + newGrid.y);
+			this.chessboard[newGrid.x - 1][newGrid.y].piece = -1;
 		}
 
-		showTimer();
-		enableHtml('#add-time-btn .utility-btn', false);
+		// Perform left castle
+		if (oldGrid.x - newGrid.x == 2) {
+			this.chessboard[0][newGrid.y].piece = this.chessboard[newGrid.x + 1][newGrid.y].piece;
+			// this.chessboard[0][newGrid.y].get_piece().image.setAttribute("class", "piece x" + (0) + " y" + newGrid.y);
+			this.chessboard[newGrid.x + 1][newGrid.y].piece = -1;
+		}
+
+
+		if (this.get_piece(newGrid).team == Const.TEAM.W && this.get_piece(newGrid).type == Const.CHESS.King) {
+			this.white_king_moved = false;
+		}
+
+		if (this.get_piece(newGrid).team == Const.TEAM.B && this.get_piece(newGrid).type == Const.CHESS.King) {
+			this.black_king_moved = false;
+		}
+	}
+
+	unmovePawnToQueen(newGrid, oldGrid, eaten_piece) {
+		oldGrid.piece = newGrid.piece;
+		piecesLayer.removeChild(this.get_piece(newGrid).image);
+		initEachPiece(this.id++, oldGrid.x, oldGrid.y, this.get_piece(oldGrid).team, Const.CHESS.Pawn);
+
+		this.stats[this.get_piece(oldGrid).team] += Const.VALUE[Const.CHESS.Pawn] - Const.VALUE[Const.CHESS.Queen];
+	}
+
+	unstackEatenPiece() {
+		return this.moves_stack.pop();
+	}
+
+
+
+	async reviewMove(moves_target, timeout=0) {
+		this.playingBack.set(true);
+		let breakloop = false;
+
+		while (this.moves_applied > 0 && this.moves_applied > moves_target && !this.stopPlayBack) {
+
+			await new Promise((resolve, reject) => {
+				this.playTimeout = setTimeout(() => {
+					if (!this.stopPlayBack) {
+						this.unmoveChess();
+					}
+
+					resolve();
+				}, timeout);
+			});
+			// updateReviewButtons();
+		}
+
+		while (this.moves_applied < this.match.moves.length - 1 && this.moves_applied < moves_target && !this.stopPlayBack) {
+			let flipped = this.turn == this.team ? this.downward : !this.downward;
+			let move = Util.unpack(this.match.moves[this.moves_applied], flipped);
+
+			await new Promise((resolve, reject) => {
+				this.playTimeout = setTimeout(() => {
+					if (!this.stopPlayBack) {
+						breakloop = !this.moveChess(this.chessboard[move.old_x][move.old_y], this.chessboard[move.new_x][move.new_y]);
+					}
+
+					resolve();
+				}, timeout);
+			});
+
+			if (breakloop) break;
+		}
+
+		clearTimeout(this.playTimeout);
+		this.playingBack.set(false);
+		// this.updateGame();
+	}
+
+	async pausePlayback() {
+		this.stopPlayBack = true;
+		if (this.playingBack.get()) {
+			// $('#playback-btn img').attr('src', 'assets/play.png');
+			await this.playingBack.promise;
+		}
 	}
 }
