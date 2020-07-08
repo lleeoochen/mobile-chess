@@ -12,6 +12,7 @@ const borderRadius = vw();
 
 export default function ActionPanel(props) {
 	const theme = useSelector(state => state.theme);
+	const game = useSelector(state => state.game); // for updating purpose
 	const { gameRef, minimizeDrawer=() => {} } = props;
 	const [updated, update] = React.useState(false);
 	const [playing, setPlaying] = React.useState(false);

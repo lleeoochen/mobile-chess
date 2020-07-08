@@ -12,7 +12,7 @@ const initState = {
 		chessboard: [[], [], [], [], [], [], [], []],
 		baseboard: [[], [], [], [], [], [], [], []],
 	},
-	theme: THEME.CLASSIC,
+	theme: THEME.METAL,
 	blackPlayer: null,
 	whitePlayer: null,
 };

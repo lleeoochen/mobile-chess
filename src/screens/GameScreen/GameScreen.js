@@ -126,7 +126,7 @@ export default function GameScreen(props) {
 	const renderShadow = () => {
 		const animatedShadowOpacity = fall.interpolate({
 			inputRange: [0, 1],
-			outputRange: [0.4, 0],
+			outputRange: [0.6, 0],
 		});
 
 		return (
@@ -191,8 +191,12 @@ export default function GameScreen(props) {
 const margin_size = vw(1);
 const cell_size = (vw(100) - 4 * margin_size) / 8;
 const canvas_size = margin_size * 2 + cell_size * 8;
-const panel_height = 50 - vw(4);
 const borderRadius = vw();
+
+
+const handle_height = 20 + vw(3);
+const panel_height = vw(12);
+const header_height = panel_height + handle_height;
 
 const styles = StyleSheet.create({
 	container: {
@@ -223,7 +227,7 @@ const styles = StyleSheet.create({
 		backgroundColor: 'black',
 	},
 	shadowContainer: {
-		backgroundColor: '#000',
+		backgroundColor: 'black',
 		position: 'absolute',
 		flex: 1,
 		width: vw(100),

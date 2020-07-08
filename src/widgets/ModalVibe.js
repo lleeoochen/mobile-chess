@@ -2,8 +2,15 @@ import * as React from 'react';
 import { StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
 import Modal from 'react-native-modal';
 import { vw, wh } from '../Util';
+import Store from 'chessvibe/src/redux/Store';
 
 export default function ModalVibe(props) {
+	let { theme } = Store.getState();
+
+	let menuStyle = {...styles.menu, ...{
+		borderColor: theme.COLOR_BOARD_DARK,
+	}};
+
 	return (
 		<Modal
 			isVisible={ props.isVisible || false }
@@ -20,7 +27,7 @@ export default function ModalVibe(props) {
 			<TouchableWithoutFeedback onPress={ props.onDismiss }>
 				<View style={ styles.menuOutside }></View>
 			</TouchableWithoutFeedback>
-			<View style={ styles.menu }>
+			<View style={ menuStyle }>
 				{ props.children }
 			</View>
 		</Modal>
@@ -44,7 +51,7 @@ const styles = StyleSheet.create({
 		padding: '3%',
 		backgroundColor: 'darkslategrey',
 		borderStyle: 'solid',
-		borderColor: 'grey',
+		borderColor: 'green',
 		borderWidth: vw(),
 		borderRadius: vw(),
 		width: '90%',

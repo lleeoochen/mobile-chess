@@ -2,10 +2,11 @@ import * as React from 'react';
 import { View, ScrollView, StyleSheet, TextInput } from 'react-native';
 import Clipboard from '@react-native-community/clipboard';
 import { useSelector } from 'react-redux';
-import { vw, vh } from 'chessvibe/src/Util';
+import Util, { vw, vh, strict_equal } from 'chessvibe/src/Util';
 import { IMAGE, URL } from 'chessvibe/src/Const';
 import { TextVibe, ButtonVibe, ModalVibe, KeyboardVibe } from 'chessvibe/src/widgets';
 import AutoHeightImage from 'react-native-auto-height-image';
+import Backend from 'chessvibe/src/GameBackend';
 
 const margin_size = vw();
 const cell_size = (vw(100) - 4 * margin_size) / 8;
@@ -17,13 +18,32 @@ const panel_height = header_height - handle_height;
 
 export default function ChatSection(props) {
 	const theme = useSelector(state => state.theme);
-	const [ value, onChangeText ] = React.useState('');
+	const chat = useSelector(state => state.game.match ? state.game.match.chat : [], strict_equal);
 	const contentRef = React.useRef();
+	const [ messageCache, setMessageCache ] = React.useState(null);
 	const { gameRef } = props;
 
 	let colorLight = { backgroundColor: theme.COLOR_BOARD_LIGHT };
 	let colorDark = { backgroundColor: theme.COLOR_BOARD_DARK };
 	let colorBlack = { backgroundColor: 'black' };
+
+	let chatBubbles = chat.map((chatItem, index) => {
+		let messageObj = Util.unpackMessage(chatItem);
+		return (
+			<ChatBubble key={ index } right={ messageObj.team == gameRef.team }>{ messageObj.message }</ChatBubble>
+		);
+	});
+
+	if (messageCache) {
+		if (messageCache != Util.unpackMessage(chat[chat.length - 1]).message) {
+			chatBubbles.push(
+				<ChatBubble right={ true }>{ messageCache }</ChatBubble>
+			);
+		}
+		else {
+			setMessageCache(null);
+		}
+	}
 
 	return (
 		<View style={ [props.style] }>
@@ -32,24 +52,61 @@ export default function ChatSection(props) {
 				ref={ contentRef }
 				contentContainerStyle={ styles.chatContent }
 				onContentSizeChange={() => contentRef.current.scrollToEnd({animated: true})}>
+
+				{ chatBubbles }
+
 			</ScrollView>
 			<View style={ styles.chatDivider }/>
 			<View style={ [styles.chatBottom, colorBlack] }>
-				<TextInput
-					style={ styles.chatInput }
-					onChangeText={ text => onChangeText(text) }
-					keyboardAppearance={ 'dark' }
-					placeholder={ 'Type here...' }
-					placeholderTextColor={ 'grey' }
-					returnKeyType={ 'send' }
-					value={ value }/>
-				<ButtonVibe style={ [styles.chatSend] }>
-					<AutoHeightImage width={ vw(7) } source={IMAGE.SEND}/>
-				</ButtonVibe>
+				<ChatInput onSubmitText={(value)=> {
+					setMessageCache(value);
+					Backend.message(value);
+				}}/>
 			</View>
 		</View>
 	);
 }
+
+function ChatBubble(props) {
+	const theme = useSelector(state => state.theme);
+	let { right=false } = props;
+	let viewStyle = [styles.chatBubble];
+	let textStyle = [styles.chatMessage];
+	let colorDark = { backgroundColor: theme.COLOR_BOARD_DARK };
+
+	if (right) {
+		viewStyle.push(styles.rightBubble, colorDark);
+		textStyle.push(styles.rightMessage);
+	}
+
+	return (
+		<View style={ viewStyle }>
+			<TextVibe style={ textStyle }>{ props.children }</TextVibe>
+		</View>
+	);
+}
+
+function ChatInput(props) {
+	const [ value, onChangeText ] = React.useState('');
+
+	return (
+		<TextInput
+			style={ [styles.chatInput] }
+			onChangeText={ text => onChangeText(text) }
+			onSubmitEditing={ () => {
+				onChangeText('');
+				props.onSubmitText(value);
+			}}
+			keyboardAppearance={ 'dark' }
+			placeholder={ 'Type here...' }
+			placeholderTextColor={ 'white' }
+			returnKeyType={ 'send' }
+			scrollEnabled={ true }
+			blurOnSubmit={false}
+			value={ value }/>
+	);
+}
+
 
 const styles = StyleSheet.create({
 	container: {
@@ -60,44 +117,63 @@ const styles = StyleSheet.create({
 		paddingHorizontal: vw(2),
 	},
 
-		chatMessage: {
-			color: 'black',
-			fontSize: vw(5),
+		chatBubble: {
+			backgroundColor: 'darkslategrey',
+			marginVertical: vw(),
+			padding: vw(2),
+			maxWidth: '90%',
+			borderRadius: vw(),
+			alignSelf: 'flex-start',
 		},
+
+			rightBubble: {
+				alignSelf: 'flex-end',
+			},
+
+			chatMessage: {
+				color: 'lightgrey',
+				fontSize: vw(5),
+			},
+
+			rightMessage: {
+				textAlign: 'right',
+			},
 
 		chatDivider: {
 			height: vw(2),
 			width: '100%',
-		// backgroundColor: 'purple',
 		},
 
 	chatBottom: {
 		flexDirection: 'row',
 		alignItems: 'center',
-		height: panel_height + vw(),
+		height: panel_height,
 		borderBottomLeftRadius: borderRadius,
 		borderBottomRightRadius: borderRadius,
 		backgroundColor: 'blue',
-		width: '100%',
+		marginBottom: vw(),
+		marginHorizontal: vw(),
 	},
 
 		chatInput: {
 			flex: 1,
 			fontSize: vw(5),
 			fontFamily: 'Spectral',
-			color: 'black',
-			backgroundColor: 'white',
+			color: 'white',
+			backgroundColor: 'black',
 			borderColor: 'gray',
-			// marginTop: vw(),
 			padding: vw(2),
+			paddingTop: 0, lineHeight: vw(9), // Hack to get input overflow working...
 			borderBottomLeftRadius: borderRadius,
-			// borderBottomRightRadius: borderRadius,
-		},
+			borderBottomRightRadius: borderRadius,
 
-		chatSend: {
-			width: vw(15),
-			height: panel_height - vw(),
-			borderRadius: 0,
-			// marginTop: vw(),
+			shadowColor: "#ffffff",
+			shadowOffset: {
+				width: 0,
+				height: 0,
+			},
+			shadowOpacity: 0.5,
+			shadowRadius: 3,
+			elevation: 1,
 		},
 });
