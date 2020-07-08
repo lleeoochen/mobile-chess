@@ -12,33 +12,43 @@ const borderRadius = vw();
 
 export default function ActionPanel(props) {
 	const theme = useSelector(state => state.theme);
-	const { game } = props;
+	const { gameRef, minimizeDrawer=() => {} } = props;
 
 	let buttons = [
 		{
 			image: IMAGE.FASTBACKWARD,
-			disabled: game == null,
-			onPress: () => {},
+			disabled: gameRef == null,
+			onPress: () => {
+				minimizeDrawer();
+			},
 		},
 		{
 			image: IMAGE.BACKWARD,
-			disabled: game == null,
-			onPress: () => {},
+			disabled: gameRef == null,
+			onPress: () => {
+				minimizeDrawer();
+			},
 		},
 		{
 			image: IMAGE.PLAY,
-			disabled: game == null,
-			onPress: () => {},
+			disabled: gameRef == null,
+			onPress: () => {
+				minimizeDrawer();
+			},
 		},
 		{
 			image: IMAGE.FORWARD,
-			disabled: game == null,
-			onPress: () => {},
+			disabled: gameRef == null,
+			onPress: () => {
+				minimizeDrawer();
+			},
 		},
 		{
 			image: IMAGE.FASTFORWARD,
-			disabled: game == null,
-			onPress: () => {},
+			disabled: gameRef == null,
+			onPress: () => {
+				minimizeDrawer();
+			},
 		},
 	];
 

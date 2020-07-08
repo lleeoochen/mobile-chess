@@ -179,7 +179,7 @@ export default function GameScreen(props) {
 					<UtilityArea
 						style={ styles.utilityArea }
 						callbackNode={ fall }
-						game={ game }/>
+						gameRef={ game }/>
 				</BackImage>
 
 			</SafeAreaView>

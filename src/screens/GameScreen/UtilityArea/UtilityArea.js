@@ -23,51 +23,35 @@ const panel_height = header_height - handle_height;
 export default function UtilityArea(props) {
 	const theme = useSelector(state => state.theme);
 	const game = useSelector(state => state.game, strict_equal);
+	const drawerRef = React.useRef(null);
 
-	const actionPanel = <ActionPanel game={ props.game } style={ [styles.panel, styles.headerPanel] }/>;
-	const reviewPanel = <ReviewPanel game={ props.game } style={ [styles.panel, styles.headerPanel] }/>;
-	const invitePanel = <InvitePanel game={ props.game } style={ [styles.panel, styles.headerPanel] }/>;
-	const keyboardVerticalOffset = Platform.OS === 'ios' ? 56 : 0;
+	const minimizeDrawer = () => {
+		if (drawerRef) drawerRef.current.snapTo(2);
+	};
 
 	const renderHeader = () => {
 		if (!game || !game.match) return <View/>;
-		let panel;
 
-		if (game.ended) {
-			panel = <ReviewPanel game={ props.game } style={ [styles.panel, styles.headerPanel] }/>;
-		}
-		else if (!game.match.white) {
-			panel = <InvitePanel game={ props.game } style={ [styles.panel, styles.headerPanel] }/>;
-		}
-		else {
-			panel = <ActionPanel game={ props.game } style={ [styles.panel, styles.headerPanel] }/>;
-		}
+		let Panel = ActionPanel;
+		if (game.ended)        Panel = ReviewPanel;
+		if (!game.match.white) Panel = InvitePanel;
 
 		return (
 			<View style={ [styles.header] }>
 				<View style={ [styles.handle] }></View>
-				{ panel }
+				<Panel gameRef={ props.gameRef } minimizeDrawer={ minimizeDrawer } style={ [styles.panel, styles.headerPanel] }/>
 			</View>
 		);
 	};
 
 	const renderContent = () => {
-		if (!game || !game.match) return <View/>;
-		let panel;
-
-		if (!game.match.white) {
-			panel = <View/>;
-		}
-		else {
-			panel = <InvitePanel game={ props.game } style={ [styles.panel] }/>;
-		}
+		if (!game || !game.match || !game.match.white)
+			return <View style={ [styles.content] }/>;
 
 		return (
 			<View style={ [styles.content] }>
-				{ panel }
-
+				<InvitePanel gameRef={ props.gameRef } minimizeDrawer={ minimizeDrawer } style={ [styles.panel] }/>
 				<TextVibe style={ styles.sectionTitle }>Chat Room</TextVibe>
-
 				<ChatSection style={ styles.chatSection }/>
 			</View>
 		);
@@ -76,11 +60,13 @@ export default function UtilityArea(props) {
 	return (
 		<View style={ props.style }>
 			<BottomSheet
-				initialSnap={ 1 }
-				snapPoints = { [vh(70), header_height] }
+				ref={ drawerRef }
+				initialSnap={ 2 }
+				snapPoints = { [vh(80), vh(50), header_height] }
 		        callbackNode={ props.callbackNode }
 				renderContent={ renderContent }
 				renderHeader={ renderHeader }
+				enabledBottomClamp={ true }
 				style={ styles.pullupView }
 	        />
         </View>
@@ -165,6 +151,8 @@ const styles = StyleSheet.create({
 		marginTop: 0,
 		marginBottom: margin_size,
 		borderRadius: borderRadius,
-		backgroundColor: '#C1C1C1',
+		backgroundColor: 'black',
+		// borderWidth: margin_size,
+		// borderColor: '#C1C1C1',
 	},
 });

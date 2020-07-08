@@ -19,7 +19,7 @@ export default function ChatSection(props) {
 	const theme = useSelector(state => state.theme);
 	const [ value, onChangeText ] = React.useState('');
 	const contentRef = React.useRef();
-	const { game } = props;
+	const { gameRef } = props;
 
 	let colorLight = { backgroundColor: theme.COLOR_BOARD_LIGHT };
 	let colorDark = { backgroundColor: theme.COLOR_BOARD_DARK };
@@ -42,8 +42,8 @@ export default function ChatSection(props) {
 					placeholder={ 'Type here...' }
 					placeholderTextColor={ 'grey' }
 					returnKeyType={ 'send' }
-					value={value}/>
-				<ButtonVibe style={ [styles.chatSend, colorBlack] }>
+					value={ value }/>
+				<ButtonVibe style={ [styles.chatSend] }>
 					<AutoHeightImage width={ vw(7) } source={IMAGE.SEND}/>
 				</ButtonVibe>
 			</View>
@@ -60,15 +60,16 @@ const styles = StyleSheet.create({
 		paddingHorizontal: vw(2),
 	},
 
-	chatMessage: {
-		color: 'black',
-		fontSize: vw(5),
-	},
+		chatMessage: {
+			color: 'black',
+			fontSize: vw(5),
+		},
 
-	chatDivider: {
-		height: vw(2),
-		width: '100%',
-	},
+		chatDivider: {
+			height: vw(2),
+			width: '100%',
+		// backgroundColor: 'purple',
+		},
 
 	chatBottom: {
 		flexDirection: 'row',
@@ -76,6 +77,8 @@ const styles = StyleSheet.create({
 		height: panel_height + vw(),
 		borderBottomLeftRadius: borderRadius,
 		borderBottomRightRadius: borderRadius,
+		backgroundColor: 'blue',
+		width: '100%',
 	},
 
 		chatInput: {
@@ -85,7 +88,7 @@ const styles = StyleSheet.create({
 			color: 'black',
 			backgroundColor: 'white',
 			borderColor: 'gray',
-			marginTop: vw(),
+			// marginTop: vw(),
 			padding: vw(2),
 			borderBottomLeftRadius: borderRadius,
 			// borderBottomRightRadius: borderRadius,
@@ -95,5 +98,6 @@ const styles = StyleSheet.create({
 			width: vw(15),
 			height: panel_height - vw(),
 			borderRadius: 0,
+			// marginTop: vw(),
 		},
 });

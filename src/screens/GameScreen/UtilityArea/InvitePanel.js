@@ -4,7 +4,7 @@ import Clipboard from '@react-native-community/clipboard';
 import { useSelector } from 'react-redux';
 import { vw, vh } from 'chessvibe/src/Util';
 import { IMAGE, URL } from 'chessvibe/src/Const';
-import { TextVibe, ButtonVibe, ModalVibe } from 'chessvibe/src/widgets';
+import { TextVibe, ButtonVibe, ModalVibe, DialogVibe } from 'chessvibe/src/widgets';
 import AutoHeightImage from 'react-native-auto-height-image';
 
 const margin_size = vw();
@@ -14,7 +14,7 @@ const borderRadius = vw();
 export default function InvitePanel(props) {
 	const theme = useSelector(state => state.theme);
 	const [copiedModalVisible, showCopiedModal] = React.useState(false);
-	const { game } = props;
+	const { gameRef, minimizeDrawer=() => {} } = props;
 
 	let btnStyle = {...styles.btn, ...{
 		backgroundColor: theme.COLOR_BOARD_DARK,
@@ -23,14 +23,12 @@ export default function InvitePanel(props) {
 
 	let button = (
 		<ButtonVibe
-			disabled={ game == null }
+			disabled={ gameRef == null }
 			style={ btnStyle }
 			onPress={ async () => {
-				Clipboard.setString(URL.FRONTEND + '/game?match=' + game.match_id);
+				Clipboard.setString(URL.FRONTEND + '/game?match=' + gameRef.match_id);
 				showCopiedModal(true);
-				// setTimeout(() => {
-				// 	showCopiedModal(false);
-				// }, 2000);
+				minimizeDrawer();
 			} }>
 			<AutoHeightImage width={ vw(5) } source={ IMAGE.INVITE }/>
 			<TextVibe style={ [styles.btnText, styles.ml2] }>Invite</TextVibe>
@@ -40,22 +38,16 @@ export default function InvitePanel(props) {
 	return (
 		<View style={ props.style }>
 			{ button }
-			{ renderCopiedDialog(copiedModalVisible, showCopiedModal) }
-		</View>
-	);
-}
 
-function renderCopiedDialog(visible, setVisible) {
-	return (
-		<ModalVibe
-			isVisible={ visible }
-			onDismiss={ () => setVisible(false) }>
-			<View style={ styles.squareBack }></View>
-			<TextVibe style={ styles.text }>Invite Link Copied!</TextVibe>
-			<ButtonVibe style={ styles.cancelBtn } onPress={ () => setVisible(false) }>
-				<TextVibe style={ [styles.btnText, styles.black] }>Okay</TextVibe>
-			</ButtonVibe>
-		</ModalVibe>
+			<DialogVibe
+				title={ 'Invite Link Copied!' }
+				confirmBtnText={ 'Okay' }
+				showCancelBtn={ false }
+				theme={ theme }
+				visible={ copiedModalVisible }
+				onDismiss={ () => showCopiedModal(false) }
+				onSuccess={ () => showCopiedModal(false) }/>
+		</View>
 	);
 }
 
