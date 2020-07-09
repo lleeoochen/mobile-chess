@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Animated } from 'react-native';
 import { useSelector } from 'react-redux';
 import { vw, vh } from 'chessvibe/src/Util';
 import { TEAM, MAX_TIME, DB_REQUEST_ASK, DIALOG } from 'chessvibe/src/Const';
@@ -116,9 +116,9 @@ export default function ActionPanel(props) {
 
 	// console.log(resignState);
 	return (
-		<View style={ props.style }>
+		<Animated.View style={ props.style }>
 			{ buttons }
-		</View>
+		</Animated.View>
 	);
 }
 

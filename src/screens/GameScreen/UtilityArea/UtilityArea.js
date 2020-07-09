@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { TouchableOpacity, View, StyleSheet, ScrollView, KeyboardAvoidingView } from 'react-native';
+import { TouchableOpacity, View, StyleSheet, ScrollView, KeyboardAvoidingView, Animated } from 'react-native';
 import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import Util, { vw, vh, strict_equal } from 'chessvibe/src/Util';
 import { BOARD_SIZE, IMAGE, TEAM, DB_REQUEST_ASK, DIALOG } from 'chessvibe/src/Const';
@@ -25,10 +25,14 @@ const header_height = panel_height + handle_height;
 export default function UtilityArea(props) {
 	const { gameRef } = props;
 
+	var flash = new Animated.Value(1);
+	const [ flashing, setFlashing ] = React.useState(false);
+
 	const theme = useSelector(state => state.theme);
 	const match = useSelector(state => state.game.match, strict_equal);
 	const drawerRef = React.useRef(null);
 	const triggerEnding = React.useRef(true);
+	const chatApplied = React.useRef(0);
 
 	const blackPlayer = useSelector(state => state.blackPlayer) || {};
 	const whitePlayer = useSelector(state => state.whitePlayer) || {};
@@ -53,8 +57,33 @@ export default function UtilityArea(props) {
 		if (gameRef.ended) Panel = ReviewPanel;
 		if (!match.white)        Panel = InvitePanel;
 
+
+		let backgroundColor = 'black';
+		if (flashing) {
+			Animated.loop(
+				Animated.sequence([
+					Animated.timing(flash, {
+						toValue: 0,
+						duration: 400,
+						useNativeDriver: false,
+					}),
+					Animated.timing(flash, {
+						toValue: 1,
+						delay: 700,
+						duration: 300,
+						useNativeDriver: false,
+					})
+				])
+			).start();
+
+			backgroundColor = flash.interpolate({
+				inputRange: [0, 1],
+				outputRange: ['black', 'grey']
+			});
+		}
+
 		return (
-			<View style={ [styles.header] }>
+			<Animated.View style={ [styles.header] }>
 				<View style={ [styles.handle] }></View>
 				<Panel
 					gameRef={ gameRef }
@@ -64,8 +93,8 @@ export default function UtilityArea(props) {
 					setResignState={ resignHook[1] }
 					setInviteState={ inviteHook[1] }
 					minimizeDrawer={ minimizeDrawer }
-					style={ [styles.panel, styles.headerPanel] }/>
-			</View>
+					style={ [styles.panel, styles.headerPanel, { backgroundColor: backgroundColor }] }/>
+			</Animated.View>
 		);
 	};
 
@@ -102,6 +131,16 @@ export default function UtilityArea(props) {
 		handleEndingRequests(gameRef, endingHook, triggerEnding);
 	}
 
+	if (match && match.chat.length > chatApplied.current) {
+		for (;chatApplied.current < match.chat.length; chatApplied.current++) {
+			if (Util.unpackMessage(match.chat[chatApplied.current]).team != gameRef.team) {
+				chatApplied.current = match.chat.length;
+				setFlashing(true);
+				break;
+			}
+		}
+	}
+
 	return (
 		<View style={ props.style }>
 			<BottomSheet
@@ -112,7 +151,8 @@ export default function UtilityArea(props) {
 				renderContent={ renderContent }
 				renderHeader={ renderHeader }
 				enabledBottomClamp={ true }
-				style={ styles.pullupView }/>
+				style={ styles.pullupView }
+				onOpenStart={ () => setFlashing(false) }/>
 
 			<UtilityDialogs
 				resignHook={ resignHook }
@@ -235,14 +275,14 @@ const styles = StyleSheet.create({
 			paddingVertical: vw(),
 			marginBottom: 0,
 
-			shadowColor: "#fff",
-			shadowOffset: {
-				width: 0,
-				height: -5,
-			},
-			shadowOpacity: 0.4,
-			shadowRadius: 6.68,
-			elevation: 1,
+			// shadowColor: "#fff",
+			// shadowOffset: {
+			// 	width: 0,
+			// 	height: -10,
+			// },
+			// shadowOpacity: 0.4,
+			// shadowRadius: 6.68,
+			// elevation: 1,
 		},
 
 	// Pullup Content

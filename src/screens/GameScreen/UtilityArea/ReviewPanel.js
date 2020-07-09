@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Animated } from 'react-native';
 import { useSelector } from 'react-redux';
 import { vw, vh } from 'chessvibe/src/Util';
 import { IMAGE } from 'chessvibe/src/Const';
@@ -134,9 +134,9 @@ export default function ActionPanel(props) {
 	});
 
 	return (
-		<View style={ props.style }>
+		<Animated.View style={ props.style }>
 			{ buttons }
-		</View>
+		</Animated.View>
 	);
 }
 

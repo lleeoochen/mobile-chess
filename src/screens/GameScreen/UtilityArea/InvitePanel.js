@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Animated } from 'react-native';
 import Clipboard from '@react-native-community/clipboard';
 import { useSelector } from 'react-redux';
 import { vw, vh } from 'chessvibe/src/Util';
@@ -35,9 +35,9 @@ export default function InvitePanel(props) {
 	);
 
 	return (
-		<View style={ props.style }>
+		<Animated.View style={ props.style }>
 			{ button }
-		</View>
+		</Animated.View>
 	);
 }
 
