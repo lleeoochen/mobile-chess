@@ -3,7 +3,7 @@ import { View, StyleSheet } from 'react-native';
 import Clipboard from '@react-native-community/clipboard';
 import { useSelector } from 'react-redux';
 import { vw, vh } from 'chessvibe/src/Util';
-import { IMAGE, URL } from 'chessvibe/src/Const';
+import { IMAGE, URL, DIALOG } from 'chessvibe/src/Const';
 import { TextVibe, ButtonVibe, ModalVibe, DialogVibe } from 'chessvibe/src/widgets';
 import AutoHeightImage from 'react-native-auto-height-image';
 
@@ -13,8 +13,7 @@ const borderRadius = vw();
 
 export default function InvitePanel(props) {
 	const theme = useSelector(state => state.theme);
-	const [copiedModalVisible, showCopiedModal] = React.useState(false);
-	const { gameRef, minimizeDrawer=() => {} } = props;
+	const { gameRef, setInviteState, minimizeDrawer=() => {} } = props;
 
 	let btnStyle = {...styles.btn, ...{
 		backgroundColor: theme.COLOR_BOARD_DARK,
@@ -27,7 +26,7 @@ export default function InvitePanel(props) {
 			style={ btnStyle }
 			onPress={ async () => {
 				Clipboard.setString(URL.FRONTEND + '/game?match=' + gameRef.match_id);
-				showCopiedModal(true);
+				setInviteState(DIALOG.REQUEST_SHOW);
 				minimizeDrawer();
 			} }>
 			<AutoHeightImage width={ vw(5) } source={ IMAGE.INVITE }/>
@@ -38,15 +37,6 @@ export default function InvitePanel(props) {
 	return (
 		<View style={ props.style }>
 			{ button }
-
-			<DialogVibe
-				title={ 'Invite Link Copied!' }
-				confirmBtnText={ 'Okay' }
-				showCancelBtn={ false }
-				theme={ theme }
-				visible={ copiedModalVisible }
-				onDismiss={ () => showCopiedModal(false) }
-				onSuccess={ () => showCopiedModal(false) }/>
 		</View>
 	);
 }

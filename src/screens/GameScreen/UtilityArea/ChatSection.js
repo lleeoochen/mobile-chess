@@ -3,8 +3,8 @@ import { View, ScrollView, StyleSheet, TextInput } from 'react-native';
 import Clipboard from '@react-native-community/clipboard';
 import { useSelector } from 'react-redux';
 import Util, { vw, vh, strict_equal } from 'chessvibe/src/Util';
-import { IMAGE, URL } from 'chessvibe/src/Const';
-import { TextVibe, ButtonVibe, ModalVibe, KeyboardVibe } from 'chessvibe/src/widgets';
+import { IMAGE, URL, DIALOG } from 'chessvibe/src/Const';
+import { TextVibe, ButtonVibe, ModalVibe, KeyboardVibe, DialogVibe } from 'chessvibe/src/widgets';
 import AutoHeightImage from 'react-native-auto-height-image';
 import Backend from 'chessvibe/src/GameBackend';
 
@@ -21,23 +21,33 @@ export default function ChatSection(props) {
 	const chat = useSelector(state => state.game.match ? state.game.match.chat : [], strict_equal);
 	const contentRef = React.useRef();
 	const [ messageCache, setMessageCache ] = React.useState(null);
-	const { gameRef } = props;
+	const { gameRef, setChatState } = props;
 
 	let colorLight = { backgroundColor: theme.COLOR_BOARD_LIGHT };
 	let colorDark = { backgroundColor: theme.COLOR_BOARD_DARK };
 	let colorBlack = { backgroundColor: 'black' };
 
+	// Render chat bubbles
 	let chatBubbles = chat.map((chatItem, index) => {
 		let messageObj = Util.unpackMessage(chatItem);
 		return (
-			<ChatBubble key={ index } right={ messageObj.team == gameRef.team }>{ messageObj.message }</ChatBubble>
+			<ChatBubble
+				key={ index }
+				right={ messageObj.team == gameRef.team }
+				onPress={ async () => {
+					Clipboard.setString(messageObj.message);
+					setChatState(DIALOG.REQUEST_SHOW);
+				}}>
+				{ messageObj.message }
+			</ChatBubble>
 		);
 	});
 
+	// Add message bubble sent from user
 	if (messageCache) {
 		if (messageCache != Util.unpackMessage(chat[chat.length - 1]).message) {
 			chatBubbles.push(
-				<ChatBubble right={ true }>{ messageCache }</ChatBubble>
+				<ChatBubble key={ chat.length } right={ true }>{ messageCache }</ChatBubble>
 			);
 		}
 		else {
@@ -45,6 +55,7 @@ export default function ChatSection(props) {
 		}
 	}
 
+	// Render
 	return (
 		<View style={ [props.style] }>
 			<View style={ styles.chatDivider }/>
@@ -69,7 +80,7 @@ export default function ChatSection(props) {
 
 function ChatBubble(props) {
 	const theme = useSelector(state => state.theme);
-	let { right=false } = props;
+	let { right=false, onPress=() => {} } = props;
 	let viewStyle = [styles.chatBubble];
 	let textStyle = [styles.chatMessage];
 	let colorDark = { backgroundColor: theme.COLOR_BOARD_DARK };
@@ -80,9 +91,9 @@ function ChatBubble(props) {
 	}
 
 	return (
-		<View style={ viewStyle }>
+		<ButtonVibe style={ viewStyle } onPress={ props.onPress }>
 			<TextVibe style={ textStyle }>{ props.children }</TextVibe>
-		</View>
+		</ButtonVibe>
 	);
 }
 

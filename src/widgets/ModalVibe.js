@@ -23,6 +23,7 @@ export default function ModalVibe(props) {
 			activeOpacity={ 0 }
 			hideModalContentWhileAnimating={ true }
 			backdropTransitionOutTiming={ 0 }
+			onModalHide={ props.onModalHide }
 			style={ styles.modal }>
 			<TouchableWithoutFeedback onPress={ props.onDismiss }>
 				<View style={ styles.menuOutside }></View>

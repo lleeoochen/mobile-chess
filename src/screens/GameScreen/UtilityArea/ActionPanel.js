@@ -2,7 +2,7 @@ import * as React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { useSelector } from 'react-redux';
 import { vw, vh } from 'chessvibe/src/Util';
-import { TEAM, MAX_TIME } from 'chessvibe/src/Const';
+import { TEAM, MAX_TIME, DB_REQUEST_ASK, DIALOG } from 'chessvibe/src/Const';
 import { TextVibe, ButtonVibe, ModalVibe, DialogVibe } from 'chessvibe/src/widgets';
 import Backend from 'chessvibe/src/GameBackend';
 
@@ -11,57 +11,91 @@ const cell_size = (vw(100) - 4 * margin_size) / 8;
 const borderRadius = vw();
 
 export default function ActionPanel(props) {
-	const theme = useSelector(state => state.theme);
-	const { gameRef, minimizeDrawer=() => {} } = props;
+	const { theme, game, whitePlayer, blackPlayer, setResignState } = props;
+	// const [ resignState, setResignState ] = React.useState(DIALOG.HIDE);
+	const { minimizeDrawer=() => {} } = props;
 
-	const [resignModalVisible, showResignModal] = React.useState(false);
-	const [drawModalVisible, showDrawModal] = React.useState(false);
-	const [mercyModalVisible, showMercyModal] = React.useState(false);
+	function askDraw() {
+		Backend.askDraw();
+	}
+
+	function askMercy() {
+		Backend.askUndo();
+	}
+
+	function addTime() {
+		let { team, match } = game;
+
+		if (team == TEAM.W) {
+			game.black_timer += 16;
+			Backend.updateTimer(match.black_timer + 15, match.white_timer);
+		}
+		else {
+			game.white_timer += 16;
+			Backend.updateTimer(match.black_timer, match.white_timer + 15);
+		}
+	}
 
 
+	// Undo button enable/disable
+	let undoDisabled = game == null || game.match == null;
+
+	if (!undoDisabled) {
+		let { turn, team, match } = game;
+		undoDisabled = (
+			match.moves.length == 0 ||
+			turn == team ||
+			(team == TEAM.B && match.black_undo == DB_REQUEST_ASK) ||
+			(team == TEAM.W && match.white_undo == DB_REQUEST_ASK)
+		);
+	}
+
+	// Draw button enable/disable
+	let drawDisabled = game == null || game.match == null;
+
+	if (!drawDisabled) {
+		let { team, match } = game;
+		drawDisabled = (
+			(team == TEAM.B && match.black_draw == DB_REQUEST_ASK) ||
+			(team == TEAM.W && match.white_draw == DB_REQUEST_ASK)
+		);
+	}
+
+
+	// Configure action buttons
 	let buttons = [
 		{
 			text: 'Resign',
-			disabled: gameRef == null,
+			disabled: game == null,
 			onPress: () => {
-				showResignModal(true);
+				setResignState(DIALOG.REQUEST_SHOW);
 				minimizeDrawer();
 			},
 		},
 		{
 			text: 'Draw',
-			disabled: gameRef == null,
+			disabled: drawDisabled,
 			onPress: () => {
-				showDrawModal(true);
-				minimizeDrawer();
+				askDraw();
 			},
 		},
 		{
 			text: 'Mercy',
-			disabled: gameRef == null,
+			disabled: undoDisabled,
 			onPress: () => {
-				showMercyModal(true);
-				minimizeDrawer();
+				askMercy();
 			},
 		},
 		{
 			text: '+15 sec',
-			disabled: gameRef == null || gameRef.black_timer >= MAX_TIME || gameRef.white_timer >= MAX_TIME,
+			disabled: game == null || game.black_timer >= MAX_TIME || game.white_timer >= MAX_TIME,
 			onPress: () => {
-				let { my_team, match } = gameRef;
-
-				if (my_team == TEAM.W) {
-					gameRef.black_timer += 16;
-					Backend.updateTimer(match.black_timer + 15, match.white_timer);
-				}
-				else {
-					gameRef.white_timer += 16;
-					Backend.updateTimer(match.black_timer, match.white_timer + 15);
-				}
+				addTime();
 			},
 		},
 	];
 
+	// Render action buttons
 	buttons = buttons.map((button, index) => {
 		let { text, disabled, onPress } = button;
 
@@ -81,36 +115,16 @@ export default function ActionPanel(props) {
 		);
 	});
 
+	// console.log(resignState);
 	return (
 		<View style={ props.style }>
 			{ buttons }
-
-			<DialogVibe
-				title={ 'Are you sure you want to resign match?' }
-				confirmBtnText={ 'Resign Match' }
-				theme={ theme }
-				visible={ resignModalVisible }
-				onDismiss={ () => showResignModal(false) }
-				onSuccess={ () => showResignModal(false) }/>
-
-			<DialogVibe
-				title={ 'is asking for a draw. Confirm?' }
-				confirmBtnText={ 'Draw Match' }
-				theme={ theme }
-				visible={ drawModalVisible }
-				onDismiss={ () => showDrawModal(false) }
-				onSuccess={ () => showDrawModal(false) }/>
-
-			<DialogVibe
-				title={ 'is asking for your mercy.' }
-				confirmBtnText={ 'Undo Move' }
-				theme={ theme }
-				visible={ mercyModalVisible }
-				onDismiss={ () => showMercyModal(false) }
-				onSuccess={ () => showMercyModal(false) }/>
 		</View>
 	);
 }
+
+
+
 
 const styles = StyleSheet.create({
 

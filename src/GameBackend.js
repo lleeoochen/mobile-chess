@@ -92,14 +92,14 @@ export default class GameBackend extends Backend {
 	}
 
 	static cancelUndo() {
-		Util.request('POST', URL.BACKEND + '/chess/match/cancel_undo', {
+		return Util.request('POST', URL.BACKEND + '/chess/match/cancel_undo', {
 			match_id: this.match_id,
 			undo_team: this.my_team == TEAM.B ? TEAM.W : TEAM.B,
 		});
 	}
 
 	static cancelDraw() {
-		Util.request('POST', URL.BACKEND + '/chess/match/cancel_draw', {
+		return Util.request('POST', URL.BACKEND + '/chess/match/cancel_draw', {
 			match_id: this.match_id,
 			draw_team: this.my_team == TEAM.B ? TEAM.W : TEAM.B,
 		});

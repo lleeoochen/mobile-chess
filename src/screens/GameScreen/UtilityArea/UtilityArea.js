@@ -2,15 +2,17 @@ import * as React from 'react';
 import { TouchableOpacity, View, StyleSheet, ScrollView, KeyboardAvoidingView } from 'react-native';
 import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import { vw, vh, strict_equal } from 'chessvibe/src/Util';
-import { BOARD_SIZE, IMAGE } from 'chessvibe/src/Const';
-import { TextVibe } from 'chessvibe/src/widgets';
+import { BOARD_SIZE, IMAGE, TEAM, DB_REQUEST_ASK, DIALOG } from 'chessvibe/src/Const';
+import { TextVibe, DialogVibe } from 'chessvibe/src/widgets';
 import AutoHeightImage from 'react-native-auto-height-image';
 import BottomSheet from 'reanimated-bottom-sheet';
+import Backend from 'chessvibe/src/GameBackend';
 
 import ActionPanel from './ActionPanel';
 import ReviewPanel from './ReviewPanel';
 import InvitePanel from './InvitePanel';
 import ChatSection from './ChatSection';
+import UtilityDialogs from './UtilityDialogs';
 
 const margin_size = vw();
 const cell_size = (vw(100) - 4 * margin_size) / 8;
@@ -25,6 +27,18 @@ export default function UtilityArea(props) {
 	const match = useSelector(state => state.game.match, strict_equal);
 	const drawerRef = React.useRef(null);
 
+	const game = useSelector(state => state.game);
+	const blackPlayer = useSelector(state => state.blackPlayer) || {};
+	const whitePlayer = useSelector(state => state.whitePlayer) || {};
+
+	// React states for popup dialogs
+	const resignHook = React.useState(DIALOG.HIDE);
+	const drawHook = React.useState(DIALOG.HIDE);
+	const undoHook = React.useState(DIALOG.HIDE);
+	const inviteHook = React.useState(DIALOG.HIDE);
+	const chatHook = React.useState(DIALOG.HIDE);
+
+
 	const minimizeDrawer = () => {
 		if (drawerRef) drawerRef.current.snapTo(2);
 	};
@@ -33,13 +47,22 @@ export default function UtilityArea(props) {
 		if (!props.gameRef || !match) return <View/>;
 
 		let Panel = ActionPanel;
-		if (props.gameRef.ended)        Panel = ReviewPanel;
-		if (!match.white) Panel = InvitePanel;
+		if (props.gameRef.ended) Panel = ReviewPanel;
+		if (!match.white)        Panel = InvitePanel;
 
 		return (
 			<View style={ [styles.header] }>
 				<View style={ [styles.handle] }></View>
-				<Panel gameRef={ props.gameRef } minimizeDrawer={ minimizeDrawer } style={ [styles.panel, styles.headerPanel] }/>
+				<Panel
+					gameRef={ props.gameRef }
+					theme={ theme }
+					game={ game }
+					whitePlayer={ whitePlayer }
+					blackPlayer={ blackPlayer }
+					setResignState={ resignHook[1] }
+					setInviteState={ inviteHook[1] }
+					minimizeDrawer={ minimizeDrawer }
+					style={ [styles.panel, styles.headerPanel] }/>
 			</View>
 		);
 	};
@@ -53,11 +76,18 @@ export default function UtilityArea(props) {
 				{/*<View style={ styles.divider }/>*/}
 				
 				{/*<TextVibe style={ styles.sectionTitle }>Send Invite</TextVibe>*/}
-				<InvitePanel gameRef={ props.gameRef } minimizeDrawer={ minimizeDrawer } style={ [styles.panel] }/>
+				<InvitePanel
+					gameRef={ props.gameRef }
+					minimizeDrawer={ minimizeDrawer }
+					setInviteState={ inviteHook[1] }
+					style={ [styles.panel] }/>
 				<View style={ styles.divider }/>
 
 				<TextVibe style={ styles.sectionTitle }>Chat Room</TextVibe>
-				<ChatSection gameRef={ props.gameRef } style={ styles.chatSection }/>
+				<ChatSection
+					gameRef={ props.gameRef }
+					setChatState={ chatHook[1] }
+					style={ styles.chatSection }/>
 			</View>
 		);
 	};
@@ -72,8 +102,14 @@ export default function UtilityArea(props) {
 				renderContent={ renderContent }
 				renderHeader={ renderHeader }
 				enabledBottomClamp={ true }
-				style={ styles.pullupView }
-	        />
+				style={ styles.pullupView }/>
+
+			<UtilityDialogs
+				resignHook={ resignHook }
+				inviteHook={ inviteHook }
+				chatHook={ chatHook }
+				drawHook={ drawHook }
+				undoHook={ undoHook }/>
         </View>
 	);
 }

@@ -12,6 +12,7 @@ export default function DialogVibe(props) {
 		visible=false,
 		onSuccess=() => {},
 		onDismiss=() => {},
+		onModalHide=() => {},
 		theme=THEME.CLASSIC,
 		title='',
 		confirmBtnText='Confirm',
@@ -46,7 +47,8 @@ export default function DialogVibe(props) {
 	return (
 		<ModalVibe
 			isVisible={ visible }
-			onDismiss={ () => onDismiss() }>
+			onDismiss={ () => onDismiss() }
+			onModalHide={ () => onModalHide() }>
 			<View style={ styles.squareBack }></View>
 
 			<TextVibe style={ styles.text }>{ title }</TextVibe>
@@ -63,7 +65,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 		flexDirection: 'row',
 		paddingHorizontal: vw(2),
-		backgroundColor: 'darkslategrey',
+		// backgroundColor: 'darkslategrey',
 	},
 
 			btnText: {
@@ -93,7 +95,7 @@ const styles = StyleSheet.create({
 		fontSize: vw(5),
 		textAlign: 'center',
 		color: 'white',
-		backgroundColor: 'darkslategrey',
+		// backgroundColor: 'darkslategrey',
 		paddingHorizontal: vw(2),
 	},
 
