@@ -168,6 +168,7 @@ const styles = StyleSheet.create({
 		// backgroundColor: '#003333',
 		// borderWidth: margin_size * 0.5,
 		// borderColor: 'lightgrey',
+		backgroundColor: '#191919',
 	},
 
 	divider: {

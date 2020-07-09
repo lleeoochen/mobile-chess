@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
 
 		chatBubble: {
 			backgroundColor: 'darkslategrey',
-			marginVertical: vw(),
+			marginBottom: vw(),
 			padding: vw(2),
 			maxWidth: '90%',
 			borderRadius: vw(),
@@ -152,7 +152,7 @@ const styles = StyleSheet.create({
 		borderBottomRightRadius: borderRadius,
 		backgroundColor: 'blue',
 		marginBottom: vw(),
-		marginHorizontal: vw(),
+		// marginHorizontal: vw(),
 	},
 
 		chatInput: {

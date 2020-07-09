@@ -47,7 +47,7 @@ export default function HomeScreen(props) {
 	React.useEffect(() => {
 		Animated.timing(fadein, {
 			toValue: 1,
-			duration: 1000,
+			duration: 200,
 			useNativeDriver: true,
 		})
 		.start();
