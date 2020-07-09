@@ -1,10 +1,10 @@
 import * as React from 'react';
-import { Animated, View, SafeAreaView, ScrollView, StyleSheet, StatusBar, TouchableOpacity, Image, Button } from 'react-native';
+import { Animated, View, SafeAreaView, ScrollView, StyleSheet, StatusBar, TouchableOpacity, Image, Button, RefreshControl } from 'react-native';
 import { ActionBar, WebVibe, TextVibe, ModalVibe } from 'chessvibe/src/widgets';
 import AutoHeightImage from 'react-native-auto-height-image';
 
 import { URL, TEAM, IMAGE } from 'chessvibe/src/Const';
-import { formatDate, vw, wh, winType } from 'chessvibe/src/Util';
+import Util, { formatDate, vw, wh, winType } from 'chessvibe/src/Util';
 import Cache from 'chessvibe/src/Cache';
 import Backend from 'chessvibe/src/Backend';
 import HomeUserMenu from './HomeUserMenu';
@@ -13,6 +13,11 @@ import HomeCreateMenu from './HomeCreateMenu';
 const matchSize = vw((100 - 2 - 6 - 4) / 4);
 const borderRadius = vw();
 
+const wait = (timeout) => {
+	return new Promise(resolve => {
+		setTimeout(resolve, timeout);
+	});
+}
 
 // Navigation
 HomeScreen.navigationOptions = ({navigation}) => {
@@ -26,6 +31,7 @@ export default function HomeScreen(props) {
 	const [allMatches, setMatches] = React.useState([]);
 	const [userMenuVisible, showUserMenu] = React.useState(false);
 	const [createMenuVisible, showCreateMenu] = React.useState(false);
+	const [refreshing, setRefreshing] = React.useState(false);
 	const user = React.useRef({});
 	const fadein = new Animated.Value(0);
 
@@ -41,6 +47,15 @@ export default function HomeScreen(props) {
 		});
 
 		fetchMatches();
+	}, []);
+
+
+	const onRefresh = React.useCallback(() => {
+		setRefreshing(true);
+
+		fetchMatches();
+
+		wait(1000).then(() => setRefreshing(false));
 	}, []);
 
 
@@ -62,7 +77,11 @@ export default function HomeScreen(props) {
 			<SafeAreaView style={ styles.view }>
 				<StatusBar hidden={ true }/>
 
-				<ScrollView contentContainerStyle={ styles.playerScroll }>
+				<ScrollView
+					contentContainerStyle={ styles.playerScroll }
+					refreshControl={
+						<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+					}>
 					{ $containers }
 				</ScrollView>
 
@@ -147,9 +166,11 @@ export default function HomeScreen(props) {
 					results[i].matches.sort((a, b) => {
 						let a_time = a[1].updated || 0;
 						if (typeof a_time == 'object') a_time = 0;
+						if (Util.gameFinished(a[1])) a_time -= new Date().getTime();
 
 						let b_time = b[1].updated || 0;
 						if (typeof b_time == 'object') b_time = 0;
+						if (Util.gameFinished(b[1])) b_time -= new Date().getTime();
 
 						return b_time - a_time;
 					});
@@ -159,9 +180,11 @@ export default function HomeScreen(props) {
 				results.sort((r1, r2) => {
 					let r1_time = r1.matches[0][1].updated || 0;
 					if (typeof r1_time == 'object') r1_time = 0;
+					if (Util.gameFinished(r1.matches[0][1])) r1_time -= new Date().getTime();
 
 					let r2_time = r2.matches[0][1].updated || 0;
 					if (typeof r2_time == 'object') r2_time = 0;
+					if (Util.gameFinished(r2.matches[0][1])) r2_time -= new Date().getTime();
 
 					return r2_time - r1_time;
 				});

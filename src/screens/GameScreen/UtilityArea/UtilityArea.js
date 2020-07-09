@@ -41,10 +41,6 @@ export default function UtilityArea(props) {
 	const chatHook = React.useState(DIALOG.HIDE);
 	const endingHook = React.useState(DIALOG.HIDE);
 
-	console.log("=========== Utility Area =============");
-	console.log(match);
-	console.log("=========== Utility Area =============");
-
 
 	const minimizeDrawer = () => {
 		if (drawerRef) drawerRef.current.snapTo(2);

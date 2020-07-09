@@ -45,7 +45,7 @@ export default function ChatSection(props) {
 
 	// Add message bubble sent from user
 	if (messageCache) {
-		if (messageCache != Util.unpackMessage(chat[chat.length - 1]).message) {
+		if (chat.length == 0 || messageCache != Util.unpackMessage(chat[chat.length - 1]).message) {
 			chatBubbles.push(
 				<ChatBubble key={ chat.length } right={ true }>{ messageCache }</ChatBubble>
 			);
@@ -70,6 +70,7 @@ export default function ChatSection(props) {
 			<View style={ styles.chatDivider }/>
 			<View style={ [styles.chatBottom, colorBlack] }>
 				<ChatInput onSubmitText={(value)=> {
+					console.log(value);
 					setMessageCache(value);
 					Backend.message(value);
 				}}/>
