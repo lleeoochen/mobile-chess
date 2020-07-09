@@ -12,7 +12,6 @@ const borderRadius = vw();
 
 export default function ActionPanel(props) {
 	const { theme, whitePlayer, blackPlayer, setResignState } = props;
-	// const [ resignState, setResignState ] = React.useState(DIALOG.HIDE);
 	const game = useSelector(state => state.game);
 	const { minimizeDrawer=() => {} } = props;
 
@@ -61,7 +60,6 @@ export default function ActionPanel(props) {
 			(team == TEAM.W && match.white_draw == DB_REQUEST_ASK)
 		);
 	}
-
 
 	// Configure action buttons
 	let buttons = [

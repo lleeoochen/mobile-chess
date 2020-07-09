@@ -104,8 +104,6 @@ export default function GameScreen(props) {
 				first_load = false;
 			}
 
-			await game.updateMatchMoves(match);
-
 			// updateMatchUndo();
 
 			// updateMatchDraw();
@@ -114,6 +112,8 @@ export default function GameScreen(props) {
 			if (match.black && match.white) {
 				game.updateMatchTimer(match);
 			}
+
+			await game.updateMatchMoves(match);
 		});
 	}, []);
 

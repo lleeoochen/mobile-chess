@@ -154,7 +154,6 @@ function showDialogOnIdle(dialogHooks) {
 	if (openDialogSafe) {
 		for (let hook of dialogHooks) {
 			if (hook[0] == DIALOG.REQUEST_SHOW) {
-				console.log('xxx ', hook);
 				hook[1](DIALOG.SHOW);
 				break;
 			}

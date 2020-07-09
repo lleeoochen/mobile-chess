@@ -545,6 +545,7 @@ export default class Game {
 
 		// Kill passant pawn
 		if (kill_passant_pawn && this.passant_pawn) {
+			this.stats[this.get_piece(this.passant_pawn).team] -= Const.VALUE[this.get_piece(this.passant_pawn).type];
 			this.stackEatenPiece(oldGrid, newGrid, this.passant_pawn, this.passant_pawn.piece, true, Const.FLAG_PASSANT_PAWN);
 			this.passant_pawn.piece = -1;
 		}
