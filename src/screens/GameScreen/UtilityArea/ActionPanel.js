@@ -11,8 +11,9 @@ const cell_size = (vw(100) - 4 * margin_size) / 8;
 const borderRadius = vw();
 
 export default function ActionPanel(props) {
-	const { theme, game, whitePlayer, blackPlayer, setResignState } = props;
+	const { theme, whitePlayer, blackPlayer, setResignState } = props;
 	// const [ resignState, setResignState ] = React.useState(DIALOG.HIDE);
+	const game = useSelector(state => state.game);
 	const { minimizeDrawer=() => {} } = props;
 
 	function askDraw() {

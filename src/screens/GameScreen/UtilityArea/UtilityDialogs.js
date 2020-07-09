@@ -1,29 +1,39 @@
 import * as React from 'react';
 import { View } from 'react-native';
 import { useSelector } from 'react-redux';
+import { getWinMessage } from 'chessvibe/src/Util';
 import { TEAM, DB_REQUEST_ASK, DIALOG } from 'chessvibe/src/Const';
 import { DialogVibe } from 'chessvibe/src/widgets';
 import Backend from 'chessvibe/src/GameBackend';
 
 export default function UtilityDialogs(props) {
+	// Props
 	const {
 		resignHook,
 		drawHook,
 		undoHook,
 		inviteHook,
 		chatHook,
+		endingHook,
 	} = props;
 
+	// Hook variables
 	const [ resignState, setResignState ] = resignHook;
 	const [ drawState, setDrawState ] = drawHook;
 	const [ undoState, setUndoState ] = undoHook;
 	const [ inviteState, setInviteState ] = inviteHook;
 	const [ chatState, setChatState ] = chatHook;
+	const [ endingState, setEndingState ] = endingHook;
+	const dialogHooks = Object.values(props);
 
+	// Game variables
 	const theme = useSelector(state => state.theme);
 	const game = useSelector(state => state.game);
 	const blackPlayer = useSelector(state => state.blackPlayer) || {};
 	const whitePlayer = useSelector(state => state.whitePlayer) || {};
+	const enemy = game.enemy == TEAM.W ? whitePlayer : blackPlayer;
+	const winMessage = getWinMessage(game.match);
+
 
 
 	function resign() {
@@ -55,77 +65,9 @@ export default function UtilityDialogs(props) {
 	}
 
 
-	function switchModal() {
-		if (resignState == DIALOG.CLOSING) setResignState(DIALOG.HIDE);
-		if (drawState == DIALOG.CLOSING) setDrawState(DIALOG.HIDE);
-		if (undoState == DIALOG.CLOSING) setUndoState(DIALOG.HIDE);
-		if (inviteState == DIALOG.CLOSING) setInviteState(DIALOG.HIDE);
-		if (chatState == DIALOG.CLOSING) setChatState(DIALOG.HIDE);
 
-		if (resignState == DIALOG.REQUEST_SHOW) setResignState(DIALOG.SHOW);
-		else if (drawState == DIALOG.REQUEST_SHOW) setDrawState(DIALOG.SHOW);
-		else if (undoState == DIALOG.REQUEST_SHOW) setUndoState(DIALOG.SHOW);
-		else if (inviteState == DIALOG.REQUEST_SHOW) setInviteState(DIALOG.SHOW);
-		else if (chatState == DIALOG.REQUEST_SHOW) setChatState(DIALOG.SHOW);
-	}
-
-	// Undo dialog show/hide
-	if (undoState == DIALOG.HIDE) {
-		let undoModalShow = game != null && game.match != null;
-
-		if (undoModalShow) {
-			let { team, match } = game;
-			undoModalShow = (
-				team == TEAM.B && match.white_undo == DB_REQUEST_ASK ||
-				team == TEAM.W && match.black_undo == DB_REQUEST_ASK
-			);
-		}
-
-		if (undoModalShow) {
-			setUndoState(DIALOG.REQUEST_SHOW);
-		}
-	}
-
-	// Draw dialog show/hide
-	if (drawState == DIALOG.HIDE) {
-		let drawModalShow = game != null && game.match != null;
-
-		if (drawModalShow) {
-			let { team, match } = game;
-			drawModalShow = (
-				team == TEAM.B && match.white_draw == DB_REQUEST_ASK ||
-				team == TEAM.W && match.black_draw == DB_REQUEST_ASK
-			);
-		}
-
-		if (drawModalShow) {
-			setDrawState(DIALOG.REQUEST_SHOW);
-		}
-	}
-
-	console.log("===================");
-	console.log(resignState, drawState, undoState, inviteState, chatState);
-
-	if (resignState != DIALOG.SHOW && drawState != DIALOG.SHOW && undoState != DIALOG.SHOW && inviteState != DIALOG.SHOW && chatState != DIALOG.SHOW &&
-		resignState != DIALOG.CLOSING && drawState != DIALOG.CLOSING && undoState != DIALOG.CLOSING && inviteState != DIALOG.CLOSING && chatState != DIALOG.CLOSING) {
-		if (resignState == DIALOG.REQUEST_SHOW) {
-			setResignState(DIALOG.SHOW);
-		}
-		else if (drawState == DIALOG.REQUEST_SHOW) {
-			setDrawState(DIALOG.SHOW);
-		}
-		else if (undoState == DIALOG.REQUEST_SHOW) {
-			setUndoState(DIALOG.SHOW);
-		}
-		else if (inviteState == DIALOG.REQUEST_SHOW) {
-			setInviteState(DIALOG.SHOW);
-		}
-		else if (chatState == DIALOG.REQUEST_SHOW) {
-			setChatState(DIALOG.SHOW);
-		}
-	}
-
-	let enemy = game.enemy == TEAM.W ? whitePlayer : blackPlayer;
+	// Render
+	showDialogOnIdle(dialogHooks);
 
 	return (
 		<View>
@@ -136,7 +78,7 @@ export default function UtilityDialogs(props) {
 				visible={ resignState == DIALOG.SHOW }
 				onDismiss={ () => setResignState(DIALOG.CLOSING) }
 				onSuccess={ () => resign() }
-				onModalHide={ () => switchModal() }/>
+				onModalHide={ () => switchDialog(dialogHooks) }/>
 
 			<DialogVibe
 				title={ (enemy.name || 'Opponent') + ' is asking for a draw. Confirm?' }
@@ -145,7 +87,7 @@ export default function UtilityDialogs(props) {
 				visible={ drawState == DIALOG.SHOW }
 				onDismiss={ () => cancelDraw() }
 				onSuccess={ () => acceptDraw() }
-				onModalHide={ () => switchModal() }/>
+				onModalHide={ () => switchDialog(dialogHooks) }/>
 
 			<DialogVibe
 				title={ (enemy.name || 'Opponent') + ' is asking for your mercy.' }
@@ -154,27 +96,68 @@ export default function UtilityDialogs(props) {
 				visible={ undoState == DIALOG.SHOW }
 				onDismiss={ () => cancelMercy() }
 				onSuccess={ () => acceptMercy() }
-				onModalHide={ () => switchModal() }/>
+				onModalHide={ () => switchDialog(dialogHooks) }/>
 
 			<DialogVibe
 				title={ 'Invite Link Copied!' }
-				confirmBtnText={ 'Okay' }
 				showCancelBtn={ false }
+				showConfirmBtn={ false }
 				theme={ theme }
 				visible={ inviteState == DIALOG.SHOW }
 				onDismiss={ () => setInviteState(DIALOG.CLOSING) }
 				onSuccess={ () => setInviteState(DIALOG.CLOSING) }
-				onModalHide={ () => switchModal() }/>
+				onModalHide={ () => switchDialog(dialogHooks) }/>
 
 			<DialogVibe
 				title={ 'Message Copied!' }
-				confirmBtnText={ 'Okay' }
 				showCancelBtn={ false }
+				showConfirmBtn={ false }
 				theme={ theme }
 				visible={ chatState == DIALOG.SHOW }
 				onDismiss={ () => setChatState(DIALOG.CLOSING) }
 				onSuccess={ () => setChatState(DIALOG.CLOSING) }
-				onModalHide={ () => switchModal() }/>
+				onModalHide={ () => switchDialog(dialogHooks) }/>
+
+			<DialogVibe
+				title={ winMessage }
+				showCancelBtn={ false }
+				showConfirmBtn={ false }
+				theme={ theme }
+				visible={ endingState == DIALOG.SHOW }
+				onDismiss={ () => setEndingState(DIALOG.CLOSING) }
+				onSuccess={ () => setEndingState(DIALOG.CLOSING) }
+				onModalHide={ () => switchDialog(dialogHooks) }/>
 		</View>
 	);
+}
+
+
+// Switch between dialogs
+function switchDialog(dialogHooks) {
+	for (let hook of dialogHooks) {
+		if (hook[0] == DIALOG.CLOSING) {
+			hook[1](DIALOG.HIDE);
+		}
+	}
+
+	for (let hook of dialogHooks) {
+		if (hook[0] == DIALOG.REQUEST_SHOW) {
+			hook[1](DIALOG.SHOW);
+			break;
+		}
+	}
+}
+
+// Open requesting dialog if idle
+function showDialogOnIdle(dialogHooks) {
+	let openDialogSafe = Object.values(dialogHooks).every(hook => hook[0] != DIALOG.SHOW && hook[0] != DIALOG.CLOSING);
+	if (openDialogSafe) {
+		for (let hook of dialogHooks) {
+			if (hook[0] == DIALOG.REQUEST_SHOW) {
+				console.log('xxx ', hook);
+				hook[1](DIALOG.SHOW);
+				break;
+			}
+		}
+	}
 }

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { TouchableOpacity, View, StyleSheet, ScrollView, KeyboardAvoidingView } from 'react-native';
 import { useSelector, useDispatch, shallowEqual } from 'react-redux';
-import { vw, vh, strict_equal } from 'chessvibe/src/Util';
+import Util, { vw, vh, strict_equal } from 'chessvibe/src/Util';
 import { BOARD_SIZE, IMAGE, TEAM, DB_REQUEST_ASK, DIALOG } from 'chessvibe/src/Const';
 import { TextVibe, DialogVibe } from 'chessvibe/src/widgets';
 import AutoHeightImage from 'react-native-auto-height-image';
@@ -23,11 +23,13 @@ const panel_height = vw(12);
 const header_height = panel_height + handle_height;
 
 export default function UtilityArea(props) {
+	const { gameRef } = props;
+
 	const theme = useSelector(state => state.theme);
 	const match = useSelector(state => state.game.match, strict_equal);
 	const drawerRef = React.useRef(null);
+	const triggerEnding = React.useRef(true);
 
-	const game = useSelector(state => state.game);
 	const blackPlayer = useSelector(state => state.blackPlayer) || {};
 	const whitePlayer = useSelector(state => state.whitePlayer) || {};
 
@@ -37,6 +39,11 @@ export default function UtilityArea(props) {
 	const undoHook = React.useState(DIALOG.HIDE);
 	const inviteHook = React.useState(DIALOG.HIDE);
 	const chatHook = React.useState(DIALOG.HIDE);
+	const endingHook = React.useState(DIALOG.HIDE);
+
+	console.log("=========== Utility Area =============");
+	console.log(match);
+	console.log("=========== Utility Area =============");
 
 
 	const minimizeDrawer = () => {
@@ -44,19 +51,18 @@ export default function UtilityArea(props) {
 	};
 
 	const renderHeader = () => {
-		if (!props.gameRef || !match) return <View/>;
+		if (!gameRef || !match) return <View/>;
 
 		let Panel = ActionPanel;
-		if (props.gameRef.ended) Panel = ReviewPanel;
+		if (gameRef.ended) Panel = ReviewPanel;
 		if (!match.white)        Panel = InvitePanel;
 
 		return (
 			<View style={ [styles.header] }>
 				<View style={ [styles.handle] }></View>
 				<Panel
-					gameRef={ props.gameRef }
+					gameRef={ gameRef }
 					theme={ theme }
-					game={ game }
 					whitePlayer={ whitePlayer }
 					blackPlayer={ blackPlayer }
 					setResignState={ resignHook[1] }
@@ -68,7 +74,7 @@ export default function UtilityArea(props) {
 	};
 
 	const renderContent = () => {
-		if (!props.gameRef || !match || !match.white)
+		if (!gameRef || !match || !match.white)
 			return <View style={ [styles.content] }/>;
 
 		return (
@@ -77,7 +83,7 @@ export default function UtilityArea(props) {
 				
 				{/*<TextVibe style={ styles.sectionTitle }>Send Invite</TextVibe>*/}
 				<InvitePanel
-					gameRef={ props.gameRef }
+					gameRef={ gameRef }
 					minimizeDrawer={ minimizeDrawer }
 					setInviteState={ inviteHook[1] }
 					style={ [styles.panel] }/>
@@ -85,12 +91,20 @@ export default function UtilityArea(props) {
 
 				<TextVibe style={ styles.sectionTitle }>Chat Room</TextVibe>
 				<ChatSection
-					gameRef={ props.gameRef }
+					gameRef={ gameRef }
 					setChatState={ chatHook[1] }
 					style={ styles.chatSection }/>
 			</View>
 		);
 	};
+
+
+	handleUndoRequests(gameRef, undoHook);
+	handleDrawRequests(gameRef, drawHook);
+
+	if (triggerEnding.current) {
+		handleEndingRequests(gameRef, endingHook, triggerEnding);
+	}
 
 	return (
 		<View style={ props.style }>
@@ -109,9 +123,74 @@ export default function UtilityArea(props) {
 				inviteHook={ inviteHook }
 				chatHook={ chatHook }
 				drawHook={ drawHook }
+				endingHook={ endingHook }
 				undoHook={ undoHook }/>
         </View>
 	);
+}
+
+// Handle incoming undo requests from opponent
+function handleUndoRequests(game, undoHook) {
+	let [undoState, setUndoState] = undoHook;
+
+	// Undo dialog show/hide
+	if (undoState == DIALOG.HIDE) {
+		let undoModalShow = game != null && game.match != null;
+
+		if (undoModalShow) {
+			let { team, match } = game;
+			undoModalShow = (
+				team == TEAM.B && match.white_undo == DB_REQUEST_ASK ||
+				team == TEAM.W && match.black_undo == DB_REQUEST_ASK
+			);
+		}
+
+		if (undoModalShow) {
+			setUndoState(DIALOG.REQUEST_SHOW);
+		}
+	}
+}
+
+// Handle incoming draw requests from opponent
+function handleDrawRequests(game, drawHook) {
+	let [drawState, setDrawState] = drawHook;
+
+	// Draw dialog show/hide
+	if (drawState == DIALOG.HIDE) {
+		let drawModalShow = game != null && game.match != null;
+
+		if (drawModalShow) {
+			let { team, match } = game;
+			drawModalShow = (
+				team == TEAM.B && match.white_draw == DB_REQUEST_ASK ||
+				team == TEAM.W && match.black_draw == DB_REQUEST_ASK
+			);
+		}
+
+		if (drawModalShow) {
+			setDrawState(DIALOG.REQUEST_SHOW);
+		}
+	}
+}
+
+// Handle game over requests
+function handleEndingRequests(game, endingHook, triggerEnding) {
+	let [endingState, setEndingState] = endingHook;
+
+	// Draw dialog show/hide
+	if (endingState == DIALOG.HIDE) {
+		let endingModalShow = game != null && game.match != null;
+
+		if (endingModalShow) {
+			let { match } = game;
+			endingModalShow = Util.gameFinished(match);
+		}
+
+		if (endingModalShow) {
+			triggerEnding.current = false;
+			setEndingState(DIALOG.REQUEST_SHOW);
+		}
+	}
 }
 
 const utilityBackground = 'black';

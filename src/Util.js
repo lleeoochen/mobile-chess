@@ -183,6 +183,39 @@ export function winType(move, team) {
 	}
 }
 
+export function getWinMessage(match) {
+	if (!match || !match.moves) return '';
+
+	let move = match.moves[match.moves.length - 1];
+
+	if (move == DB_STALEMATE) {
+		return 'Stalemate.';
+	}
+	else if (move == DB_DRAW) {
+		return 'Draw.';
+	}
+	else if (move == DB_CHECKMATE_BLACK) {
+		return 'Checkmate. Black Team Wins!';
+	}
+	else if (move == DB_CHECKMATE_WHITE) {
+		return 'Checkmate. White Team Wins!';
+	}
+	else if (move == DB_TIMESUP_BLACK) {
+		return 'Time\'s Up. Black Team Wins!';
+	}
+	else if (move == DB_TIMESUP_WHITE) {
+		return 'Time\'s Up. White Team Wins!';
+	}
+	else if (move == DB_RESIGN_BLACK) {
+		return 'White Resigned. Black Team Wins!';
+	}
+	else if (move == DB_RESIGN_WHITE) {
+		return 'Black Resigned. White Team Wins!';
+	}
+
+	return 'Game Over.'
+}
+
 export function piece(grid) {
 	if (grid != null && grid.piece != null)
 		return store.getState().game.pieces[grid.piece];
