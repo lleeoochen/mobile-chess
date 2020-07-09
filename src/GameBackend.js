@@ -61,7 +61,7 @@ export default class GameBackend extends Backend {
 	}
 
 	static draw() {
-		Util.request('POST', URL.BACKEND + '/chess/match/draw', {
+		return Util.request('POST', URL.BACKEND + '/chess/match/draw', {
 			match_id: this.match_id,
 			message: Util.packMessage(`[Accepted a draw.]`, this.my_team)
 		});
@@ -84,7 +84,7 @@ export default class GameBackend extends Backend {
 	}
 
 	static undoMove() {
-		Util.request('POST', URL.BACKEND + '/chess/match/undo', {
+		return Util.request('POST', URL.BACKEND + '/chess/match/undo', {
 			match_id: this.match_id,
 			undo_team: this.my_team == TEAM.B ? TEAM.W : TEAM.B,
 			message: Util.packMessage(`[Gave mercy to opponent's move.]`, this.my_team)

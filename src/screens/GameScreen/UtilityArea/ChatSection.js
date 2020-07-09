@@ -70,7 +70,6 @@ export default function ChatSection(props) {
 			<View style={ styles.chatDivider }/>
 			<View style={ [styles.chatBottom, colorBlack] }>
 				<ChatInput onSubmitText={(value)=> {
-					console.log(value);
 					setMessageCache(value);
 					Backend.message(value);
 				}}/>

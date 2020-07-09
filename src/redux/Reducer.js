@@ -21,7 +21,6 @@ const initState = {
 // Actions
 export const reset = createAction(ACTION_RESET);
 function reduceReset(state, action) {
-	console.log("Reducer", initState.theme);
 	return initState;
 }
 

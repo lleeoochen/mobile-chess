@@ -131,7 +131,7 @@ export default function UtilityArea(props) {
 		handleEndingRequests(gameRef, endingHook, triggerEnding);
 	}
 
-	if (match && match.chat.length > chatApplied.current) {
+	if (gameRef && match && match.chat.length > chatApplied.current) {
 		for (;chatApplied.current < match.chat.length; chatApplied.current++) {
 			if (Util.unpackMessage(match.chat[chatApplied.current]).team != gameRef.team) {
 				chatApplied.current = match.chat.length;
@@ -171,7 +171,7 @@ function handleUndoRequests(game, undoHook) {
 
 	// Undo dialog show/hide
 	if (undoState == DIALOG.HIDE) {
-		let undoModalShow = game != null && game.match != null;
+		let undoModalShow = game != null && game.match != null && !Util.gameFinished(game.match);
 
 		if (undoModalShow) {
 			let { team, match } = game;
@@ -193,7 +193,7 @@ function handleDrawRequests(game, drawHook) {
 
 	// Draw dialog show/hide
 	if (drawState == DIALOG.HIDE) {
-		let drawModalShow = game != null && game.match != null;
+		let drawModalShow = game != null && game.match != null && !Util.gameFinished(game.match);
 
 		if (drawModalShow) {
 			let { team, match } = game;

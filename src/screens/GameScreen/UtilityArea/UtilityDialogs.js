@@ -60,8 +60,9 @@ export default function UtilityDialogs(props) {
 	}
 
 	function acceptMercy() {
-		Backend.undo();
-		setUndoState(DIALOG.CLOSING);
+		Backend.undoMove().then(() => {
+			setUndoState(DIALOG.CLOSING);
+		});
 	}
 
 

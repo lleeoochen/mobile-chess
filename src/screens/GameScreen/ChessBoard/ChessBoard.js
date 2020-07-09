@@ -9,18 +9,13 @@ export default function ChessBoard(props) {
 	const oldPieces = React.useRef({});
 	const board = useSelector(state => state.game.chessboard.slice());
 
-	// Mount
-	React.useEffect(() => {
-	}, []);
-
-
 	// Animation
 	function interpolation(orig, dest) {
 		const val = new Animated.Value(0);
 
 		Animated.timing(val, {
 			toValue: 1,
-			duration: 150,
+			duration: 100,
 			useNativeDriver: true,
 		}).start();
 

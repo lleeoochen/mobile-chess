@@ -202,9 +202,9 @@ export default class Game {
 	}
 
 	async updateMatchMoves(match) {
-		// while (this.moves_applied > match.moves.length) {
-		// 	unmoveChess();
-		// }
+		while (this.moves_applied > match.moves.length) {
+			this.unmoveChess();
+		}
 
 		let breakloop = false;
 		while (this.moves_applied < match.moves.length) {
