@@ -261,7 +261,6 @@ export default class Game {
 		setTimeout(() => {
 			clearInterval(self.interval);
 			self.countDown();
-			// enableHtml('#add-time-btn .utility-btn', true);
 
 			self.interval = setInterval(function() {
 				self.countDown();
@@ -485,22 +484,7 @@ export default class Game {
 		return newBoard;
 	}
 
-
-	// showTimer() {
-	// 	let enemy_timer = this.enemy == Const.TEAM.B ? this.black_timer : this.white_timer;
-	// 	let my_timer = this.team == Const.TEAM.B ? this.black_timer : this.white_timer;
-
-	// 	// $('#enemy-timer').text(Util.formatTimer(enemy_timer));
-	// 	// $('#me-timer').text(Util.formatTimer(my_timer));
-
-	// 	// $('#enemy-timer').toggleClass('ticking', this.turn == this.enemy && enemy_timer >= 0);
-	// 	// $('#me-timer').toggleClass('ticking', this.turn == this.team && my_timer >= 0);
-	// }
-
 	countDown() {
-		// this.showTimer();
-
-		console.log("Count Down: ", this.white_timer, this.black_timer);
 		if (this.turn == Const.TEAM.W) {
 			if (this.white_timer <= 0) {
 				Backend.timesup(Const.TEAM.B);
@@ -745,27 +729,12 @@ export default class Game {
 		this.passant_pawn = this.passant_stack[this.passant_stack.length - 1];
 
 		let prev_move = this.unstackEatenPiece();
-		// {
-		// 	old_x: oldGrid.x,
-		// 	old_y: oldGrid.y,
-		// 	new_x: newGrid.x,
-		// 	new_y: newGrid.y,
-		// 	eaten_x: eatenGrid.x,
-		// 	eaten_y: eatenGrid.y,
-		// 	eaten_piece: eatenPiece,
-		// 	flag: flag
-		// }
 
 		let newGrid = this.chessboard[prev_move.new_x][prev_move.new_y];
 		let oldGrid = this.chessboard[prev_move.old_x][prev_move.old_y];
 		let eatenGrid = this.chessboard[prev_move.eaten_x][prev_move.eaten_y];
 		let eaten_piece = prev_move.eaten_piece;
 		let flag = prev_move.flag;
-		// console.log("==================");
-		// console.log("newGrid: " + JSON.stringify(newGrid));
-		// console.log("oldGrid: " + JSON.stringify(oldGrid));
-		// console.log("eaten_grid: " + JSON.stringify(eatenGrid));
-		// console.log("eaten_piece: " + eaten_piece);
 
 		// this.revertMoveHistory();
 
@@ -803,9 +772,6 @@ export default class Game {
 		//Switch turn
 		this.switchTurn();
 
-		//Show resulting stats
-		// this.updateStats();
-
 		//Color old and new grids
 		this.colorLatestMove(newGrid, oldGrid);
 	}
@@ -817,16 +783,7 @@ export default class Game {
 			var new_img = this.pieces[eaten_piece].image;
 			var newGridTeam = this.pieces[eaten_piece].team;
 
-			// piecesLayer.appendChild(new_img);
-			// new_img.setAttribute("class", "piece x" + eatenGrid.x + " y" + eatenGrid.y);
 			eatenGrid.piece = eaten_piece;
-
-			// if (newGridTeam == Const.TEAM.B) {
-			// 	$('#blacksEaten').children().last().remove();
-			// }
-			// else {
-			// 	$('#whitesEaten').children().last().remove();
-			// }
 
 			let other_team = this.pieces[eaten_piece].team == Const.TEAM.W ? Const.TEAM.B : Const.TEAM.W;
 			const index = this.eaten[other_team].indexOf(this.pieces[eaten_piece].image);
@@ -840,14 +797,12 @@ export default class Game {
 		// Perform right castle
 		if (oldGrid.x - newGrid.x == -2) {
 			this.chessboard[Const.BOARD_SIZE - 1][newGrid.y].piece = this.chessboard[newGrid.x - 1][newGrid.y].piece;
-			// this.chessboard[Const.BOARD_SIZE - 1][newGrid.y].get_piece().image.setAttribute("class", "piece x" + (Const.BOARD_SIZE - 1) + " y" + newGrid.y);
 			this.chessboard[newGrid.x - 1][newGrid.y].piece = -1;
 		}
 
 		// Perform left castle
 		if (oldGrid.x - newGrid.x == 2) {
 			this.chessboard[0][newGrid.y].piece = this.chessboard[newGrid.x + 1][newGrid.y].piece;
-			// this.chessboard[0][newGrid.y].get_piece().image.setAttribute("class", "piece x" + (0) + " y" + newGrid.y);
 			this.chessboard[newGrid.x + 1][newGrid.y].piece = -1;
 		}
 
@@ -890,7 +845,6 @@ export default class Game {
 					resolve();
 				}, timeout);
 			});
-			// updateReviewButtons();
 		}
 
 		while (this.moves_applied < this.match.moves.length - 1 && this.moves_applied < moves_target && !this.stopPlayBack) {
@@ -918,7 +872,6 @@ export default class Game {
 	async pausePlayback() {
 		this.stopPlayBack = true;
 		if (this.playingBack.get()) {
-			// $('#playback-btn img').attr('src', 'assets/play.png');
 			await this.playingBack.promise;
 		}
 	}
