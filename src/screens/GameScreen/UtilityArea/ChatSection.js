@@ -173,6 +173,7 @@ const styles = StyleSheet.create({
 			color: 'white',
 			backgroundColor: 'black',
 			borderColor: 'gray',
+			borderWidth: 1,
 			padding: vw(2),
 			paddingTop: 0, lineHeight: vw(9), // Hack to get input overflow working...
 			borderBottomLeftRadius: borderRadius,
