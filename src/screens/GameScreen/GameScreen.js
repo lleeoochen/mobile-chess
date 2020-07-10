@@ -31,9 +31,12 @@ export default function GameScreen(props) {
 	let [game, setGame] = React.useState(null);
 	let match_id = props.navigation.getParam('match');
 	let fall = new Animated.Value(1);
+	const isMountedRef = React.useRef(null);
 
 	// Mount
 	React.useEffect(() => {
+		isMountedRef.current = true;
+
 		Store.dispatch(updateTheme( Util.unpackTheme(Cache.theme[match_id]) ));
 
 		let first_load = true;
@@ -63,19 +66,24 @@ export default function GameScreen(props) {
 		// Initialize game
 		Backend.listenMatch(Cache.userID, match_id, async (match, team) => {
 			if (!game) {
-				game = new Game(team, match_id, match);
+				game = new Game(team, match_id, match, isMountedRef);
 				setGame(game);
-				Store.dispatch(updatePlayer({
-					blackPlayer: Cache.users[match.black],
-					whitePlayer: Cache.users[match.white],
-				}));
-				Store.dispatch(initGame(game));
+
+				if (isMountedRef.current) {
+					Store.dispatch(updatePlayer({
+						blackPlayer: Cache.users[match.black],
+						whitePlayer: Cache.users[match.white],
+					}));
+					Store.dispatch(initGame(game));
+				}
 			}
 
 			game.match = match;
-			Store.dispatch(initGame( game ));
 
-			Store.dispatch(updateTheme( Util.unpackTheme(match.theme) ));
+			if (isMountedRef.current) {
+				Store.dispatch(initGame( game ));
+				Store.dispatch(updateTheme( Util.unpackTheme(match.theme) ));
+			}
 
 			await game.updatePlayerData(match);
 
@@ -86,14 +94,10 @@ export default function GameScreen(props) {
 			if (match.moves.length > 0 && Util.gameFinished(match)) {
 				clearInterval(game.interval);
 
-				// showHtml('#invite-panel', false);
-				// showHtml('#game-panel', false);
-				// showHtml('#theme-panel', false);
-				// showHtml('#review-panel', true);
-				// updateReviewButtons();
-				// showEnding();
 				game.ends();
-				Store.dispatch(initGame( game ));
+				if (isMountedRef.current) {
+					Store.dispatch(initGame( game ));
+				}
 				return false;
 			}
 
@@ -115,6 +119,8 @@ export default function GameScreen(props) {
 
 			await game.updateMatchMoves(match);
 		});
+
+		return () => isMountedRef.current = false;
 	}, []);
 
 	function handleChessEvent(x, y) {

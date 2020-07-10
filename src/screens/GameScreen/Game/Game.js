@@ -9,7 +9,7 @@ import Cache        from 'chessvibe/src/Cache';
 
 export default class Game {
 
-	constructor(team, match_id, match) {
+	constructor(team, match_id, match, isMountedRef) {
 		// White's side of chessboard
 		this.chessboard = [[],[],[],[],[],[],[],[]];
 		this.baseboard = [[],[],[],[],[],[],[],[]];
@@ -44,6 +44,8 @@ export default class Game {
 		// Review variables
 		this.stopPlayBack = false;
 		this.playTimeout = null;
+
+		this.isMountedRef = isMountedRef;
 
 		function PlayingBack() {
 		    var value;
@@ -219,6 +221,15 @@ export default class Game {
 			});
 			if (breakloop) break;
 		}
+
+		switch(this.isCheckmate(this.team)) {
+			case Const.STATUS_CHECKMATE:
+				Backend.checkmate(this.team == Const.TEAM.W ? Const.TEAM.B : Const.TEAM.W);
+				break;
+			case Const.STATUS_STALEMATE:
+				Backend.stalemate();
+				break;
+		}
 	}
 
 	updateMatchTimer(match) {
@@ -272,7 +283,9 @@ export default class Game {
 
 		Cache.users[match.black] = blackPlayer;
 		Cache.users[match.white] = whitePlayer;
-		Store.dispatch(Reducer.updatePlayer( { blackPlayer, whitePlayer } ));
+
+		if (this.isMountedRef.current)
+			Store.dispatch(Reducer.updatePlayer( { blackPlayer, whitePlayer } ));
 	}
 
 	isValidMove(oldGrid, newGrid) {
@@ -338,7 +351,7 @@ export default class Game {
 
 					for (let k = 0; k < validMoves.length; k++) {
 						if (this.isKingSafe(team, grid, this.chessboard[validMoves[k].x][validMoves[k].y])) {
-							return STATUS_NONE;
+							return Const.STATUS_NONE;
 						}
 					}
 				}
@@ -346,9 +359,9 @@ export default class Game {
 		}
 
 		if (this.isKingSafe(team)) {
-			return STATUS_STALEMATE;
+			return Const.STATUS_STALEMATE;
 		}
-		return STATUS_CHECKMATE;
+		return Const.STATUS_CHECKMATE;
 	}
 
 	//Update and show all possible moves based on a specific grid
@@ -670,7 +683,8 @@ export default class Game {
 	}
 
 	updateGame() {
-		Store.dispatch(Reducer.initGame(this));
+		if (this.isMountedRef.current)
+			Store.dispatch(Reducer.initGame(this));
 	}
 
 	ends() {
