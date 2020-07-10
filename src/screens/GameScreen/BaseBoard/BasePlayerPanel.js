@@ -5,7 +5,7 @@ import AutoHeightImage from 'react-native-auto-height-image';
 import Store from 'chessvibe/src/redux/Store';
 
 import * as Reducer from 'chessvibe/src/redux/Reducer';
-import { vw, vh } from 'chessvibe/src/Util';
+import { vw, vh, formatTimer } from 'chessvibe/src/Util';
 import * as Const from 'chessvibe/src/Const';
 import { ActionBar, WebVibe, TextVibe, ModalVibe } from 'chessvibe/src/widgets';
 
@@ -21,19 +21,25 @@ const canvas_size = margin_size * 2 + cell_size * 8;
 export default function BasePlayerPanel(props) {
 	const { color, pos } = props;
 	const theme = useSelector(state => state.theme);
+	const match = useSelector(state => state.game.match) || {};
+	const turn = useSelector(state => state.game.turn);
 
 	let eaten = useSelector(state => state.game.eaten, (a, b) => {
 		JSON.stringify(a) === JSON.stringify(b);
 	});
 
 	let player = null;
+	let timer = 0;
+
 	if (color == 'white') {
 		player = useSelector(state => state.whitePlayer);
 		eaten = (eaten && eaten[Const.TEAM.W]) ? eaten[Const.TEAM.W] : [];
+		timer = useSelector(state => state.game.white_timer);
 	}
 	else {
 		player = useSelector(state => state.blackPlayer);
 		eaten = (eaten && eaten[Const.TEAM.B]) ? eaten[Const.TEAM.B] : [];
+		timer = useSelector(state => state.game.black_timer);
 	}
 
 	let imageStyle = {
@@ -44,6 +50,18 @@ export default function BasePlayerPanel(props) {
 	let titleStyle = {
 		color: theme.NAME_TITLE_COLOR,
 		fontSize: vw(5),
+	};
+
+	timer = timer == null ? Const.MAX_TIME : timer;
+	let timerText =
+		timer >= Const.MAX_TIME ? ''
+		:
+		timer <= 0 ? '00.00'
+		:
+		formatTimer(timer);
+
+	let timerColor = {
+		color: (turn == color.charAt(0).toUpperCase()) ? 'white' : 'darkgrey'
 	};
 
 	return (
@@ -61,9 +79,12 @@ export default function BasePlayerPanel(props) {
 			</View>
 
 			<View style={ styles.middleContainer }>
-				<TextVibe style={ titleStyle }>
-					{ player && player.name ? player.name : "" }
-				</TextVibe>
+				<View style={ styles.middleTopContainer }>
+					<TextVibe style={ titleStyle }>
+						{ player && player.name ? player.name : "" }
+					</TextVibe>
+					<TextVibe style={ [titleStyle, timerColor] }>{ timerText }</TextVibe>
+				</View>
 
 				<ScrollView horizontal={ true } contentContainerStyle={ { alignSelf: 'center' } }>
 					{
@@ -105,7 +126,13 @@ const styles = StyleSheet.create({
 			marginHorizontal: margin_size,
 		},
 
-		playerName: {
-			color: 'white'
-		}
+			middleTopContainer: {
+				flex: 1,
+				flexDirection: 'row',
+				justifyContent: 'space-between',
+			},
+
+				playerName: {
+					color: 'white'
+				}
 });

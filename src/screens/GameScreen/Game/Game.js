@@ -246,26 +246,27 @@ export default class Game {
 			this.white_timer = match.white_timer - time_since_last_move;
 		}
 
-		// // Many magic numbers.. please fix in the future.
-		// let network_delay = 1000 - new Date().getMilliseconds();
-		// if (network_delay > 270) {
-		// 	if (turn == TEAM.B) {
-		// 		black_timer --;
-		// 	}
-		// 	else {
-		// 		white_timer --;
-		// 	}
-		// }
+		// Many magic numbers.. please fix in the future.
+		let network_delay = 1000 - new Date().getMilliseconds();
+		if (network_delay > 270) {
+			if (this.turn == Const.TEAM.B) {
+				this.black_timer --;
+			}
+			else {
+				this.white_timer --;
+			}
+		}
 
-		// setTimeout(() => {
-		// 	clearInterval(this.interval);
-		// 	this.countDown();
-		// 	// enableHtml('#add-time-btn .utility-btn', true);
+		let self = this;
+		setTimeout(() => {
+			clearInterval(self.interval);
+			self.countDown();
+			// enableHtml('#add-time-btn .utility-btn', true);
 
-		// 	this.interval = setInterval(function() {
-		// 		this.countDown();
-		// 	}, 1000);
-		// }, network_delay);
+			self.interval = setInterval(function() {
+				self.countDown();
+			}, 1000);
+		}, network_delay);
 	}
 
 	async updatePlayerData(match) {
@@ -485,6 +486,45 @@ export default class Game {
 	}
 
 
+	// showTimer() {
+	// 	let enemy_timer = this.enemy == Const.TEAM.B ? this.black_timer : this.white_timer;
+	// 	let my_timer = this.team == Const.TEAM.B ? this.black_timer : this.white_timer;
+
+	// 	// $('#enemy-timer').text(Util.formatTimer(enemy_timer));
+	// 	// $('#me-timer').text(Util.formatTimer(my_timer));
+
+	// 	// $('#enemy-timer').toggleClass('ticking', this.turn == this.enemy && enemy_timer >= 0);
+	// 	// $('#me-timer').toggleClass('ticking', this.turn == this.team && my_timer >= 0);
+	// }
+
+	countDown() {
+		// this.showTimer();
+
+		console.log("Count Down: ", this.white_timer, this.black_timer);
+		if (this.turn == Const.TEAM.W) {
+			if (this.white_timer <= 0) {
+				Backend.timesup(Const.TEAM.B);
+				clearInterval(this.interval);
+			}
+			else {
+				this.white_timer --;
+			}
+		}
+
+		if (this.turn == Const.TEAM.B) {
+			if (this.black_timer <= 0) {
+				Backend.timesup(Const.TEAM.W);
+				clearInterval(this.interval);
+			}
+			else {
+				this.black_timer --;
+			}
+		}
+
+		this.updateGame();
+	}
+
+
 	//======================================================================== 
 	//============================= Move Chess =============================== 
 	//======================================================================== 
@@ -683,12 +723,17 @@ export default class Game {
 	}
 
 	updateGame() {
-		if (this.isMountedRef.current)
+		if (this.isMountedRef.current) {
 			Store.dispatch(Reducer.initGame(this));
+		}
+		else {
+			clearInterval(this.interval);
+		}
 	}
 
 	ends() {
 		this.ended = true;
+		clearInterval(this.interval);
 	}
 
 
