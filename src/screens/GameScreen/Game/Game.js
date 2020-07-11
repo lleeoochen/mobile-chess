@@ -45,7 +45,9 @@ export default class Game {
 		this.stopPlayBack = false;
 		this.playTimeout = null;
 
+		// React native related
 		this.isMountedRef = isMountedRef;
+		this.firstLoad = true;
 
 		function PlayingBack() {
 		    var value;

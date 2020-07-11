@@ -127,11 +127,13 @@ export default function UtilityArea(props) {
 	handleUndoRequests(gameRef, undoHook);
 	handleDrawRequests(gameRef, drawHook);
 
+	// Trigger event for ending
 	if (triggerEnding.current) {
 		handleEndingRequests(gameRef, endingHook, triggerEnding);
 	}
 
-	if (gameRef && match && match.chat.length > chatApplied.current) {
+	// Chat flashing notification
+	if (gameRef && match && !gameRef.firstLoad && match.chat.length > chatApplied.current) {
 		for (;chatApplied.current < match.chat.length; chatApplied.current++) {
 			if (Util.unpackMessage(match.chat[chatApplied.current]).team != gameRef.team) {
 				chatApplied.current = match.chat.length;

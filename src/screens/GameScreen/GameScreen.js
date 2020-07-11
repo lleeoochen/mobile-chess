@@ -39,7 +39,6 @@ export default function GameScreen(props) {
 
 		Store.dispatch(updateTheme( Util.unpackTheme(Cache.theme[match_id]) ));
 
-		let first_load = true;
 		Backend.init();
 
 		props.navigation.setParams({
@@ -76,6 +75,13 @@ export default function GameScreen(props) {
 					}));
 					Store.dispatch(initGame(game));
 				}
+
+				await new Promise((resolve, reject) => {
+					setTimeout(() => { resolve() }, 500);
+				});
+			}
+			else {
+				game.firstLoad = false;
 			}
 
 			game.match = match;
@@ -99,13 +105,6 @@ export default function GameScreen(props) {
 					Store.dispatch(initGame( game ));
 				}
 				return false;
-			}
-
-			if (first_load) {
-				await new Promise((resolve, reject) => {
-					setTimeout(() => { resolve() }, 500);
-				});
-				first_load = false;
 			}
 
 			// updateMatchUndo();
