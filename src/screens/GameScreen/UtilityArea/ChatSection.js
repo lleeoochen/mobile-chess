@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
 	},
 
 	chatContent: {
-		paddingHorizontal: vw(2),
+		paddingHorizontal: vw(),
 	},
 
 		chatBubble: {

@@ -13,6 +13,11 @@
 #import <SKIOSNetworkPlugin/SKIOSNetworkAdapter.h>
 #import <FlipperKitReactPlugin/FlipperKitReactPlugin.h>
 
+// https://github.com/facebook/react-native/issues/16376#issuecomment-350523177
+#if RCT_DEV && __has_include(<React/RCTDevLoadingView.h>)
+#import <React/RCTDevLoadingView.h>
+#endif
+
 static void InitializeFlipper(UIApplication *application) {
   FlipperClient *client = [FlipperClient sharedClient];
   SKDescriptorMapper *layoutDescriptorMapper = [[SKDescriptorMapper alloc] initWithDefaults];
@@ -34,6 +39,12 @@ static void InitializeFlipper(UIApplication *application) {
 
   if ([FIRApp defaultApp] == nil) { [FIRApp configure]; }
   RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:launchOptions];
+
+  // https://github.com/facebook/react-native/issues/16376#issuecomment-350523177
+  #if RCT_DEV && __has_include(<React/RCTDevLoadingView.h>)
+  [bridge moduleForClass:[RCTDevLoadingView class]];
+  #endif
+
   RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:bridge
                                                    moduleName:@"ChessVibe"
                                             initialProperties:nil];
