@@ -146,7 +146,7 @@ export default function UtilityArea(props) {
 			<BottomSheet
 				ref={ drawerRef }
 				initialSnap={ 2 }
-				snapPoints = { [vh(80), vh(50), header_height] }
+				snapPoints = { [vh(70), vh(50), header_height] }
 		        callbackNode={ props.callbackNode }
 				renderContent={ renderContent }
 				renderHeader={ renderHeader }
@@ -261,7 +261,7 @@ const styles = StyleSheet.create({
 		handle: {
 			backgroundColor: utilityBackground,
 			width: vw(18),
-			height: vw(),
+			height: vw(1.2),
 			borderRadius: vw(),
 			marginVertical: vw(),
 			zIndex: 10,
@@ -319,7 +319,7 @@ const styles = StyleSheet.create({
 		// backgroundColor: '#003333',
 		// borderWidth: margin_size * 0.5,
 		// borderColor: 'lightgrey',
-		backgroundColor: '#191919',
+		backgroundColor: '#1c1c1c',
 	},
 
 	divider: {

@@ -4,7 +4,7 @@ import Clipboard from '@react-native-community/clipboard';
 import { useSelector } from 'react-redux';
 import Util, { vw, vh, strict_equal } from 'chessvibe/src/Util';
 import { IMAGE, URL, DIALOG } from 'chessvibe/src/Const';
-import { TextVibe, ButtonVibe, ModalVibe, KeyboardVibe, DialogVibe } from 'chessvibe/src/widgets';
+import { TextVibe, ButtonVibe, ModalVibe, KeyboardVibe, DialogVibe, InputVibe } from 'chessvibe/src/widgets';
 import AutoHeightImage from 'react-native-auto-height-image';
 import Backend from 'chessvibe/src/GameBackend';
 
@@ -69,7 +69,10 @@ export default function ChatSection(props) {
 			</ScrollView>
 			<View style={ styles.chatDivider }/>
 			<View style={ [styles.chatBottom, colorBlack] }>
-				<ChatInput onSubmitText={(value)=> {
+				<InputVibe
+					style={ styles.chatInput }
+					placeholder={ 'Type here...' }
+					onSubmitText={(value)=> {
 					setMessageCache(value);
 					Backend.message(value);
 				}}/>
@@ -94,27 +97,6 @@ function ChatBubble(props) {
 		<ButtonVibe style={ viewStyle } onPress={ props.onPress }>
 			<TextVibe style={ textStyle }>{ props.children }</TextVibe>
 		</ButtonVibe>
-	);
-}
-
-function ChatInput(props) {
-	const [ value, onChangeText ] = React.useState('');
-
-	return (
-		<TextInput
-			style={ [styles.chatInput] }
-			onChangeText={ text => onChangeText(text) }
-			onSubmitEditing={ () => {
-				onChangeText('');
-				props.onSubmitText(value);
-			}}
-			keyboardAppearance={ 'dark' }
-			placeholder={ 'Type here...' }
-			placeholderTextColor={ 'white' }
-			returnKeyType={ 'send' }
-			scrollEnabled={ true }
-			blurOnSubmit={false}
-			value={ value }/>
 	);
 }
 
@@ -158,24 +140,17 @@ const styles = StyleSheet.create({
 	chatBottom: {
 		flexDirection: 'row',
 		alignItems: 'center',
-		height: panel_height,
 		borderBottomLeftRadius: borderRadius,
 		borderBottomRightRadius: borderRadius,
-		backgroundColor: 'blue',
-		marginBottom: vw(),
-		// marginHorizontal: vw(),
 	},
 
 		chatInput: {
 			flex: 1,
 			fontSize: vw(5),
-			fontFamily: 'Spectral',
 			color: 'white',
 			backgroundColor: 'black',
 			borderColor: 'gray',
 			borderWidth: 1,
-			padding: vw(2),
-			paddingTop: 0, lineHeight: vw(9), // Hack to get input overflow working...
 			borderBottomLeftRadius: borderRadius,
 			borderBottomRightRadius: borderRadius,
 
@@ -187,5 +162,6 @@ const styles = StyleSheet.create({
 			shadowOpacity: 0.5,
 			shadowRadius: 3,
 			elevation: 1,
+			height: panel_height,
 		},
 });

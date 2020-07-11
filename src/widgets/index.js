@@ -6,6 +6,7 @@ import WebVibe from './WebVibe';
 import ButtonVibe from './ButtonVibe';
 import KeyboardVibe from './KeyboardVibe';
 import DialogVibe from './DialogVibe';
+import InputVibe from './InputVibe';
 
 
 export {
@@ -17,4 +18,5 @@ export {
 	ButtonVibe,
 	KeyboardVibe,
 	DialogVibe,
+	InputVibe,
 };

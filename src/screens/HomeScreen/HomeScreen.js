@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Animated, View, SafeAreaView, ScrollView, StyleSheet, StatusBar, TouchableOpacity, Image, Button, RefreshControl } from 'react-native';
-import { ActionBar, WebVibe, TextVibe, ModalVibe } from 'chessvibe/src/widgets';
+import { ActionBar, WebVibe, TextVibe, ModalVibe, ButtonVibe } from 'chessvibe/src/widgets';
 import AutoHeightImage from 'react-native-auto-height-image';
 
 import { URL, TEAM, IMAGE } from 'chessvibe/src/Const';
@@ -226,18 +226,18 @@ export default function HomeScreen(props) {
 
 				if (active) {
 					$active_matches.push(
-						<TouchableOpacity key={ j } style={ {...styles.matchView, ...borderStyle} } onPress={() => navigateGame(match_name)}>
+						<ButtonVibe key={ j } style={ {...styles.matchView, ...borderStyle} } onPress={() => navigateGame(match_name)}>
 							<AutoHeightImage width={ matchSize } source={ enemy.photo ? { uri: enemy.photo + '=c' } : IMAGE.NEW_MATCH } style={ styles.matchImg }/>
 							<TextVibe style={ {...styles.matchDate, ...colorStyle} }> { d_str } </TextVibe>
-						</TouchableOpacity>
+						</ButtonVibe>
 					);
 				}
 				else {
 					$inactive_matches.push(
-						<TouchableOpacity key={ j } style={ {...styles.matchView, ...borderStyle} } onPress={() => navigateGame(match_name)}>
+						<ButtonVibe key={ j } style={ {...styles.matchView, ...borderStyle} } onPress={() => navigateGame(match_name)}>
 							<AutoHeightImage width={ matchSize } source={ enemy.photo ? { uri: enemy.photo + '=c' } : IMAGE.NEW_MATCH } style={ styles.matchImg }/>
 							<TextVibe style={ {...styles.matchDate, ...colorStyle} }> { d_str } </TextVibe>
-						</TouchableOpacity>
+						</ButtonVibe>
 					);
 
 					let win = winType(match_data.moves[match_data.moves.length - 1], color);
@@ -335,6 +335,7 @@ const styles = StyleSheet.create({
 
 					matchDate: {
 						textAlign: 'center',
+						width: '100%'
 					},
 
 						greenColor: { backgroundColor: '#56be68' },

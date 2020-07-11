@@ -129,23 +129,10 @@ export default function GameScreen(props) {
 		}
 	}
 
-	const renderShadow = () => {
-		const animatedShadowOpacity = fall.interpolate({
-			inputRange: [0, 1],
-			outputRange: [0.6, 0],
-		});
-
-		return (
-			<Animated.View
-				style={[
-					styles.shadowContainer,
-					{
-						opacity: animatedShadowOpacity,
-					},
-				]}
-			/>
-		)
-	};
+	const animatedShadowOpacity = fall.interpolate({
+		inputRange: [0, 1],
+		outputRange: [0.6, 1],
+	});
 
 	var isIOS = Platform.OS === 'ios';
 	var topSpace = isIOS ? getStatusBarHeight() : 0;
@@ -161,26 +148,27 @@ export default function GameScreen(props) {
 		}
 	}
 
-	const headerHeight = topSpace + offset + bottomSpace;
+	const keyboardOffset = topSpace + offset + bottomSpace;
 
 	// Render
 	return (
 		<KeyboardAvoidingView
 			behavior={Platform.OS == "ios" ? "padding" : "height"}
-			keyboardVerticalOffset={ headerHeight }
+			keyboardVerticalOffset={ keyboardOffset }
 			style={styles.container}>
 
 			<StatusBar hidden={ true }/>
 			<SafeAreaView style={{ flex: 1 }}>
 
 				<BackImage>
-					<ScrollView contentContainerStyle={ styles.outerCanvas }>
-						<BaseBorder style={ styles.gradient }/>
-						<BaseBoard/>
-						<ChessBoard style={ styles.board }/>
-						{ renderShadow() }
-						<ClickBoard style={ styles.board } onPress={ handleChessEvent }/>
-					</ScrollView>
+					<Animated.View style={ [{ flex: 1, opacity: animatedShadowOpacity }] }>
+						<ScrollView contentContainerStyle={ styles.outerCanvas }>
+							<BaseBorder style={ styles.gradient }/>
+							<BaseBoard/>
+							<ChessBoard style={ styles.board }/>
+							<ClickBoard style={ styles.board } onPress={ handleChessEvent }/>
+						</ScrollView>
+					</Animated.View>
 					<UtilityArea
 						style={ styles.utilityArea }
 						callbackNode={ fall }
@@ -233,7 +221,7 @@ const styles = StyleSheet.create({
 		backgroundColor: 'black',
 	},
 	shadowContainer: {
-		backgroundColor: 'black',
+		backgroundColor: 'white',
 		position: 'absolute',
 		flex: 1,
 		width: vw(100),
