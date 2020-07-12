@@ -54,8 +54,6 @@ export default function HomeScreen(props) {
 		setRefreshing(true);
 
 		fetchMatches();
-
-		wait(1000).then(() => setRefreshing(false));
 	}, []);
 
 
@@ -127,7 +125,8 @@ export default function HomeScreen(props) {
 	// Navigate to game
 	function navigateGame(match) {
 		props.navigation.navigate('Game', {
-			match: match
+			match: match,
+			refresh: () => fetchMatches()
 		});
 	}
 
@@ -190,6 +189,7 @@ export default function HomeScreen(props) {
 				});
 
 				setMatches(results);
+				setRefreshing(false);
 			});
 		});
 	}

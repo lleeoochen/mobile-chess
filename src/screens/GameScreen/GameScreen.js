@@ -47,6 +47,7 @@ export default function GameScreen(props) {
 					game.ends();
 				Store.dispatch(reset());
 				Backend.socket.disconnect();
+
 				props.navigation.dispatch(StackActions.pop());
 			},
 			changeTheme: () => {
@@ -100,11 +101,21 @@ export default function GameScreen(props) {
 			if (match.moves.length > 0 && Util.gameFinished(match)) {
 				clearInterval(game.interval);
 
+				// Game just ended
+				if (!game.firstLoad) {
+					props.navigation.state.params.refresh();
+				}
+
 				game.ends();
 				if (isMountedRef.current) {
 					Store.dispatch(initGame( game ));
 				}
 				return false;
+			}
+
+			if (!game.started && match.white && match.black) {
+				props.navigation.state.params.refresh();
+				game.started = true;
 			}
 
 			// updateMatchUndo();

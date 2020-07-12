@@ -48,6 +48,7 @@ export default class Game {
 		// React native related
 		this.isMountedRef = isMountedRef;
 		this.firstLoad = true;
+		this.started = match.white && match.black;
 
 		function PlayingBack() {
 		    var value;
