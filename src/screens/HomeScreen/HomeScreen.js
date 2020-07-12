@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Animated, View, SafeAreaView, ScrollView, StyleSheet, StatusBar, TouchableOpacity, Image, Button, RefreshControl } from 'react-native';
-import { ActionBar, WebVibe, TextVibe, ModalVibe, ButtonVibe } from 'chessvibe/src/widgets';
+import { ActionBar, WebVibe, TextVibe, ModalVibe, ButtonVibe, DialogVibe } from 'chessvibe/src/widgets';
 import AutoHeightImage from 'react-native-auto-height-image';
 
 import { URL, TEAM, IMAGE } from 'chessvibe/src/Const';
@@ -28,10 +28,11 @@ HomeScreen.navigationOptions = ({navigation}) => {
 
 // Home Screen
 export default function HomeScreen(props) {
-	const [allMatches, setMatches] = React.useState([]);
-	const [userMenuVisible, showUserMenu] = React.useState(false);
-	const [createMenuVisible, showCreateMenu] = React.useState(false);
-	const [refreshing, setRefreshing] = React.useState(false);
+	const [ allMatches, setMatches ] = React.useState([]);
+	const [ userMenuVisible, showUserMenu ] = React.useState(false);
+	const [ createMenuVisible, showCreateMenu ] = React.useState(false);
+	const [ refreshing, setRefreshing ] = React.useState(false);
+	const [ selectedMatch, selectMatch ] = React.useState(null);
 	const user = React.useRef({});
 	const fadein = new Animated.Value(0);
 
@@ -50,12 +51,12 @@ export default function HomeScreen(props) {
 	}, []);
 
 
-	const onRefresh = React.useCallback(() => {
+	const onRefresh = React.useCallback(() => refresh(), []);
+
+	function refresh() {
 		setRefreshing(true);
-
 		fetchMatches();
-	}, []);
-
+	}
 
 	React.useEffect(() => {
 		Animated.timing(fadein, {
@@ -65,6 +66,15 @@ export default function HomeScreen(props) {
 		})
 		.start();
 	}, [allMatches]);
+
+
+	function deleteMatch(match_id) {
+		Backend.deleteMatch(match_id).then(async () => {
+			selectMatch(null);
+			refresh();
+		});
+	}
+
 
 	// Render function
 	function render() {
@@ -102,6 +112,15 @@ export default function HomeScreen(props) {
 						showCreateMenu(false);
 						createMatch(theme, time);
 					}}/>
+
+				{/*
+				<DialogVibe
+					title={ 'Delete match?' }
+					confirmBtnText={ 'Delete' }
+					visible={ selectedMatch != null }
+					onSuccess={ () => deleteMatch(selectedMatch) }
+					onDismiss={ () => selectMatch(null) }/>
+				*/}
 			</SafeAreaView>
 		);
 	}
@@ -226,7 +245,7 @@ export default function HomeScreen(props) {
 
 				if (active) {
 					$active_matches.push(
-						<ButtonVibe key={ j } style={ {...styles.matchView, ...borderStyle} } onPress={() => navigateGame(match_name)}>
+						<ButtonVibe key={ j } style={ {...styles.matchView, ...borderStyle} } onPress={() => navigateGame(match_name)} onLongPress={ () => selectMatch(match_name) }>
 							<AutoHeightImage width={ matchSize } source={ enemy.photo ? { uri: enemy.photo + '=c' } : IMAGE.NEW_MATCH } style={ styles.matchImg }/>
 							<TextVibe style={ {...styles.matchDate, ...colorStyle} }> { d_str } </TextVibe>
 						</ButtonVibe>
@@ -234,7 +253,7 @@ export default function HomeScreen(props) {
 				}
 				else {
 					$inactive_matches.push(
-						<ButtonVibe key={ j } style={ {...styles.matchView, ...borderStyle} } onPress={() => navigateGame(match_name)}>
+						<ButtonVibe key={ j } style={ {...styles.matchView, ...borderStyle} } onPress={() => navigateGame(match_name)} onLongPress={ () => selectMatch(match_name) }>
 							<AutoHeightImage width={ matchSize } source={ enemy.photo ? { uri: enemy.photo + '=c' } : IMAGE.NEW_MATCH } style={ styles.matchImg }/>
 							<TextVibe style={ {...styles.matchDate, ...colorStyle} }> { d_str } </TextVibe>
 						</ButtonVibe>

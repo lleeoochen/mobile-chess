@@ -65,4 +65,10 @@ export default class Backend {
 			time: time || MAX_TIME
 		});
 	}
+
+	static deleteMatch(match_id, resolve) {
+		return Util.request('POST', URL.BACKEND + '/chess/delete_match', {
+			match_id: match_id,
+		});
+	}
 }
