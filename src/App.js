@@ -45,32 +45,34 @@ const Navigator = createStackNavigator(
 const Container = createAppContainer(Navigator);
 
 
-const userMenu = (navRef) => {
-	return (<HomeUserMenu visible={ true } navRef={ navRef }/>);
+const userMenu = (navRef, openDrawer) => {
+	return (<HomeUserMenu visible={ true } navRef={ navRef } openDrawer={ openDrawer }/>);
 };
 
 function AppContent() {
-	const drawerOpen = useSelector(state => state.drawerOpen);
+	const [ drawerOpen, openDrawer ] = React.useState(false);
 	const navRef = React.useRef(null);
+
+	function onDrawerChange() {
+		if (drawerOpen)
+			openDrawer(false);
+	}
 
 	return (
 		<SafeAreaView style={{ flex: 1, backgroundColor: 'black' }}>
 			<SideMenu
-				menu={ userMenu(navRef) }
+				menu={ userMenu(navRef, openDrawer) }
 				openMenuOffset={ vw(70) }
-				onChange={() => {
-					Store.dispatch(showDrawer( !drawerOpen ));
-				}}
+				onChange={() => onDrawerChange()}
 				disableGestures={ true }
 				bounceBackOnOverdraw={ false }
 				animationFunction={(prop, value) => Animated.timing(prop, {
 					toValue: value,
-					// friction: 8,
 					duration: 200,
 					useNativeDriver: true,
 				})}
 				isOpen={ drawerOpen }>
-				<Container ref={navRef}/>
+				<Container ref={navRef} screenProps={{ openDrawer }}/>
 			</SideMenu>
 		</SafeAreaView>
 	);

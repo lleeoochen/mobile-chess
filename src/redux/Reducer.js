@@ -17,18 +17,11 @@ const initState = {
 	theme: THEME.METAL,
 	blackPlayer: null,
 	whitePlayer: null,
-	drawerOpen: false,
 	user: null,
 };
 
 
 // Actions
-export const showDrawer = createAction(ACTION_DRAWER);
-function reduceDrawer(state, action) {
-	let data = action.data;
-	return {...state, ...{ drawerOpen: data }};
-}
-
 export const updateUser = createAction(ACTION_USER);
 function reduceUser(state, action) {
 	let data = action.data;

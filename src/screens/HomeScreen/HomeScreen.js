@@ -43,7 +43,7 @@ export default function HomeScreen(props) {
 	React.useEffect(() => {
 		props.navigation.setParams({
 			openMenu: () => {
-				Store.dispatch(showDrawer( !Store.getState().drawerOpen ));
+				props.screenProps.openDrawer(true);
 			},
 			openCreate: () => {
 				showCreateMenu(true)

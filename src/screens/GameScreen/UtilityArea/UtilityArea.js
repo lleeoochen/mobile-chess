@@ -148,7 +148,7 @@ export default function UtilityArea(props) {
 			<BottomSheet
 				ref={ drawerRef }
 				initialSnap={ 2 }
-				snapPoints = { [vh(70), vh(50), header_height] }
+				snapPoints = { [vh(75), vh(50), header_height] }
 		        callbackNode={ props.callbackNode }
 				renderContent={ renderContent }
 				renderHeader={ renderHeader }
@@ -325,6 +325,6 @@ const styles = StyleSheet.create({
 	},
 
 	divider: {
-		height: vw(5),
+		height: vw(15),
 	},
 });

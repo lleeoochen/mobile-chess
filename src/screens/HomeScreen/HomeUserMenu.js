@@ -20,7 +20,7 @@ export default function HomeUserMenu(props) {
 		onDismiss=() => {},
 		onLogout=() => {
 			if (props.navRef && props.navRef.current && props.navRef.current._navigation) {
-				Store.dispatch(showDrawer( false ));
+				props.openDrawer(false);
 
 				setTimeout(() => {
 					props.navRef.current._navigation.navigate('Entry', {
