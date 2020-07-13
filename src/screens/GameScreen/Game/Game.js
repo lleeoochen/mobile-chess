@@ -566,7 +566,7 @@ export default class Game {
 		let kill_passant_pawn = false;
 
 		// Check passant pawn can be killed
-		if (this.passant_pawn) {
+		if (this.passant_pawn && this.get_piece(oldGrid).type == Const.CHESS.Pawn) {
 
 			if (this.get_piece(oldGrid).team != this.get_piece(this.passant_pawn).team) {
 				let downward = this.get_piece(oldGrid).team == this.team ? this.downward : !this.downward;
