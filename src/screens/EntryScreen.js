@@ -131,9 +131,6 @@ export default function EntryScreen(props) {
 
 			<TextVibe style={ styles.title }>Chess Vibe</TextVibe>
 			<Image style={ styles.logo } source={ logoImg }/>
-			{/*<Button
-				title="Go to home."
-				onPress={ () => navigateHome() }/>*/}
 		</SafeAreaView>
 	);
 }
@@ -158,7 +155,7 @@ const styles = StyleSheet.create({
 		height: logoSize
 	},
 	googleBtnWrap: {
-		width: '80%',
+		// width: '50%',
 		height: 50,
 		position: 'absolute',
 		bottom: 0,
@@ -166,6 +163,6 @@ const styles = StyleSheet.create({
 		marginBottom: 50,
 	},
 	googleBtn: {
-		width: '100%',
+		// width: '100%',
 	}
 });

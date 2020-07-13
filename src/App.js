@@ -28,7 +28,8 @@ const Navigator = createStackNavigator(
 			headerStyle: {
 				backgroundColor: 'black',
 				shadowColor: 'black',
-				shadowRadius: vw(),
+				shadowRadius: vw(0.5),
+				elevation: 2,
 				height: vw(15),
 			},
 			headerTintColor: 'white',
@@ -45,8 +46,8 @@ const Navigator = createStackNavigator(
 const Container = createAppContainer(Navigator);
 
 
-const userMenu = (navRef, openDrawer) => {
-	return (<HomeUserMenu visible={ true } navRef={ navRef } openDrawer={ openDrawer }/>);
+const userMenu = (navRef, drawerOpen, openDrawer) => {
+	return (<HomeUserMenu visible={ true } navRef={ navRef } drawerOpen={ drawerOpen } openDrawer={ openDrawer }/>);
 };
 
 function AppContent() {
@@ -59,9 +60,9 @@ function AppContent() {
 	}
 
 	return (
-		<SafeAreaView style={{ flex: 1, backgroundColor: 'black' }}>
+		<SafeAreaView style={{ flex: 1, backgroundColor: '#0d151f' }}>
 			<SideMenu
-				menu={ userMenu(navRef, openDrawer) }
+				menu={ userMenu(navRef, drawerOpen, openDrawer) }
 				openMenuOffset={ vw(70) }
 				onChange={() => onDrawerChange()}
 				disableGestures={ true }

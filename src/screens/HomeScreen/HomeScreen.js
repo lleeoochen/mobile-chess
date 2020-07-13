@@ -302,16 +302,16 @@ const styles = StyleSheet.create({
 	view: {
 		alignSelf: 'stretch',
 		flex: 1,
-		backgroundColor: 'black'
+		backgroundColor: '#1a283a',
 	},
 
 		playerScroll: {
 			alignItems: 'center',
-			backgroundColor: 'black',
+			backgroundColor: '#1a283a',
 		},
 
 			playerBox: {
-				backgroundColor: '#2e4e4e',
+				// backgroundColor: 'darkgrey',
 				width: '98%',
 				padding: '3%',
 				borderRadius: borderRadius,

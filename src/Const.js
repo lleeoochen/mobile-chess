@@ -22,6 +22,9 @@ export const IMAGE = {
 	NEW_MATCH: require('chessvibe/assets/new_match.png'),
 	SEND:      require('chessvibe/assets/send.png'),
 	LOGOUT:    require('chessvibe/assets/logout.png'),
+	HISTORY:   require('chessvibe/assets/history.png'),
+	FRIENDS:   require('chessvibe/assets/friends.png'),
+	SETTINGS:   require('chessvibe/assets/settings.png'),
 
 	// Chess pieces
 	BKing:   require("chessvibe/assets/BKing.png"),

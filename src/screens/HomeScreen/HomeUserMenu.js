@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { ScrollView, View, StyleSheet, TouchableOpacity, Image, Animated } from 'react-native';
 import { TextVibe, ModalVibe } from 'chessvibe/src/widgets';
 import AutoHeightImage from 'react-native-auto-height-image';
 import { vw } from 'chessvibe/src/Util';
@@ -14,6 +14,7 @@ const borderRadius = vw();
 
 export default function HomeUserMenu(props) {
 	const user = useSelector(state => state.user) || {};
+	const zoomIn = new Animated.Value(props.drawerOpen ? 0.8 : 1);
 
 	let {
 		visible=false,
@@ -39,6 +40,14 @@ export default function HomeUserMenu(props) {
 		}
 	} = props;
 
+
+	Animated.timing(zoomIn, {
+		toValue: props.drawerOpen ? 1 : 0.8,
+		duration: 200,
+		useNativeDriver: true,
+	}).start();
+
+
 	// <TextVibe style={ styles.menuStat }>Win Rate { (stats.win * 100.0 / (stats.win + stats.lose)).toFixed(2) }%.</TextVibe>
 	// <TextVibe style={ styles.menuStat }>Win { stats.win } games.</TextVibe>
 	// <TextVibe style={ styles.menuStat }>Lose { stats.lose } games.</TextVibe>
@@ -48,25 +57,44 @@ export default function HomeUserMenu(props) {
 	// <TextVibe style={ styles.menuStat }>Ongoing { stats.ongoing } games.</TextVibe>
 
 	return (
-		<View style={ styles.menu }>
+		<Animated.View style={ [styles.menu, { transform: [{ scale: zoomIn }] }] }>
 			<AutoHeightImage
 				style={ styles.menuImage }
 				width={ vw(25) }
 				source={ user.photo ? { uri: user.photo + '=c' } : new_match_img }/>
 			<TextVibe style={ styles.menuText }>{ user.name || '' }</TextVibe>
 
+			<ScrollView contentContainerStyle={ styles.pageList }>
+				<TouchableOpacity style={ styles.pageItem }>
+					<Image source={ IMAGE.DRAW } style={ styles.logoutBtnIcon }/>
+					<TextVibe style={ styles.logoutBtnText }>Play Chess</TextVibe>
+				</TouchableOpacity>
+				<TouchableOpacity style={ styles.pageItem }>
+					<Image source={ IMAGE.HISTORY } style={ styles.logoutBtnIcon }/>
+					<TextVibe style={ styles.logoutBtnText }>Match History</TextVibe>
+				</TouchableOpacity>
+				<TouchableOpacity style={ styles.pageItem }>
+					<Image source={ IMAGE.FRIENDS } style={ styles.logoutBtnIcon }/>
+					<TextVibe style={ styles.logoutBtnText }>Friends</TextVibe>
+				</TouchableOpacity>
+				<TouchableOpacity style={ styles.pageItem }>
+					<Image source={ IMAGE.SETTINGS } style={ styles.logoutBtnIcon }/>
+					<TextVibe style={ styles.logoutBtnText }>Settings</TextVibe>
+				</TouchableOpacity>
+			</ScrollView>
+
 			<TouchableOpacity style={ styles.logoutBtn } onPress={ onLogout }>
 				<Image source={ IMAGE.LOGOUT } style={ styles.logoutBtnIcon }/>
 				<TextVibe style={ styles.logoutBtnText }>Logout</TextVibe>
 			</TouchableOpacity>
-		</View>
+		</Animated.View>
 	);
 }
 
 const styles = StyleSheet.create({
 	menu: {
 		flex: 1,
-		backgroundColor: '#000000',
+		backgroundColor: '#0d151f',
 		// alignItems: 'center',
 	},
 	menuText: {
@@ -88,11 +116,22 @@ const styles = StyleSheet.create({
 		fontSize: vw(5),
 	},
 
+	pageList: {
+		marginLeft: vw(5),
+		marginTop: vw(10),
+	},
+
+		pageItem: {
+			color: 'white',
+			fontSize: vw(5),
+			marginTop: vw(5),
+			width: '100%',
+			flexDirection: 'row',
+		},
+
 	logoutBtn: {
 		marginTop: vw(5),
-		// backgroundColor: 'darkslategrey',
 		padding: vw(5),
-		// borderRadius: borderRadius,
 		width: '100%',
 		bottom: 0,
 		position: 'absolute',

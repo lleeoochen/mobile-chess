@@ -5,11 +5,11 @@ import { vw, wh } from '../Util';
 import Store from 'chessvibe/src/redux/Store';
 
 export default function ModalVibe(props) {
-	let { theme } = Store.getState();
+	// let { theme } = Store.getState();
 
-	let menuStyle = {...styles.menu, ...{
-		borderColor: theme.COLOR_BOARD_DARK,
-	}};
+	// let menuStyle = {...styles.menu, ...{
+	// 	borderColor: theme.COLOR_BOARD_DARK,
+	// }};
 
 	return (
 		<Modal
@@ -28,7 +28,7 @@ export default function ModalVibe(props) {
 			<TouchableWithoutFeedback onPress={ props.onDismiss }>
 				<View style={ styles.menuOutside }></View>
 			</TouchableWithoutFeedback>
-			<View style={ menuStyle }>
+			<View style={ styles.menu }>
 				{ props.children }
 			</View>
 		</Modal>
@@ -50,9 +50,9 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		justifyContent: 'center',
 		padding: '3%',
-		backgroundColor: 'darkslategrey',
+		backgroundColor: '#1a283a',
 		borderStyle: 'solid',
-		borderColor: 'green',
+		borderColor: '#0d151f',
 		borderWidth: vw(),
 		borderRadius: vw(),
 		width: '90%',
