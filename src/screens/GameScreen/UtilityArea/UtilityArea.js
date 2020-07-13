@@ -54,8 +54,8 @@ export default function UtilityArea(props) {
 		if (!gameRef || !match) return <View/>;
 
 		let Panel = ActionPanel;
-		if (gameRef.ended) Panel = ReviewPanel;
-		if (!match.white)        Panel = InvitePanel;
+		if (gameRef.ended || Util.gameFinished(gameRef.match)) Panel = ReviewPanel;
+		if (!match.white) Panel = InvitePanel;
 
 
 		let backgroundColor = 'black';

@@ -1,14 +1,19 @@
 import * as React from 'react';
-import { View, SafeAreaView } from 'react-native';
+import { Animated, View, SafeAreaView } from 'react-native';
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
-import { Provider } from 'react-redux';
+import { Provider, useSelector } from 'react-redux';
 
 import Entry from './screens/EntryScreen';
 import Home from './screens/HomeScreen';
 import Game from './screens/GameScreen';
 import { vw } from './Util';
 import store from './redux/Store';
+
+import SideMenu from 'react-native-side-menu'
+import HomeUserMenu from './screens/HomeScreen/HomeUserMenu';
+import { showDrawer } from 'chessvibe/src/redux/Reducer';
+import Store from 'chessvibe/src/redux/Store';
 
 // Navigation
 const Navigator = createStackNavigator(
@@ -32,6 +37,7 @@ const Navigator = createStackNavigator(
 			},
 			gestureEnabled: false,
 		},
+		cardStyle: { backgroundColor: 'green' },
 	}
 );
 
@@ -39,14 +45,42 @@ const Navigator = createStackNavigator(
 const Container = createAppContainer(Navigator);
 
 
-export default class App extends React.Component {
-	render() {
-		return (
-			<Provider store={store}>
-				<SafeAreaView style={{ flex: 1, backgroundColor: 'black' }}>
-				<Container/>
-				</SafeAreaView>
-			</Provider>
-		);
-	}
+const userMenu = (navRef) => {
+	return (<HomeUserMenu visible={ true } navRef={ navRef }/>);
+};
+
+function AppContent() {
+	const drawerOpen = useSelector(state => state.drawerOpen);
+	const navRef = React.useRef(null);
+
+	return (
+		<SafeAreaView style={{ flex: 1, backgroundColor: 'black' }}>
+			<SideMenu
+				menu={ userMenu(navRef) }
+				openMenuOffset={ vw(70) }
+				onChange={() => {
+					Store.dispatch(showDrawer( !drawerOpen ));
+				}}
+				disableGestures={ true }
+				bounceBackOnOverdraw={ false }
+				animationFunction={(prop, value) => Animated.timing(prop, {
+					toValue: value,
+					// friction: 8,
+					duration: 200,
+					useNativeDriver: true,
+				})}
+				isOpen={ drawerOpen }>
+				<Container ref={navRef}/>
+			</SideMenu>
+		</SafeAreaView>
+	);
 }
+
+export default function App() {
+	return (
+		<Provider store={store} style={ {backgroundColor: 'black'} }>
+			<AppContent/>
+		</Provider>
+	);
+}
+

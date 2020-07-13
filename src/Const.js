@@ -21,6 +21,7 @@ export const IMAGE = {
 	NEW_GAME:  require('chessvibe/assets/new_game.png'),
 	NEW_MATCH: require('chessvibe/assets/new_match.png'),
 	SEND:      require('chessvibe/assets/send.png'),
+	LOGOUT:    require('chessvibe/assets/logout.png'),
 
 	// Chess pieces
 	BKing:   require("chessvibe/assets/BKing.png"),

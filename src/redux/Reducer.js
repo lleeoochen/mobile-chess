@@ -2,6 +2,8 @@ import { THEME, TEAM } from 'chessvibe/src/Const';
 // import Game from 'chessvibe/src/screens/GameScreen/Game';
 
 // Action types
+export const ACTION_USER = 'updateUser';
+export const ACTION_DRAWER = 'updateDrawer';
 export const ACTION_INIT_GAME = 'initGame';
 export const ACTION_THEME = 'theme';
 export const ACTION_RESET = 'reset';
@@ -15,13 +17,27 @@ const initState = {
 	theme: THEME.METAL,
 	blackPlayer: null,
 	whitePlayer: null,
+	drawerOpen: false,
+	user: null,
 };
 
 
 // Actions
+export const showDrawer = createAction(ACTION_DRAWER);
+function reduceDrawer(state, action) {
+	let data = action.data;
+	return {...state, ...{ drawerOpen: data }};
+}
+
+export const updateUser = createAction(ACTION_USER);
+function reduceUser(state, action) {
+	let data = action.data;
+	return {...state, ...{ user: data }};
+}
+
 export const reset = createAction(ACTION_RESET);
 function reduceReset(state, action) {
-	return initState;
+	return { ...initState, ...{ user: state.user } };
 }
 
 export const initGame = createAction(ACTION_INIT_GAME);
@@ -50,10 +66,12 @@ function reducePlayer(state, action) {
 export default function Reducer(state = initState, action) {
 	// 	console.log('Action Reducer', action.data.stats, state.game.stats);
 	switch (action.type) {
-		case ACTION_INIT_GAME:    return reduceInitGame(state, action);
-		case ACTION_THEME:        return reduceTheme(state, action);
-		case ACTION_RESET:        return reduceReset(state, action);
-		case ACTION_PLAYER:        return reducePlayer(state, action);
+		case ACTION_INIT_GAME: return reduceInitGame(state, action);
+		case ACTION_THEME:     return reduceTheme(state, action);
+		case ACTION_RESET:     return reduceReset(state, action);
+		case ACTION_PLAYER:    return reducePlayer(state, action);
+		case ACTION_DRAWER:    return reduceDrawer(state, action);
+		case ACTION_USER:      return reduceUser(state, action);
 		default: return state;
 	}
 }

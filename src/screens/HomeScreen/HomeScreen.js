@@ -9,6 +9,9 @@ import Cache from 'chessvibe/src/Cache';
 import Backend from 'chessvibe/src/Backend';
 import HomeUserMenu from './HomeUserMenu';
 import HomeCreateMenu from './HomeCreateMenu';
+import SideMenu from 'react-native-side-menu'
+import { showDrawer, updateUser } from 'chessvibe/src/redux/Reducer';
+import Store from 'chessvibe/src/redux/Store';
 
 const matchSize = vw((100 - 2 - 6 - 4) / 4);
 const borderRadius = vw();
@@ -40,7 +43,7 @@ export default function HomeScreen(props) {
 	React.useEffect(() => {
 		props.navigation.setParams({
 			openMenu: () => {
-				showUserMenu(true);
+				Store.dispatch(showDrawer( !Store.getState().drawerOpen ));
 			},
 			openCreate: () => {
 				showCreateMenu(true)
@@ -75,7 +78,6 @@ export default function HomeScreen(props) {
 		});
 	}
 
-
 	// Render function
 	function render() {
 		// Render
@@ -92,18 +94,6 @@ export default function HomeScreen(props) {
 					}>
 					{ $containers }
 				</ScrollView>
-
-				<HomeUserMenu
-					visible={ userMenuVisible }
-					user={ user.current }
-					stats={ stats }
-					onDismiss={ () => showUserMenu(false) }
-					onLogout={() => {
-						showUserMenu(false);
-						props.navigation.navigate('Entry', {
-							signout: true
-						});
-					}}/>
 
 				<HomeCreateMenu
 					visible={ createMenuVisible }
@@ -164,6 +154,8 @@ export default function HomeScreen(props) {
 			user.current = res.data;
 			let matches_dict = {};
 			let matches_promises = [];
+
+			Store.dispatch(updateUser( user.current ));
 
 			user.current.matches.forEach(match => {
 				let [match_id, enemy_id] = match.split('-');
@@ -314,7 +306,8 @@ const styles = StyleSheet.create({
 	},
 
 		playerScroll: {
-			alignItems: 'center'
+			alignItems: 'center',
+			backgroundColor: 'black',
 		},
 
 			playerBox: {
