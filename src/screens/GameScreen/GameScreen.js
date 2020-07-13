@@ -122,6 +122,7 @@ export default function GameScreen(props) {
 
 			// updateMatchDraw();
 
+
 			// if (match.black && match.white && game.timer_enable) {
 			if (match.black && match.white) {
 				game.updateMatchTimer(match);

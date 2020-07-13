@@ -33,8 +33,8 @@ export default class Game {
 		this.oldGrid = null;
 		this.newGrid = null;
 
-		this.black_timer = Const.MAX_TIME;
-		this.white_timer = Const.MAX_TIME;
+		this.black_timer = match.white_timer;
+		this.white_timer = match.black_timer;
 		this.interval = null;
 
 		this.match_id = match_id;
@@ -236,11 +236,12 @@ export default class Game {
 	}
 
 	updateMatchTimer(match) {
+		let turn = Util.unpack(match.moves[match.moves.length - 1]).turn == Const.TEAM.B ? Const.TEAM.W : Const.TEAM.B;
 		let t1 = new Date(match.updated);
 		let t2 = new Date();
 		let time_since_last_move = Math.floor((t2.getTime() - t1.getTime()) / 1000);
 
-		if (this.turn == Const.TEAM.B) {
+		if (turn == Const.TEAM.B) {
 			this.white_timer = match.white_timer;
 			this.black_timer = match.black_timer - time_since_last_move;
 		}
@@ -252,7 +253,7 @@ export default class Game {
 		// Many magic numbers.. please fix in the future.
 		let network_delay = 1000 - new Date().getMilliseconds();
 		if (network_delay > 270) {
-			if (this.turn == Const.TEAM.B) {
+			if (turn == Const.TEAM.B) {
 				this.black_timer --;
 			}
 			else {

@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import Slider from "react-native-slider";
 import { TextVibe, ModalVibe } from 'chessvibe/src/widgets';
 import AutoHeightImage from 'react-native-auto-height-image';
 import { vw } from 'chessvibe/src/Util';
@@ -45,20 +46,28 @@ export default function HomeCreateMenu(props) {
 			</View>
 
 			<TextVibe style={ styles.menuText }> Time </TextVibe>
-			<View style={ styles.menuContainer }>
-				<TouchableOpacity style={ styleFive } onPress={ () => setTime(TIME.FIVE) }>
-					<TextVibe style={ styles.menuBtnText }>5 min</TextVibe>
-				</TouchableOpacity>
-				<TouchableOpacity style={ styleFifteen } onPress={ () => setTime(TIME.FIFTEEN) }>
-					<TextVibe style={ styles.menuBtnText }>15 min</TextVibe>
-				</TouchableOpacity>
-				<TouchableOpacity style={ styleThirty } onPress={ () => setTime(TIME.THIRTY) }>
-					<TextVibe style={ styles.menuBtnText }>30 min</TextVibe>
-				</TouchableOpacity>
-				<TouchableOpacity style={ styleInfinite } onPress={ () => setTime(TIME.INFINITE) }>
-					<TextVibe style={ styles.menuBtnText }>∞</TextVibe>
-				</TouchableOpacity>
-			</View>
+			<Slider
+				step={ 1 }
+				maximumValue={ 3 }
+				thumbTintColor={ 'white' }
+				minimumTrackTintColor={ 'darkslateblue' }
+				maximumTrackTintColor={ 'grey' }
+				style={ styles.timeSlider }
+				onValueChange={(val) => {
+					     if (val == 0) setTime(TIME.FIVE)
+					else if (val == 1) setTime(TIME.FIFTEEN)
+					else if (val == 2) setTime(TIME.THIRTY)
+					else if (val == 3) setTime(TIME.INFINITE)
+				}}/>
+			<TextVibe style={ styles.timeText }>
+				{
+					time == TIME.FIVE ? '5 min' :
+					time == TIME.FIFTEEN ? '15 min' :
+					time == TIME.THIRTY ? '30 min' :
+					time == TIME.INFINITE ? '∞ min' :
+					''
+				}
+			</TextVibe>
 
 			<TouchableOpacity style={ styles.menuSubmitBtn } onPress={ () => onSubmit(theme, time) }>
 				<TextVibe style={ styles.menuSubmitBtnText }>Create Match</TextVibe>
@@ -71,14 +80,15 @@ const styles = StyleSheet.create({
 	menuText: {
 		color: 'white',
 		fontSize: vw(5),
-		textAlign: 'center',
+		// textAlign: 'center',
+		width: '100%',
 	},
 
 	menuContainer: {
 		flexDirection: 'row',
-		// marginRight: vw(-1),
 		width: '100%',
-		marginBottom: vw(2),
+		marginTop: vw(4),
+		marginBottom: vw(8),
 	},
 
 		menuBtn: {
@@ -105,6 +115,17 @@ const styles = StyleSheet.create({
 			winter: { backgroundColor: '#00b3de' },
 			metal: { backgroundColor: '#d2d2d2' },
 			nature: { backgroundColor: '#c7da61' },
+
+	timeSlider: {
+		width: '100%',
+	},
+
+	timeText: {
+		color: 'white',
+		fontSize: vw(5),
+		textAlign: 'right',
+		width: '100%',
+	},
 
 	menuSubmitBtn: {
 		marginTop: vw(5),
