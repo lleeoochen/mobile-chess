@@ -1,13 +1,24 @@
 import * as React from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, View, Image } from 'react-native';
 import Slider from "react-native-slider";
-import { TextVibe, ModalVibe } from 'chessvibe/src/widgets';
+import { TextVibe, ModalVibe, ButtonVibe } from 'chessvibe/src/widgets';
 import AutoHeightImage from 'react-native-auto-height-image';
 import { vw } from 'chessvibe/src/Util';
-import { THEME_ID, TIME } from 'chessvibe/src/Const';
+import { THEME_ID, TIME, IMAGE } from 'chessvibe/src/Const';
 
 const new_match_img = require('chessvibe/assets/new_match.png');
 const borderRadius = vw();
+
+const INDEX_TIME = [TIME.FIVE, TIME.TEN, TIME.FIFTEEN, TIME.THIRTY, TIME.INFINITE];
+const TIME_INDEX = {
+	[TIME.FIVE]: 0,
+	[TIME.TEN]: 1,
+	[TIME.FIFTEEN]: 2,
+	[TIME.THIRTY]: 3,
+	[TIME.INFINITE]: 4,
+};
+
+const INDEX_THEME = [THEME_ID.CLASSIC, THEME_ID.WINTER, THEME_ID.METAL, THEME_ID.NATURE];
 
 export default function HomeCreateMenu(props) {
 	let [ theme, setTheme ] = React.useState(THEME_ID.CLASSIC);
@@ -24,54 +35,60 @@ export default function HomeCreateMenu(props) {
 	let styleThirty   = { ...styles.menuBtn, ...(time == TIME.THIRTY ? styles.selected : {}) };
 	let styleInfinite = { ...styles.menuBtn, ...(time == TIME.INFINITE ? styles.selected : {}) };
 
+	function changeTheme(direction) {
+		let next = (theme + direction + INDEX_THEME.length) % INDEX_THEME.length;
+		setTheme(INDEX_THEME[next]);
+	}
+
+	let themeImage =
+		theme == THEME_ID.WINTER ? IMAGE.PREVIEW_WINTER :
+		theme == THEME_ID.METAL ? IMAGE.PREVIEW_METAL :
+		theme == THEME_ID.NATURE ? IMAGE.PREVIEW_NATURE :
+		IMAGE.PREVIEW_CLASSIC
+
 	return (
 		<ModalVibe
 			isVisible={ visible }
 			onDismiss={ onDismiss }>
 
 			<TextVibe style={ styles.menuText }> Theme </TextVibe>
-			<View style={ styles.menuContainer }>
-				<TouchableOpacity style={ styleClassic } onPress={ () => setTheme(THEME_ID.CLASSIC) }>
-					<TextVibe style={ styles.menuBtnText }>Classic</TextVibe>
-				</TouchableOpacity>
-				<TouchableOpacity style={ styleWinter } onPress={ () => setTheme(THEME_ID.WINTER) }>
-					<TextVibe style={ styles.menuBtnText }>Winter</TextVibe>
-				</TouchableOpacity>
-				<TouchableOpacity style={ styleMetal } onPress={ () => setTheme(THEME_ID.METAL) }>
-					<TextVibe style={ styles.menuBtnText }>Metal</TextVibe>
-				</TouchableOpacity>
-				<TouchableOpacity style={ styleNature } onPress={ () => setTheme(THEME_ID.NATURE) }>
-					<TextVibe style={ styles.menuBtnText }>Nature</TextVibe>
-				</TouchableOpacity>
+
+			<View style={ styles.themeContainer }>
+				<ButtonVibe style={ styles.themeBtn } onPress={() => changeTheme(-1)}>
+					<Image source={ IMAGE.BACK } style={ styles.themeBtnImage }/>
+				</ButtonVibe>
+				<Image source={ themeImage } style={ styles.themeImage }/>
+				<ButtonVibe style={ styles.themeBtn } onPress={() => changeTheme(1)}>
+					<Image source={ IMAGE.BACK } style={ [styles.themeBtnImage,  {transform: [{ scaleX: -1 }]}] }/>
+				</ButtonVibe>
 			</View>
 
 			<TextVibe style={ styles.menuText }> Time </TextVibe>
 			<Slider
+				value={ TIME_INDEX[time] }
 				step={ 1 }
-				maximumValue={ 3 }
+				maximumValue={ 4 }
 				thumbTintColor={ 'white' }
 				minimumTrackTintColor={ 'darkslateblue' }
 				maximumTrackTintColor={ 'grey' }
 				style={ styles.timeSlider }
 				onValueChange={(val) => {
-					     if (val == 0) setTime(TIME.FIVE)
-					else if (val == 1) setTime(TIME.FIFTEEN)
-					else if (val == 2) setTime(TIME.THIRTY)
-					else if (val == 3) setTime(TIME.INFINITE)
+					setTime(INDEX_TIME[val]);
 				}}/>
 			<TextVibe style={ styles.timeText }>
 				{
-					time == TIME.FIVE ? '5 min' :
-					time == TIME.FIFTEEN ? '15 min' :
-					time == TIME.THIRTY ? '30 min' :
+					time == TIME.FIVE     ? '5 min' :
+					time == TIME.TEN      ? '10 min' :
+					time == TIME.FIFTEEN  ? '15 min' :
+					time == TIME.THIRTY   ? '30 min' :
 					time == TIME.INFINITE ? '∞ min' :
 					''
 				}
 			</TextVibe>
 
-			<TouchableOpacity style={ styles.menuSubmitBtn } onPress={ () => onSubmit(theme, time) }>
+			<ButtonVibe style={ [styles.menuSubmitBtn] } onPress={ () => onSubmit(theme, time) }>
 				<TextVibe style={ styles.menuSubmitBtnText }>Create Match</TextVibe>
-			</TouchableOpacity>
+			</ButtonVibe>
 		</ModalVibe>
 	);
 }
@@ -116,20 +133,43 @@ const styles = StyleSheet.create({
 			metal: { backgroundColor: '#d2d2d2' },
 			nature: { backgroundColor: '#c7da61' },
 
+	themeContainer: {
+		flexDirection: 'row',
+		marginTop: vw(4),
+		marginBottom: vw(8),
+	},
+
+		themeImage: {
+			width: vw(65),
+			height: vw(65),
+		},
+
+		themeBtn: {
+			flex: 1,
+			height: vw(64.5),
+			backgroundColor: '#ffffff2e',
+			borderRadius: 0,
+		},
+
+			themeBtnImage: {
+				width: vw(10),
+				height: vw(10),
+			},
+
 	timeSlider: {
 		width: '100%',
 	},
 
-	timeText: {
-		color: 'white',
-		fontSize: vw(5),
-		textAlign: 'right',
-		width: '100%',
-	},
+		timeText: {
+			color: 'white',
+			fontSize: vw(5),
+			textAlign: 'right',
+			width: '100%',
+		},
 
 	menuSubmitBtn: {
 		marginTop: vw(5),
-		backgroundColor: 'white',
+		backgroundColor: '#ffffff2e',
 		padding: vw(2),
 		borderRadius: borderRadius,
 		width: '100%',
@@ -138,5 +178,6 @@ const styles = StyleSheet.create({
 		menuSubmitBtnText: {
 			fontSize: vw(5),
 			textAlign: 'center',
+			color: 'white',
 		}
 });

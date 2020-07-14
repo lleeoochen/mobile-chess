@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { ScrollView, View, StyleSheet, TouchableOpacity, Image, Animated } from 'react-native';
-import { TextVibe, ModalVibe } from 'chessvibe/src/widgets';
+import { TextVibe, ModalVibe, ButtonVibe } from 'chessvibe/src/widgets';
 import AutoHeightImage from 'react-native-auto-height-image';
 import { vw } from 'chessvibe/src/Util';
 import Cache from 'chessvibe/src/Cache';
@@ -65,28 +65,28 @@ export default function HomeUserMenu(props) {
 			<TextVibe style={ styles.menuText }>{ user.name || '' }</TextVibe>
 
 			<ScrollView contentContainerStyle={ styles.pageList }>
-				<TouchableOpacity style={ styles.pageItem }>
+				<ButtonVibe style={ styles.pageItem }>
 					<Image source={ IMAGE.DRAW } style={ styles.logoutBtnIcon }/>
 					<TextVibe style={ styles.logoutBtnText }>Play Chess</TextVibe>
-				</TouchableOpacity>
-				<TouchableOpacity style={ styles.pageItem }>
+				</ButtonVibe>
+				<ButtonVibe style={ styles.pageItem }>
 					<Image source={ IMAGE.HISTORY } style={ styles.logoutBtnIcon }/>
 					<TextVibe style={ styles.logoutBtnText }>Match History</TextVibe>
-				</TouchableOpacity>
-				<TouchableOpacity style={ styles.pageItem }>
+				</ButtonVibe>
+				<ButtonVibe style={ styles.pageItem }>
 					<Image source={ IMAGE.FRIENDS } style={ styles.logoutBtnIcon }/>
 					<TextVibe style={ styles.logoutBtnText }>Friends</TextVibe>
-				</TouchableOpacity>
-				<TouchableOpacity style={ styles.pageItem }>
+				</ButtonVibe>
+				<ButtonVibe style={ styles.pageItem }>
 					<Image source={ IMAGE.SETTINGS } style={ styles.logoutBtnIcon }/>
 					<TextVibe style={ styles.logoutBtnText }>Settings</TextVibe>
-				</TouchableOpacity>
+				</ButtonVibe>
 			</ScrollView>
 
-			<TouchableOpacity style={ styles.logoutBtn } onPress={ onLogout }>
+			<ButtonVibe style={ styles.logoutBtn } onPress={ onLogout }>
 				<Image source={ IMAGE.LOGOUT } style={ styles.logoutBtnIcon }/>
 				<TextVibe style={ styles.logoutBtnText }>Logout</TextVibe>
-			</TouchableOpacity>
+			</ButtonVibe>
 		</Animated.View>
 	);
 }
@@ -124,9 +124,10 @@ const styles = StyleSheet.create({
 		pageItem: {
 			color: 'white',
 			fontSize: vw(5),
-			marginTop: vw(5),
+			paddingVertical: vw(2.5),
 			width: '100%',
 			flexDirection: 'row',
+			justifyContent: 'flex-start',
 		},
 
 	logoutBtn: {
@@ -137,6 +138,7 @@ const styles = StyleSheet.create({
 		position: 'absolute',
 		flexDirection: 'row',
 		alignItems: 'center',
+		justifyContent: 'flex-start',
 	},
 
 		logoutBtnIcon: {

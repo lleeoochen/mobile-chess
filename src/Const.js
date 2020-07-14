@@ -26,6 +26,12 @@ export const IMAGE = {
 	FRIENDS:   require('chessvibe/assets/friends.png'),
 	SETTINGS:   require('chessvibe/assets/settings.png'),
 
+	// Preview images
+	PREVIEW_CLASSIC: require('chessvibe/assets/preview/classic.png'),
+	PREVIEW_WINTER:  require('chessvibe/assets/preview/winter.png'),
+	PREVIEW_METAL:   require('chessvibe/assets/preview/metal.png'),
+	PREVIEW_NATURE:  require('chessvibe/assets/preview/nature.png'),
+
 	// Chess pieces
 	BKing:   require("chessvibe/assets/BKing.png"),
 	BQueen:  require("chessvibe/assets/BQueen.png"),
@@ -176,6 +182,7 @@ export const THEME_ID = {
 
 export const TIME = {
 	FIVE: 5 * 60,
+	TEN: 10 * 60,
 	FIFTEEN: 15 * 60,
 	THIRTY: 30 * 60,
 	INFINITE: 100 * 60,

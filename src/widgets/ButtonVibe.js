@@ -9,6 +9,7 @@ export default function ButtonVibe(props) {
 	return (
 		<TouchableOpacity
 			activeOpacity={ 0.65 }
+			delayPressIn={0}
 			style={ {...styles.button, ...Object.assign({}, ...style)} }
 			{...attributes}>
 			{ children }

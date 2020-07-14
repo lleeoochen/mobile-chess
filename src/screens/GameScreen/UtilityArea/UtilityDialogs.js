@@ -134,7 +134,7 @@ export default function UtilityDialogs(props) {
 
 
 // Switch between dialogs
-function switchDialog(dialogHooks) {
+async function switchDialog(dialogHooks) {
 	for (let hook of dialogHooks) {
 		if (hook[0] == DIALOG.CLOSING) {
 			hook[1](DIALOG.HIDE);

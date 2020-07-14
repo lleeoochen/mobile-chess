@@ -1,7 +1,8 @@
 import * as React from 'react';
-import { View, Text, Image, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
+import { View, Text, Image, StyleSheet, Dimensions } from 'react-native';
 import { vw, vh } from '../Util';
 import TextVibe from './TextVibe';
+import ButtonVibe from './ButtonVibe';
 
 export default function ActionBar(title, left_img, left_img_on_press, right_img, right_img_on_press) {
 
@@ -18,14 +19,14 @@ export default function ActionBar(title, left_img, left_img_on_press, right_img,
 			<TextVibe style={ styles.title }>{ title }</TextVibe>
 		),
 		headerLeft: () => (
-			<TouchableOpacity style={ styles.btnbox } onPress={ on_left_press }>
+			<ButtonVibe style={ styles.btnbox } onPress={ on_left_press }>
 				<Image style={ styles.btn } source={ left_img }/>
-			</TouchableOpacity>
+			</ButtonVibe>
 		),
 		headerRight: () => (
-			<TouchableOpacity style={ styles.btnbox } onPress={ on_right_press }>
+			<ButtonVibe style={ styles.btnbox } onPress={ on_right_press }>
 				<Image style={ styles.btn } source={ right_img }/>
-			</TouchableOpacity>
+			</ButtonVibe>
 		),
 	};
 }

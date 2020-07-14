@@ -221,7 +221,7 @@ function handleEndingRequests(game, endingHook, triggerEnding) {
 
 		if (endingModalShow) {
 			let { match } = game;
-			endingModalShow = Util.gameFinished(match);
+			endingModalShow = !game.firstLoad && Util.gameFinished(match);
 		}
 
 		if (endingModalShow) {

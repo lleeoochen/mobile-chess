@@ -10,7 +10,7 @@ import Backend from 'chessvibe/src/Backend';
 import HomeUserMenu from './HomeUserMenu';
 import HomeCreateMenu from './HomeCreateMenu';
 import SideMenu from 'react-native-side-menu'
-import { showDrawer, updateUser } from 'chessvibe/src/redux/Reducer';
+import { showDrawer, updateUser, updateTheme } from 'chessvibe/src/redux/Reducer';
 import Store from 'chessvibe/src/redux/Store';
 
 const matchSize = vw((100 - 2 - 6 - 4) / 4);
@@ -141,9 +141,10 @@ export default function HomeScreen(props) {
 
 	// Create new match
 	function createMatch(theme, time) {
-		Backend.createMatch(theme, time).then(match => {
+		Backend.createMatch(theme, time).then(match_id => {
+			Cache.theme[match_id] = theme;
 			fetchMatches();
-			navigateGame(match);
+			navigateGame(match_id);
 		});
 	}
 
