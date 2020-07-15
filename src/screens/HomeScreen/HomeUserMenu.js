@@ -47,6 +47,12 @@ export default function HomeUserMenu(props) {
 		useNativeDriver: true,
 	}).start();
 
+	function navigateHome(tab) {
+		if (props.navRef && props.navRef.current && props.navRef.current._navigation) {
+			props.openDrawer(false);
+			props.navRef.current._navigation.navigate('Home', { tab });
+		}
+	}
 
 	// <TextVibe style={ styles.menuStat }>Win Rate { (stats.win * 100.0 / (stats.win + stats.lose)).toFixed(2) }%.</TextVibe>
 	// <TextVibe style={ styles.menuStat }>Win { stats.win } games.</TextVibe>
@@ -65,19 +71,19 @@ export default function HomeUserMenu(props) {
 			<TextVibe style={ styles.menuText }>{ user.name || '' }</TextVibe>
 
 			<ScrollView contentContainerStyle={ styles.pageList }>
-				<ButtonVibe style={ styles.pageItem }>
+				<ButtonVibe style={ styles.pageItem } onPress={() => navigateHome('play')}>
 					<Image source={ IMAGE.DRAW } style={ styles.logoutBtnIcon }/>
 					<TextVibe style={ styles.logoutBtnText }>Play Chess</TextVibe>
 				</ButtonVibe>
-				<ButtonVibe style={ styles.pageItem }>
+				<ButtonVibe style={ styles.pageItem } onPress={() => navigateHome('history')}>
 					<Image source={ IMAGE.HISTORY } style={ styles.logoutBtnIcon }/>
 					<TextVibe style={ styles.logoutBtnText }>Match History</TextVibe>
 				</ButtonVibe>
-				<ButtonVibe style={ styles.pageItem }>
+				<ButtonVibe style={ styles.pageItem } onPress={() => navigateHome('friends')}>
 					<Image source={ IMAGE.FRIENDS } style={ styles.logoutBtnIcon }/>
 					<TextVibe style={ styles.logoutBtnText }>Friends</TextVibe>
 				</ButtonVibe>
-				<ButtonVibe style={ styles.pageItem }>
+				<ButtonVibe style={ styles.pageItem } onPress={() => navigateHome('settings')}>
 					<Image source={ IMAGE.SETTINGS } style={ styles.logoutBtnIcon }/>
 					<TextVibe style={ styles.logoutBtnText }>Settings</TextVibe>
 				</ButtonVibe>
