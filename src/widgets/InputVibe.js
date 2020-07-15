@@ -4,7 +4,7 @@ import { vw, vh } from 'chessvibe/src/Util';
 
 
 export default function InputVibe(props) {
-	let { style, placeholder, onSubmitText } = props;
+	let { style, placeholder, onSubmitText, hidden=false } = props;
 	let { fontSize } = style;
 
 	const [ value, changeText ] = React.useState(placeholder);
@@ -21,6 +21,10 @@ export default function InputVibe(props) {
 		height: fontSize * 1.6,
 		paddingLeft: fontSize / 3,
 	}, ...style};
+
+	if (hidden) {
+		return (<View/>);
+	}
 
 	return (
 		<View style={ wrapStyle }>

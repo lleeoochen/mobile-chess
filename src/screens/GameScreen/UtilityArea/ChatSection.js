@@ -30,17 +30,27 @@ export default function ChatSection(props) {
 	// Render chat bubbles
 	let chatBubbles = chat.map((chatItem, index) => {
 		let messageObj = Util.unpackMessage(chatItem);
-		return (
-			<ChatBubble
-				key={ index }
-				right={ messageObj.team == gameRef.team }
-				onPress={ async () => {
-					Clipboard.setString(messageObj.message);
-					setChatState(DIALOG.REQUEST_SHOW);
-				}}>
-				{ messageObj.message }
-			</ChatBubble>
-		);
+
+		if (messageObj.message[0] == '[' && messageObj.message[messageObj.message.length - 1] == ']') {
+			return (
+				<TextVibe key={ index } style={ styles.systemMessage }>
+					{ messageObj.message }
+				</TextVibe>
+			);
+		}
+		else {
+			return (
+				<ChatBubble
+					key={ index }
+					right={ messageObj.team == gameRef.team }
+					onPress={ async () => {
+						Clipboard.setString(messageObj.message);
+						setChatState(DIALOG.REQUEST_SHOW);
+					}}>
+					{ messageObj.message }
+				</ChatBubble>
+			);
+		}
 	});
 
 	// Add message bubble sent from user
@@ -70,6 +80,7 @@ export default function ChatSection(props) {
 			<View style={ styles.chatDivider }/>
 			<View style={ [styles.chatBottom, colorBlack] }>
 				<InputVibe
+					hidden={ Util.gameFinished(gameRef.match) }
 					style={ styles.chatInput }
 					placeholder={ 'Type here...' }
 					onSubmitText={(value)=> {
@@ -130,6 +141,11 @@ const styles = StyleSheet.create({
 
 			rightMessage: {
 				textAlign: 'right',
+			},
+
+			systemMessage: {
+				textAlign: 'center',
+				color: 'lightgrey',
 			},
 
 		chatDivider: {

@@ -14,8 +14,8 @@ export default function ModalVibe(props) {
 	return (
 		<Modal
 			isVisible={ props.isVisible || false }
-			animationIn={'fadeIn'}
-			animationOut={'fadeOut'}
+			// animationIn={'fadeIn'}
+			// animationOut={'fadeOut'}
 			animationInTiming={100}
 			animationOutTiming={100}
 			backdropTransitionInTiming={100}
