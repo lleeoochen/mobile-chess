@@ -125,31 +125,16 @@ export default function HistoryTab(props) {
 					else if (win === 2) stats.resign += 1;
 				}
 			});
-
-			if (enemy.name) {
-				$containers.push(
-					<Animated.View key={ i } style={ [styles.playerBox, { opacity: fadein }] }>
-						<TextVibe style={ styles.playerName }>{ enemy.name }</TextVibe>
-						<ScrollView
-							horizontal={ true }>
-							{ $active_matches }
-							{ $inactive_matches }
-						</ScrollView>
-					</Animated.View>
-				);
-			}
-			else {
-				$containers.unshift(
-					<Animated.View key={ i } style={ [styles.playerBox, { opacity: fadein }] }>
-						<TextVibe style={ styles.playerName }>New Matches</TextVibe>
-						<ScrollView
-							horizontal={ true }>
-							{ $active_matches }
-							{ $inactive_matches }
-						</ScrollView>
-					</Animated.View>
-				);
-			}
+			$containers.push(
+				<Animated.View key={ i } style={ [styles.playerBox, { opacity: fadein }] }>
+					<TextVibe style={ styles.playerName }>{ enemy.name }</TextVibe>
+					<ScrollView
+						horizontal={ true }>
+						{ $active_matches }
+						{ $inactive_matches }
+					</ScrollView>
+				</Animated.View>
+			);
 		}
 
 		return { $containers, stats };
