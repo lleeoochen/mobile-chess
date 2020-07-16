@@ -15,10 +15,19 @@ import HomeUserMenu from './HomeUserMenu';
 import HomeCreateMenu from './HomeCreateMenu';
 import PlayTab from './PlayTab';
 import HistoryTab from './HistoryTab';
+import FriendsTab from './FriendsTab';
+import SettingsTab from './SettingsTab';
 
 
 const matchSize = vw((100 - 2 - 6 - 4) / 4);
 const borderRadius = vw();
+
+const NAV_TITLE = {
+	play: 'ChessVibe',
+	history: 'History',
+	friends: 'Friends',
+	settings: 'Settings',
+};
 
 const wait = (timeout) => {
 	return new Promise(resolve => {
@@ -29,7 +38,7 @@ const wait = (timeout) => {
 // Navigation
 HomeScreen.navigationOptions = ({navigation}) => {
 	const { params = {} } = navigation.state;
-	return ActionBar('ChessVibe', IMAGE.MENU, params.openMenu, IMAGE.NEW_GAME, params.openCreate);
+	return ActionBar(NAV_TITLE[params.tab], IMAGE.MENU, params.openMenu, IMAGE.NEW_GAME, params.openCreate);
 };
 
 
@@ -41,6 +50,9 @@ export default function HomeScreen(props) {
 	const onRefresh = React.useCallback(() => refresh(), []);
 	const user = React.useRef({});
 
+	const { params = {} } = props.navigation.state;
+	const { tab='play' } = params;
+	const hidden = { display: 'none' };
 
 	function refresh() {
 		setRefreshing(true);
@@ -49,16 +61,6 @@ export default function HomeScreen(props) {
 
 	// Mount
 	React.useEffect(() => {
-		props.navigation.setParams({
-			openMenu: () => {
-				props.screenProps.openDrawer(true);
-			},
-			openCreate: () => {
-				showCreateMenu(true)
-			},
-		});
-
-
 		Backend.init();
 		Backend.listenProfile(res => {
 			user.current = res.data;
@@ -68,9 +70,17 @@ export default function HomeScreen(props) {
 		});
 	}, []);
 
-	const { params = {} } = props.navigation.state;
-	const { tab='play' } = params;
-	const hidden = { display: 'none' };
+	React.useEffect(() => {
+		props.navigation.setParams({
+			tab: tab,
+			openMenu: () => {
+				props.screenProps.openDrawer(true);
+			},
+			openCreate: () => {
+				showCreateMenu(true)
+			},
+		});
+	}, [tab]);
 
 	// Render function
 	function render() {
@@ -92,6 +102,14 @@ export default function HomeScreen(props) {
 					refreshing={ refreshing }
 					refresh={ refresh }
 					style={ tab == 'history' ? {} : hidden }/>
+
+				<FriendsTab
+					navigation={ props.navigation }
+					style={ tab == 'friends' ? {} : hidden }/>
+
+				<SettingsTab
+					navigation={ props.navigation }
+					style={ tab == 'settings' ? {} : hidden }/>
 
 				<HomeCreateMenu
 					visible={ createMenuVisible }
@@ -127,6 +145,8 @@ export default function HomeScreen(props) {
 	function fetchMatches() {
 		let matches_dict = {};
 		let matches_promises = [];
+
+		console.log("yo im refreshing matches");
 
 		user.current.matches.forEach(match => {
 			let [match_id, enemy_id] = match.split('-');
@@ -193,7 +213,6 @@ export default function HomeScreen(props) {
 				if (results[i].enemy.name) oldMatches.push(results[i]);
 				else                       newMatches.push(results[i]);
 			}
-			console.log(oldMatches);
 
 			setMatches({
 				new: newMatches,
