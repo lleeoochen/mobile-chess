@@ -105,7 +105,9 @@ export default function HistoryTab(props) {
 					$active_matches.push(
 						<ButtonVibe key={ j } style={ {...styles.matchView, ...borderStyle} } onPress={() => navigateGame(match_name)} onLongPress={ () => selectMatch(match_name) }>
 							<AutoHeightImage width={ matchSize } source={ enemy.photo ? { uri: enemy.photo + '=c' } : IMAGE.NEW_MATCH } style={ styles.matchImg }/>
-							<TextVibe style={ {...styles.matchDate, ...colorStyle} }> { d_str } </TextVibe>
+							<View style={ {...styles.matchDate, ...colorStyle} }>
+								<TextVibe> { d_str } </TextVibe>
+							</View>
 						</ButtonVibe>
 					);
 				}
@@ -113,7 +115,9 @@ export default function HistoryTab(props) {
 					$inactive_matches.push(
 						<ButtonVibe key={ j } style={ {...styles.matchView, ...borderStyle} } onPress={() => navigateGame(match_name)} onLongPress={ () => selectMatch(match_name) }>
 							<AutoHeightImage width={ matchSize } source={ enemy.photo ? { uri: enemy.photo + '=c' } : IMAGE.NEW_MATCH } style={ styles.matchImg }/>
-							<TextVibe style={ {...styles.matchDate, ...colorStyle} }> { d_str } </TextVibe>
+							<View style={ {...styles.matchDate, ...colorStyle} }>
+								<TextVibe> { d_str } </TextVibe>
+							</View>
 						</ButtonVibe>
 					);
 
@@ -188,11 +192,15 @@ const styles = StyleSheet.create({
 				whiteBorder: { borderColor: 'white' },
 
 				matchImg: {
+					borderTopLeftRadius: vw(1),
+					borderTopRightRadius: vw(1),
 				},
 
 				matchDate: {
-					textAlign: 'center',
-					width: '100%'
+					alignItems: 'center',
+					width: '100%',
+					borderBottomLeftRadius: vw(1),
+					borderBottomRightRadius: vw(1),
 				},
 
 					greenColor: { backgroundColor: '#56be68' },
