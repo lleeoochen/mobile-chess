@@ -15,6 +15,7 @@ const borderRadius = vw();
 export default function HomeUserMenu(props) {
 	const user = useSelector(state => state.user) || {};
 	const zoomIn = new Animated.Value(props.drawerOpen ? 0.8 : 1);
+	const [ selected, setSelected ] = React.useState(0);
 
 	let {
 		visible=false,
@@ -27,6 +28,8 @@ export default function HomeUserMenu(props) {
 					props.navRef.current._navigation.navigate('Entry', {
 						signout: true
 					});
+
+					setSelected(0);
 				}, 500);
 			}
 		},
@@ -62,6 +65,46 @@ export default function HomeUserMenu(props) {
 	// <TextVibe style={ styles.menuStat }>Resign { stats.draw } games.</TextVibe>
 	// <TextVibe style={ styles.menuStat }>Ongoing { stats.ongoing } games.</TextVibe>
 
+	const configs = [
+		{
+			tab: 'play',
+			image: IMAGE.DRAW,
+			text: 'Play Chess',
+		},
+		{
+			tab: 'history',
+			image: IMAGE.HISTORY,
+			text: 'Match History',
+		},
+		{
+			tab: 'friends',
+			image: IMAGE.FRIENDS,
+			text: 'Friends',
+		},
+		{
+			tab: 'settings',
+			image: IMAGE.SETTINGS,
+			text: 'Settings',
+		},
+	];
+
+	let buttons = configs.map((config, index) => {
+		let { tab, image, text } = config;
+		let selectedStyle = selected == index ? styles.selected : {};
+
+		return (
+			<ButtonVibe
+				style={ [styles.pageItem, selectedStyle] }
+				onPress={ () => {
+					setSelected(index);
+					navigateHome(tab);
+				} }>
+				<Image source={ image } style={ styles.logoutBtnIcon }/>
+				<TextVibe style={ styles.logoutBtnText }>{ text }</TextVibe>
+			</ButtonVibe>
+		);
+	});
+
 	return (
 		<Animated.View style={ [styles.menu, { transform: [{ scale: zoomIn }] }] }>
 			<AutoHeightImage
@@ -71,22 +114,7 @@ export default function HomeUserMenu(props) {
 			<TextVibe style={ styles.menuText }>{ user.name || '' }</TextVibe>
 
 			<ScrollView contentContainerStyle={ styles.pageList }>
-				<ButtonVibe style={ styles.pageItem } onPress={() => navigateHome('play')}>
-					<Image source={ IMAGE.DRAW } style={ styles.logoutBtnIcon }/>
-					<TextVibe style={ styles.logoutBtnText }>Play Chess</TextVibe>
-				</ButtonVibe>
-				<ButtonVibe style={ styles.pageItem } onPress={() => navigateHome('history')}>
-					<Image source={ IMAGE.HISTORY } style={ styles.logoutBtnIcon }/>
-					<TextVibe style={ styles.logoutBtnText }>Match History</TextVibe>
-				</ButtonVibe>
-				<ButtonVibe style={ styles.pageItem } onPress={() => navigateHome('friends')}>
-					<Image source={ IMAGE.FRIENDS } style={ styles.logoutBtnIcon }/>
-					<TextVibe style={ styles.logoutBtnText }>Friends</TextVibe>
-				</ButtonVibe>
-				<ButtonVibe style={ styles.pageItem } onPress={() => navigateHome('settings')}>
-					<Image source={ IMAGE.SETTINGS } style={ styles.logoutBtnIcon }/>
-					<TextVibe style={ styles.logoutBtnText }>Settings</TextVibe>
-				</ButtonVibe>
+				{ buttons }
 			</ScrollView>
 
 			<ButtonVibe style={ styles.logoutBtn } onPress={ onLogout }>
@@ -101,12 +129,10 @@ const styles = StyleSheet.create({
 	menu: {
 		flex: 1,
 		backgroundColor: '#0d151f',
-		// alignItems: 'center',
 	},
 	menuText: {
 		color: 'white',
 		fontSize: vw(7),
-		// textAlign: 'center',
 		marginLeft: vw(5),
 	},
 
@@ -123,17 +149,18 @@ const styles = StyleSheet.create({
 	},
 
 	pageList: {
-		marginLeft: vw(5),
 		marginTop: vw(10),
 	},
 
 		pageItem: {
+			paddingLeft: vw(5),
 			color: 'white',
 			fontSize: vw(5),
 			paddingVertical: vw(2.5),
 			width: '100%',
 			flexDirection: 'row',
 			justifyContent: 'flex-start',
+			borderRadius: 0,
 		},
 
 	logoutBtn: {
@@ -158,5 +185,9 @@ const styles = StyleSheet.create({
 			textAlign: 'center',
 			color: 'white',
 			textAlign: 'left',
+		},
+
+		selected: {
+			backgroundColor: '#1a283a'
 		},
 });

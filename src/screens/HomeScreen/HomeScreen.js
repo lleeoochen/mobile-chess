@@ -35,7 +35,17 @@ HomeScreen.navigationOptions = ({navigation}) => {
 
 // Home Screen
 export default function HomeScreen(props) {
+	const [ matches, setMatches ] = React.useState({});
 	const [ createMenuVisible, showCreateMenu ] = React.useState(false);
+	const [ refreshing, setRefreshing ] = React.useState(false);
+	const onRefresh = React.useCallback(() => refresh(), []);
+	const user = React.useRef({});
+
+
+	function refresh() {
+		setRefreshing(true);
+		fetchMatches();
+	}
 
 	// Mount
 	React.useEffect(() => {
@@ -47,6 +57,7 @@ export default function HomeScreen(props) {
 				showCreateMenu(true)
 			},
 		});
+		fetchMatches();
 	}, []);
 
 	const { params = {} } = props.navigation.state;
@@ -58,8 +69,21 @@ export default function HomeScreen(props) {
 		return (
 			<SafeAreaView style={ styles.view }>
 				<StatusBar hidden={ true }/>
-				<PlayTab    navigation={ props.navigation } style={ tab == 'play' ? {} : hidden }/>
-				<HistoryTab navigation={ props.navigation } style={ tab == 'history' ? {} : hidden }/>
+
+				<PlayTab
+					navigation={ props.navigation }
+					navigateGame={ navigateGame }
+					newMatches={ matches.new }
+					showCreateMenu={ showCreateMenu }
+					style={ tab == 'play' ? {} : hidden }/>
+
+				<HistoryTab
+					navigation={ props.navigation }
+					oldMatches={ matches.old }
+					navigateGame={ navigateGame }
+					refreshing={ refreshing }
+					refresh={ refresh }
+					style={ tab == 'history' ? {} : hidden }/>
 
 				<HomeCreateMenu
 					visible={ createMenuVisible }
@@ -78,7 +102,7 @@ export default function HomeScreen(props) {
 	function navigateGame(match) {
 		props.navigation.navigate('Game', {
 			match: match,
-			// refresh: () => fetchMatches()
+			refresh: () => fetchMatches()
 		});
 	}
 
@@ -86,8 +110,78 @@ export default function HomeScreen(props) {
 	function createMatch(theme, time) {
 		Backend.createMatch(theme, time).then(match_id => {
 			Cache.theme[match_id] = theme;
-			// fetchMatches();
+			fetchMatches();
 			navigateGame(match_id);
+		});
+	}
+
+	// Fetch user matches
+	function fetchMatches() {
+		Backend.init();
+		Backend.listenProfile(res => {
+			user.current = res.data;
+			let matches_dict = {};
+			let matches_promises = [];
+
+			Store.dispatch(updateUser( user.current ));
+
+			user.current.matches.forEach(match => {
+				let [match_id, enemy_id] = match.split('-');
+				enemy_id = enemy_id || 'none';
+				matches_dict[enemy_id] = matches_dict[enemy_id] || [];
+				matches_dict[enemy_id].push(match_id);
+			});
+
+			for (let enemy_id in matches_dict) {
+				matches_promises.push(
+					Backend.getMatches(enemy_id, matches_dict[enemy_id])
+				);
+			}
+
+			Promise.all(matches_promises).then(async results => {
+				// Sort matches by dates for each opponent
+				for (let i in results) {
+					results[i].matches.sort((a, b) => {
+						let a_time = a[1].updated || 0;
+						if (typeof a_time == 'object') a_time = 0;
+						if (Util.gameFinished(a[1])) a_time -= new Date().getTime();
+
+						let b_time = b[1].updated || 0;
+						if (typeof b_time == 'object') b_time = 0;
+						if (Util.gameFinished(b[1])) b_time -= new Date().getTime();
+
+						return b_time - a_time;
+					});
+				}
+
+				// Sort opponent by latest date
+				results.sort((r1, r2) => {
+					let r1_time = r1.matches[0][1].updated || 0;
+					if (typeof r1_time == 'object') r1_time = 0;
+					if (Util.gameFinished(r1.matches[0][1])) r1_time -= new Date().getTime();
+
+					let r2_time = r2.matches[0][1].updated || 0;
+					if (typeof r2_time == 'object') r2_time = 0;
+					if (Util.gameFinished(r2.matches[0][1])) r2_time -= new Date().getTime();
+
+					return r2_time - r1_time;
+				});
+
+
+				let newMatches = [];
+				let oldMatches = [];
+
+				for (let i in results) {
+					if (results[i].enemy.name) oldMatches.push(results[i]);
+					else                       newMatches.push(results[i]);
+				}
+
+				setMatches({
+					new: newMatches,
+					old: oldMatches,
+				});
+				setRefreshing(false);
+			});
 		});
 	}
 
@@ -109,47 +203,4 @@ const styles = StyleSheet.create({
 			alignItems: 'center',
 			backgroundColor: '#1a283a',
 		},
-
-			playerBox: {
-				// backgroundColor: 'darkgrey',
-				width: '98%',
-				padding: '3%',
-				borderRadius: borderRadius,
-				marginBottom: vw(),
-			},
-
-				playerName: {
-					fontSize: 20,
-					color: 'white',
-					paddingBottom: vw(2),
-				},
-
-				matchView: {
-					width: matchSize,
-					marginRight: vw(2),
-					borderRadius: borderRadius,
-					shadowColor: "#000",
-					shadowOffset: {
-						width: 0,
-						height: 1,
-					},
-					shadowOpacity: 0.22,
-					shadowRadius: 2.22,
-
-					elevation: 3,
-				},
-
-					blackBorder: { borderColor: 'black' },
-					whiteBorder: { borderColor: 'white' },
-
-					matchImg: {
-					},
-
-					matchDate: {
-						textAlign: 'center',
-						width: '100%'
-					},
-
-						greenColor: { backgroundColor: '#56be68' },
-						greyColor: { backgroundColor: '#7f7f7f' },
 });

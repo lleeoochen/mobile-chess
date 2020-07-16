@@ -26,6 +26,12 @@ export const IMAGE = {
 	FRIENDS:   require('chessvibe/assets/friends.png'),
 	SETTINGS:   require('chessvibe/assets/settings.png'),
 
+	// Theme images
+	CLASSIC: require('chessvibe/assets/background.jpg'),
+	WINTER:  require('chessvibe/assets/background_winter.jpg'),
+	METAL:   require('chessvibe/assets/background_metal.jpg'),
+	NATURE:  require('chessvibe/assets/background_nature.jpg'),
+
 	// Preview images
 	PREVIEW_CLASSIC: require('chessvibe/assets/preview/classic.png'),
 	PREVIEW_WINTER:  require('chessvibe/assets/preview/winter.png'),
@@ -76,7 +82,7 @@ export const THEME = Object.freeze({
 			DESKTOP:            "#494949",
 			MOBILE:             "#89898980",
 		},
-		BACKGROUND_IMAGE:       require("chessvibe/assets/background.jpg"),
+		BACKGROUND_IMAGE:       IMAGE.CLASSIC,
 		NAME_TITLE_COLOR:       "white"
 	},
 
@@ -92,7 +98,7 @@ export const THEME = Object.freeze({
 			DESKTOP:            "#494949",
 			MOBILE:             "#FFFFFF33",
 		},
-		BACKGROUND_IMAGE:       require("chessvibe/assets/background_winter.jpg"),
+		BACKGROUND_IMAGE:       IMAGE.WINTER,
 		NAME_TITLE_COLOR:       "white",
 	},
 
@@ -108,7 +114,7 @@ export const THEME = Object.freeze({
 			DESKTOP:            "#494949",
 			MOBILE:             "#89898980",
 		},
-		BACKGROUND_IMAGE:       require("chessvibe/assets/background_metal.jpg"),
+		BACKGROUND_IMAGE:       IMAGE.METAL,
 		NAME_TITLE_COLOR:       "white"
 	},
 
@@ -124,7 +130,7 @@ export const THEME = Object.freeze({
 			DESKTOP:            "#494949",
 			MOBILE:             "#00000080",
 		},
-		BACKGROUND_IMAGE:       require("chessvibe/assets/background_nature.jpg"),
+		BACKGROUND_IMAGE:       IMAGE.NATURE,
 		NAME_TITLE_COLOR:       "white",
 	},
 });

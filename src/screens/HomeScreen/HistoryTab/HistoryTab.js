@@ -16,31 +16,21 @@ const borderRadius = vw();
 
 // Home Screen
 export default function HistoryTab(props) {
-	const [ allMatches, setMatches ] = React.useState([]);
-	const [ refreshing, setRefreshing ] = React.useState(false);
+	const { oldMatches, navigateGame, refreshing, refresh } = props;
 	// const [ selectedMatch, selectMatch ] = React.useState(null);
 	const user = React.useRef({});
 	const fadein = new Animated.Value(0);
 	const onRefresh = React.useCallback(() => refresh(), []);
 
-	// Mount
-	React.useEffect(() => {
-		fetchMatches();
-	}, []);
-
-	function refresh() {
-		setRefreshing(true);
-		fetchMatches();
-	}
 
 	React.useEffect(() => {
 		Animated.timing(fadein, {
 			toValue: 1,
-			duration: 1500,
+			duration: 500,
 			useNativeDriver: true,
 		})
 		.start();
-	}, [allMatches]);
+	}, [oldMatches]);
 
 
 	function deleteMatch(match_id) {
@@ -62,7 +52,7 @@ export default function HistoryTab(props) {
 				<ScrollView
 					contentContainerStyle={ styles.playerScroll }
 					refreshControl={
-						<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+						<RefreshControl refreshing={ refreshing } onRefresh={ onRefresh } />
 					}>
 					{ $containers }
 				</ScrollView>
@@ -81,72 +71,6 @@ export default function HistoryTab(props) {
 
 	// ====================== Functions ======================
 
-	// Navigate to game
-	function navigateGame(match) {
-		props.navigation.navigate('Game', {
-			match: match,
-			refresh: () => fetchMatches()
-		});
-	}
-
-	// Fetch user matches
-	function fetchMatches() {
-		Backend.init();
-		Backend.listenProfile(res => {
-			user.current = res.data;
-			let matches_dict = {};
-			let matches_promises = [];
-
-			Store.dispatch(updateUser( user.current ));
-
-			user.current.matches.forEach(match => {
-				let [match_id, enemy_id] = match.split('-');
-				enemy_id = enemy_id || 'none';
-				matches_dict[enemy_id] = matches_dict[enemy_id] || [];
-				matches_dict[enemy_id].push(match_id);
-			});
-
-			for (let enemy_id in matches_dict) {
-				matches_promises.push(
-					Backend.getMatches(enemy_id, matches_dict[enemy_id])
-				);
-			}
-
-			Promise.all(matches_promises).then(async results => {
-				// Sort matches by dates for each opponent
-				for (let i in results) {
-					results[i].matches.sort((a, b) => {
-						let a_time = a[1].updated || 0;
-						if (typeof a_time == 'object') a_time = 0;
-						if (Util.gameFinished(a[1])) a_time -= new Date().getTime();
-
-						let b_time = b[1].updated || 0;
-						if (typeof b_time == 'object') b_time = 0;
-						if (Util.gameFinished(b[1])) b_time -= new Date().getTime();
-
-						return b_time - a_time;
-					});
-				}
-
-				// Sort opponent by latest date
-				results.sort((r1, r2) => {
-					let r1_time = r1.matches[0][1].updated || 0;
-					if (typeof r1_time == 'object') r1_time = 0;
-					if (Util.gameFinished(r1.matches[0][1])) r1_time -= new Date().getTime();
-
-					let r2_time = r2.matches[0][1].updated || 0;
-					if (typeof r2_time == 'object') r2_time = 0;
-					if (Util.gameFinished(r2.matches[0][1])) r2_time -= new Date().getTime();
-
-					return r2_time - r1_time;
-				});
-
-				setMatches(results);
-				setRefreshing(false);
-			});
-		});
-	}
-
 	// Render user matches
 	function renderMatches() {
 		let $containers = [];
@@ -159,8 +83,8 @@ export default function HistoryTab(props) {
 			resign: 0,
 		};
 
-		for (let i in allMatches) {
-			let { enemy, matches } = allMatches[i];
+		for (let i in oldMatches) {
+			let { enemy, matches } = oldMatches[i];
 			let $active_matches = [];
 			let $inactive_matches = [];
 
@@ -247,51 +171,45 @@ const styles = StyleSheet.create({
 		backgroundColor: '#1a283a',
 	},
 
-		playerScroll: {
-			alignItems: 'center',
-			backgroundColor: '#1a283a',
+		playerBox: {
+			width: '100%',
+			padding: '3%',
+			borderRadius: borderRadius,
+			marginBottom: vw(),
 		},
 
-			playerBox: {
-				// backgroundColor: 'darkgrey',
-				width: '98%',
-				padding: '3%',
-				borderRadius: borderRadius,
-				marginBottom: vw(),
+			playerName: {
+				fontSize: 20,
+				color: 'white',
+				paddingBottom: vw(2),
 			},
 
-				playerName: {
-					fontSize: 20,
-					color: 'white',
-					paddingBottom: vw(2),
+			matchView: {
+				width: matchSize,
+				marginRight: vw(2),
+				borderRadius: borderRadius,
+				shadowColor: "#000",
+				shadowOffset: {
+					width: 0,
+					height: 1,
+				},
+				shadowOpacity: 0.22,
+				shadowRadius: 2.22,
+
+				elevation: 3,
+			},
+
+				blackBorder: { borderColor: 'black' },
+				whiteBorder: { borderColor: 'white' },
+
+				matchImg: {
 				},
 
-				matchView: {
-					width: matchSize,
-					marginRight: vw(2),
-					borderRadius: borderRadius,
-					shadowColor: "#000",
-					shadowOffset: {
-						width: 0,
-						height: 1,
-					},
-					shadowOpacity: 0.22,
-					shadowRadius: 2.22,
-
-					elevation: 3,
+				matchDate: {
+					textAlign: 'center',
+					width: '100%'
 				},
 
-					blackBorder: { borderColor: 'black' },
-					whiteBorder: { borderColor: 'white' },
-
-					matchImg: {
-					},
-
-					matchDate: {
-						textAlign: 'center',
-						width: '100%'
-					},
-
-						greenColor: { backgroundColor: '#56be68' },
-						greyColor: { backgroundColor: '#7f7f7f' },
+					greenColor: { backgroundColor: '#56be68' },
+					greyColor: { backgroundColor: '#7f7f7f' },
 });

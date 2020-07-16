@@ -27,6 +27,7 @@ export default function UtilityArea(props) {
 
 	var flash = new Animated.Value(1);
 	const [ flashing, setFlashing ] = React.useState(false);
+	const [ drawerOpen, setDrawerOpen ] = React.useState(false);
 
 	const theme = useSelector(state => state.theme);
 	const match = useSelector(state => state.game.match, strict_equal);
@@ -123,6 +124,15 @@ export default function UtilityArea(props) {
 		);
 	};
 
+	function onOpenStart() {
+		setFlashing(false);
+		setDrawerOpen(true);
+	}
+
+	function onCloseEnd() {
+		setDrawerOpen(false);
+	}
+
 
 	handleUndoRequests(gameRef, undoHook);
 	handleDrawRequests(gameRef, drawHook);
@@ -137,7 +147,7 @@ export default function UtilityArea(props) {
 		for (;chatApplied.current < match.chat.length; chatApplied.current++) {
 			if (Util.unpackMessage(match.chat[chatApplied.current]).team != gameRef.team) {
 				chatApplied.current = match.chat.length;
-				setFlashing(true);
+				setFlashing(!drawerOpen);
 				break;
 			}
 		}
@@ -154,7 +164,8 @@ export default function UtilityArea(props) {
 				renderHeader={ renderHeader }
 				enabledBottomClamp={ true }
 				style={ styles.pullupView }
-				onOpenStart={ () => setFlashing(false) }/>
+				onCloseEnd={ () => onCloseEnd() }
+				onOpenStart={ () => onOpenStart() }/>
 
 			<UtilityDialogs
 				resignHook={ resignHook }
@@ -321,10 +332,10 @@ const styles = StyleSheet.create({
 		// backgroundColor: '#003333',
 		// borderWidth: margin_size * 0.5,
 		// borderColor: 'lightgrey',
-		backgroundColor: '#1c1c1c',
+		backgroundColor: '#1a283a',
 	},
 
 	divider: {
-		height: vw(15),
+		height: vw(5),
 	},
 });

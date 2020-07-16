@@ -7,7 +7,7 @@ import { isIphoneX, getStatusBarHeight, getBottomSpace } from 'react-native-ipho
 import { initGame, updateTheme, updatePlayer, reset } from 'chessvibe/src/redux/Reducer';
 import { ActionBar } from 'chessvibe/src/widgets';
 import Store from 'chessvibe/src/redux/Store';
-import { THEME, TEAM, IMAGE } from 'chessvibe/src/Const';
+import { THEME, TEAM, IMAGE, MAX_TIME } from 'chessvibe/src/Const';
 import Util, { vw, vh } from 'chessvibe/src/Util';
 
 import Cache from 'chessvibe/src/Cache';
@@ -123,8 +123,8 @@ export default function GameScreen(props) {
 			// updateMatchDraw();
 
 
-			// if (match.black && match.white && game.timer_enable) {
-			if (match.black && match.white) {
+			let timerEnable = match.black_timer < MAX_TIME && match.white_timer < MAX_TIME;
+			if (match.black && match.white && timerEnable) {
 				game.updateMatchTimer(match);
 			}
 
