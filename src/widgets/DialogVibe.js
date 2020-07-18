@@ -1,13 +1,17 @@
 import * as React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { vw, vh } from 'chessvibe/src/Util';
-import { THEME } from 'chessvibe/src/Const';
+import { THEME, APP_THEME } from 'chessvibe/src/Const';
+import { useSelector } from 'react-redux';
 
 import TextVibe from './TextVibe';
 import ButtonVibe from './ButtonVibe';
 import ModalVibe from './ModalVibe';
 
 export default function DialogVibe(props) {
+	const isDarkTheme = useSelector(state => state.isDarkTheme);
+	const appTheme = isDarkTheme ? APP_THEME.DARK : APP_THEME.LIGHT;
+
 	let {
 		visible=false,
 		onSuccess=() => {},
@@ -25,6 +29,10 @@ export default function DialogVibe(props) {
 		backgroundColor: theme.COLOR_BOARD_LIGHT,
 		color: theme.COLOR_BOARD_LIGHT,
 	}};
+
+	let textColor = {
+		color: appTheme.COLOR
+	};
 
 	let cancelBtn = null, confirmBtn = null;
 
@@ -51,7 +59,7 @@ export default function DialogVibe(props) {
 			onModalHide={ () => onModalHide() }>
 			<View style={ styles.squareBack }></View>
 
-			<TextVibe style={ styles.text }>{ title }</TextVibe>
+			<TextVibe style={ [styles.text, textColor] }>{ title }</TextVibe>
 			<View style={ styles.btnContainer }>
 				{ cancelBtn }
 				{ confirmBtn }

@@ -3,42 +3,88 @@ import { Switch, Animated, View, SafeAreaView, ScrollView, StyleSheet, StatusBar
 import { ActionBar, WebVibe, TextVibe, ModalVibe, ButtonVibe, DialogVibe } from 'chessvibe/src/widgets';
 import AutoHeightImage from 'react-native-auto-height-image';
 
-import { URL, TEAM, IMAGE } from 'chessvibe/src/Const';
+import { URL, TEAM, IMAGE, STORAGE_IS_DARK_THEME, APP_THEME } from 'chessvibe/src/Const';
 import Util, { formatDate, vw, wh, winType } from 'chessvibe/src/Util';
+import Storage from 'chessvibe/src/Storage';
 import Cache from 'chessvibe/src/Cache';
 import Backend from 'chessvibe/src/Backend';
 import SideMenu from 'react-native-side-menu'
-import { showDrawer, updateUser, updateTheme } from 'chessvibe/src/redux/Reducer';
+import { setIsDarkTheme } from 'chessvibe/src/redux/Reducer';
 import Store from 'chessvibe/src/redux/Store';
+import { useSelector } from 'react-redux';
 
 const matchSize = vw((100 - 2 - 6 - 4) / 4);
 const borderRadius = vw();
 
 // Home Screen
 export default function SettingsTab(props) {
+	const { isDarkTheme } = props;
+	let appTheme = isDarkTheme ? APP_THEME.DARK : APP_THEME.LIGHT;
+
+	let viewStyle = [styles.view, props.style, {
+		backgroundColor: appTheme.CONTENT_BACKGROUND
+	}];
+
+	let borderStyle = {
+		height: 1,
+		backgroundColor: appTheme.SETTING_BORDER,
+	};
+
 	return (
-		<View style={ [styles.view, props.style] }>
+		<View style={ viewStyle }>
 			<ScrollView>
 				<View style={ styles.divider }/>
-				<Setting title={ 'Dark Theme' } initEnabled={ true }/>
-				<Setting title={ 'Push Notification' } initEnabled={ true }/>
+
+				<View style={ borderStyle }/>
+
+					<Setting
+						title={ 'Dark Theme' }
+						initEnabled={ isDarkTheme }
+						appTheme={ appTheme }
+						onChange={ (enabled) => {
+							Store.dispatch(setIsDarkTheme( enabled ));
+							Storage.set(STORAGE_IS_DARK_THEME, enabled + '');
+						} }/>
+					<View style={ borderStyle }/>
+					<Setting title={ 'Push Notification' } initEnabled={ true } appTheme={ appTheme }/>
+
+				<View style={ borderStyle }/>
+
 				<View style={ styles.divider }/>
-				<Setting title={ 'Report Issue' } type={ 'more' }/>
-				<Setting title={ 'About' } type={ 'more' }/>
+
+				<View style={ borderStyle }/>
+
+					<Setting title={ 'Report Issue' } type={ 'more' } appTheme={ appTheme }/>
+					<View style={ borderStyle }/>
+					<Setting title={ 'About' } type={ 'more' } appTheme={ appTheme }/>
+
+				<View style={ borderStyle }/>
 			</ScrollView>
 		</View>
 	);
 }
 
 function Setting(props) {
-	const { title, initEnabled=false, type='switch' } = props;
+	const { title, appTheme, initEnabled=false, type='switch', onChange=()=>{} } = props;
 	const [isEnabled, setIsEnabled] = React.useState(initEnabled);
-	const toggleSwitch = () => setIsEnabled(previousState => !previousState);
+	const toggleSwitch = () => {
+		onChange(!isEnabled);
+		setIsEnabled(previousState => !previousState);
+	};
+
+	let settingStyle = [styles.setting, {
+		backgroundColor: appTheme.SETTING_BACKGROUND,
+		borderColor: appTheme.SETTING_BORDER,
+	}];
+
+	let textStyle = [styles.settingText, {
+		color: appTheme.COLOR,
+	}];
 
 	if (type == 'switch') {
 		return (
-			<View style={ styles.setting }>
-				<TextVibe style={ styles.settingText }>{ title }</TextVibe>
+			<View style={ settingStyle }>
+				<TextVibe style={ textStyle }>{ title }</TextVibe>
 				<Switch
 					onValueChange={ toggleSwitch }
 					trackColor={{ false: "#767577", true: "#81b0ff" }}
@@ -49,8 +95,8 @@ function Setting(props) {
 	}
 	else if (type == 'more') {
 		return (
-			<ButtonVibe style={ styles.setting }>
-				<TextVibe style={ styles.settingText }>{ title }</TextVibe>
+			<ButtonVibe style={ settingStyle }>
+				<TextVibe style={ textStyle }>{ title }</TextVibe>
 				<Image source={ IMAGE.BACK } style={ [styles.settingsIcon,  {transform: [{ scaleX: -1 }]}] }/>
 			</ButtonVibe>
 		);
@@ -62,17 +108,15 @@ const styles = StyleSheet.create({
 	view: {
 		alignSelf: 'stretch',
 		flex: 1,
-		backgroundColor: '#1a283a',
 	},
 
 		setting: {
-			backgroundColor: '#2a4261',
 			padding: vw(3),
 			paddingHorizontal: vw(4),
 			flexDirection: 'row',
 			alignItems: 'center',
-			borderBottomWidth: 1,
-			borderColor: '#1a283a',
+			// borderBottomWidth: 1,
+			borderRadius: 0,
 		},
 
 		settingsIcon: {
@@ -92,5 +136,5 @@ const styles = StyleSheet.create({
 
 	divider: {
 		height: vw(10),
-	}
+	},
 });

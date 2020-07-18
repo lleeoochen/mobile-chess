@@ -5,7 +5,9 @@ import AutoHeightImage from 'react-native-auto-height-image';
 import SideMenu from 'react-native-side-menu';
 
 import Store from 'chessvibe/src/redux/Store';
+import { useSelector } from 'react-redux';
 import { showDrawer, updateUser, updateTheme } from 'chessvibe/src/redux/Reducer';
+
 import { URL, TEAM, IMAGE } from 'chessvibe/src/Const';
 import Util, { formatDate, vw, wh, winType } from 'chessvibe/src/Util';
 import Cache from 'chessvibe/src/Cache';
@@ -38,12 +40,14 @@ const wait = (timeout) => {
 // Navigation
 HomeScreen.navigationOptions = ({navigation}) => {
 	const { params = {} } = navigation.state;
-	return ActionBar(NAV_TITLE[params.tab], IMAGE.MENU, params.openMenu, IMAGE.NEW_GAME, params.openCreate);
+	return ActionBar(NAV_TITLE[params.tab], 'MENU', params.openMenu, 'NEW_GAME', params.openCreate, params.isDarkTheme);
 };
 
 
 // Home Screen
 export default function HomeScreen(props) {
+	const isDarkTheme = useSelector(state => state.isDarkTheme);
+
 	const [ matches, setMatches ] = React.useState({});
 	const [ createMenuVisible, showCreateMenu ] = React.useState(false);
 	const [ refreshing, setRefreshing ] = React.useState(false);
@@ -73,6 +77,7 @@ export default function HomeScreen(props) {
 	React.useEffect(() => {
 		props.navigation.setParams({
 			tab: tab,
+			isDarkTheme: isDarkTheme,
 			openMenu: () => {
 				props.screenProps.openDrawer(true);
 			},
@@ -80,7 +85,7 @@ export default function HomeScreen(props) {
 				showCreateMenu(true)
 			},
 		});
-	}, [tab]);
+	}, [tab, isDarkTheme]);
 
 	// Render function
 	function render() {
@@ -93,6 +98,7 @@ export default function HomeScreen(props) {
 					navigateGame={ navigateGame }
 					newMatches={ matches.new }
 					showCreateMenu={ showCreateMenu }
+					isDarkTheme={ isDarkTheme }
 					style={ tab == 'play' ? {} : hidden }/>
 
 				<HistoryTab
@@ -101,14 +107,17 @@ export default function HomeScreen(props) {
 					navigateGame={ navigateGame }
 					refreshing={ refreshing }
 					refresh={ refresh }
+					isDarkTheme={ isDarkTheme }
 					style={ tab == 'history' ? {} : hidden }/>
 
 				<FriendsTab
 					navigation={ props.navigation }
+					isDarkTheme={ isDarkTheme }
 					style={ tab == 'friends' ? {} : hidden }/>
 
 				<SettingsTab
 					navigation={ props.navigation }
+					isDarkTheme={ isDarkTheme }
 					style={ tab == 'settings' ? {} : hidden }/>
 
 				<HomeCreateMenu
@@ -233,11 +242,9 @@ const styles = StyleSheet.create({
 	view: {
 		alignSelf: 'stretch',
 		flex: 1,
-		backgroundColor: '#1a283a',
 	},
 
 		playerScroll: {
 			alignItems: 'center',
-			backgroundColor: '#1a283a',
 		},
 });

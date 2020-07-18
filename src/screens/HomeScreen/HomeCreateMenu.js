@@ -4,7 +4,8 @@ import Slider from "react-native-slider";
 import { TextVibe, ModalVibe, ButtonVibe } from 'chessvibe/src/widgets';
 import AutoHeightImage from 'react-native-auto-height-image';
 import { vw } from 'chessvibe/src/Util';
-import { THEME_ID, TIME, IMAGE } from 'chessvibe/src/Const';
+import { THEME_ID, TIME, IMAGE, APP_THEME } from 'chessvibe/src/Const';
+import { useSelector } from 'react-redux';
 
 const new_match_img = require('chessvibe/assets/new_match.png');
 const borderRadius = vw();
@@ -21,6 +22,9 @@ const TIME_INDEX = {
 const INDEX_THEME = [THEME_ID.CLASSIC, THEME_ID.WINTER, THEME_ID.METAL, THEME_ID.NATURE];
 
 export default function HomeCreateMenu(props) {
+	const isDarkTheme = useSelector(state => state.isDarkTheme);
+	const appTheme = isDarkTheme ? APP_THEME.DARK : APP_THEME.LIGHT;
+
 	let [ theme, setTheme ] = React.useState(THEME_ID.CLASSIC);
 	let [ time, setTime ] = React.useState(TIME.FIFTEEN);
 	let { visible, onDismiss, onSubmit } = props;
@@ -44,26 +48,38 @@ export default function HomeCreateMenu(props) {
 		theme == THEME_ID.WINTER ? IMAGE.PREVIEW_WINTER :
 		theme == THEME_ID.METAL ? IMAGE.PREVIEW_METAL :
 		theme == THEME_ID.NATURE ? IMAGE.PREVIEW_NATURE :
-		IMAGE.PREVIEW_CLASSIC
+		IMAGE.PREVIEW_CLASSIC;
+
+	let textColor = {
+		color: appTheme.COLOR
+	};
+
+	let themeBtnStyle = {... styles.themeBtn, ...{
+		backgroundColor: isDarkTheme ? '#ffffff2e' : appTheme.APP_BACKGROUND
+	}};
+
+	let submitBtnStyle = {
+		backgroundColor: isDarkTheme ? '#ffffff2e' : appTheme.APP_BACKGROUND
+	};
 
 	return (
 		<ModalVibe
 			isVisible={ visible }
 			onDismiss={ onDismiss }>
 
-			<TextVibe style={ styles.menuText }> Theme </TextVibe>
+			<TextVibe style={ [styles.menuText, textColor] }> Theme </TextVibe>
 
 			<View style={ styles.themeContainer }>
-				<ButtonVibe style={ styles.themeBtn } onPress={() => changeTheme(-1)}>
-					<Image source={ IMAGE.BACK } style={ styles.themeBtnImage }/>
+				<ButtonVibe style={ themeBtnStyle } onPress={() => changeTheme(-1)}>
+					<Image source={ IMAGE['BACK' + (isDarkTheme ? '' : '_DARK')] } style={ styles.themeBtnImage }/>
 				</ButtonVibe>
 				<Image source={ themeImage } style={ styles.themeImage }/>
-				<ButtonVibe style={ styles.themeBtn } onPress={() => changeTheme(1)}>
-					<Image source={ IMAGE.BACK } style={ [styles.themeBtnImage,  {transform: [{ scaleX: -1 }]}] }/>
+				<ButtonVibe style={ themeBtnStyle } onPress={() => changeTheme(1)}>
+					<Image source={ IMAGE['BACK' + (isDarkTheme ? '' : '_DARK')] } style={ [styles.themeBtnImage,  {transform: [{ scaleX: -1 }]}] }/>
 				</ButtonVibe>
 			</View>
 
-			<TextVibe style={ styles.menuText }> Time </TextVibe>
+			<TextVibe style={ [styles.menuText, textColor] }> Time </TextVibe>
 			<Slider
 				value={ TIME_INDEX[time] }
 				step={ 1 }
@@ -75,7 +91,7 @@ export default function HomeCreateMenu(props) {
 				onValueChange={(val) => {
 					setTime(INDEX_TIME[val]);
 				}}/>
-			<TextVibe style={ styles.timeText }>
+			<TextVibe style={ [styles.timeText, textColor] }>
 				{
 					time == TIME.FIVE     ? '5 min' :
 					time == TIME.TEN      ? '10 min' :
@@ -86,8 +102,8 @@ export default function HomeCreateMenu(props) {
 				}
 			</TextVibe>
 
-			<ButtonVibe style={ [styles.menuSubmitBtn] } onPress={ () => onSubmit(theme, time) }>
-				<TextVibe style={ styles.menuSubmitBtnText }>Create Match</TextVibe>
+			<ButtonVibe style={ [styles.menuSubmitBtn, submitBtnStyle] } onPress={ () => onSubmit(theme, time) }>
+				<TextVibe style={ [styles.menuSubmitBtnText, textColor] }>Create Match</TextVibe>
 			</ButtonVibe>
 		</ModalVibe>
 	);

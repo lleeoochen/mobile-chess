@@ -2,7 +2,7 @@ import * as React from 'react';
 import { TouchableOpacity, View, StyleSheet, ScrollView, KeyboardAvoidingView, Animated } from 'react-native';
 import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import Util, { vw, vh, strict_equal } from 'chessvibe/src/Util';
-import { BOARD_SIZE, IMAGE, TEAM, DB_REQUEST_ASK, DIALOG } from 'chessvibe/src/Const';
+import { BOARD_SIZE, IMAGE, TEAM, DB_REQUEST_ASK, DIALOG, APP_THEME } from 'chessvibe/src/Const';
 import { TextVibe, DialogVibe } from 'chessvibe/src/widgets';
 import AutoHeightImage from 'react-native-auto-height-image';
 import BottomSheet from 'reanimated-bottom-sheet';
@@ -23,7 +23,8 @@ const panel_height = vw(12);
 const header_height = panel_height + handle_height;
 
 export default function UtilityArea(props) {
-	const { gameRef } = props;
+	const { gameRef, isDarkTheme } = props;
+	const appTheme = isDarkTheme ? APP_THEME.DARK : APP_THEME.LIGHT;
 
 	var flash = new Animated.Value(1);
 	const [ flashing, setFlashing ] = React.useState(false);
@@ -246,15 +247,15 @@ const utilityBackground = 'black';
 const styles = StyleSheet.create({
 
 	pullupView: {
-		shadowColor: "black",
-		shadowOffset: {
-			width: 0,
-			height: 6,
-		},
-		shadowOpacity: 0.37,
-		shadowRadius: 7.49,
+		// shadowColor: "black",
+		// shadowOffset: {
+		// 	width: 0,
+		// 	height: 6,
+		// },
+		// shadowOpacity: 0.37,
+		// shadowRadius: 7.49,
 
-		elevation: 12,
+		// elevation: 12,
 	},
 
 	// Pullup Header
@@ -288,14 +289,24 @@ const styles = StyleSheet.create({
 			paddingVertical: vw(),
 			marginBottom: 0,
 
-			// shadowColor: "#fff",
+			// shadowColor: "#000",
 			// shadowOffset: {
 			// 	width: 0,
-			// 	height: -10,
+			// 	height: -2,
 			// },
-			// shadowOpacity: 0.4,
-			// shadowRadius: 6.68,
+			// shadowOpacity: 0.7,
+			// shadowRadius: 3,
 			// elevation: 1,
+
+
+			shadowOffset: {
+				width: 0,
+				height: -2,
+			},
+			shadowColor: 'black',
+			shadowRadius: vw(0.5),
+			shadowOpacity: 0.3,
+			elevation: 2,
 		},
 
 	// Pullup Content

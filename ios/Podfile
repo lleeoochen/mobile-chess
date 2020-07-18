@@ -30,3 +30,5 @@ target 'ChessVibe-tvOS' do
     # Pods for testing
   end
 end
+
+pod 'RNCAsyncStorage', :path => '../node_modules/@react-native-community/async-storage'

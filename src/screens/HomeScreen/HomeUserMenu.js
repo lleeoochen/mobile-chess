@@ -5,7 +5,7 @@ import AutoHeightImage from 'react-native-auto-height-image';
 import { vw } from 'chessvibe/src/Util';
 import Cache from 'chessvibe/src/Cache';
 import { useSelector } from 'react-redux';
-import { IMAGE } from 'chessvibe/src/Const';
+import { IMAGE, APP_THEME } from 'chessvibe/src/Const';
 import { showDrawer } from 'chessvibe/src/redux/Reducer';
 import Store from 'chessvibe/src/redux/Store';
 
@@ -13,9 +13,11 @@ const new_match_img = require('chessvibe/assets/new_match.png');
 const borderRadius = vw();
 
 export default function HomeUserMenu(props) {
+	const isDarkTheme = useSelector(state => state.isDarkTheme);
 	const user = useSelector(state => state.user) || {};
 	const zoomIn = new Animated.Value(props.drawerOpen ? 0.8 : 1);
 	const [ selected, setSelected ] = React.useState(0);
+	const appTheme = isDarkTheme ? APP_THEME.DARK : APP_THEME.LIGHT;
 
 	let {
 		visible=false,
@@ -65,61 +67,79 @@ export default function HomeUserMenu(props) {
 	// <TextVibe style={ styles.menuStat }>Resign { stats.draw } games.</TextVibe>
 	// <TextVibe style={ styles.menuStat }>Ongoing { stats.ongoing } games.</TextVibe>
 
+
+	// Theme configuration
+	let menuStyle = [styles.menu, { transform: [{ scale: zoomIn }] }, {
+		backgroundColor: appTheme.MENU_BACKGROUND
+	}];
+
+	let textColor = {
+		color: appTheme.COLOR
+	};
+
+	let selectedStyle = {
+		backgroundColor: appTheme.CONTENT_BACKGROUND
+	};
+
+
+
 	const configs = [
 		{
 			tab: 'play',
-			image: IMAGE.DRAW,
+			image: 'DRAW',
 			text: 'Play Chess',
 		},
 		{
 			tab: 'history',
-			image: IMAGE.HISTORY,
+			image: 'HISTORY',
 			text: 'Match History',
 		},
 		{
 			tab: 'friends',
-			image: IMAGE.FRIENDS,
+			image: 'FRIENDS',
 			text: 'Friends',
 		},
 		{
 			tab: 'settings',
-			image: IMAGE.SETTINGS,
+			image: 'SETTINGS',
 			text: 'Settings',
 		},
 	];
 
 	let buttons = configs.map((config, index) => {
 		let { tab, image, text } = config;
-		let selectedStyle = selected == index ? styles.selected : {};
+		let style = selected == index ? selectedStyle : {};
 
 		return (
 			<ButtonVibe
-				style={ [styles.pageItem, selectedStyle] }
+				key={ index }
+				style={ [styles.pageItem, style] }
 				onPress={ () => {
 					setSelected(index);
 					navigateHome(tab);
 				} }>
-				<Image source={ image } style={ styles.logoutBtnIcon }/>
-				<TextVibe style={ styles.logoutBtnText }>{ text }</TextVibe>
+				<Image source={ IMAGE[image + (isDarkTheme ? '' : '_DARK')] } style={ styles.logoutBtnIcon }/>
+				<TextVibe style={ [styles.logoutBtnText, textColor] }>{ text }</TextVibe>
 			</ButtonVibe>
 		);
 	});
 
+
 	return (
-		<Animated.View style={ [styles.menu, { transform: [{ scale: zoomIn }] }] }>
+		<Animated.View style={ menuStyle }>
 			<AutoHeightImage
 				style={ styles.menuImage }
 				width={ vw(25) }
 				source={ user.photo ? { uri: user.photo + '=c' } : new_match_img }/>
-			<TextVibe style={ styles.menuText }>{ user.name || '' }</TextVibe>
+			<TextVibe style={ [styles.menuText, textColor] }>{ user.name || '' }</TextVibe>
 
 			<ScrollView contentContainerStyle={ styles.pageList }>
 				{ buttons }
 			</ScrollView>
 
 			<ButtonVibe style={ styles.logoutBtn } onPress={ onLogout }>
-				<Image source={ IMAGE.LOGOUT } style={ styles.logoutBtnIcon }/>
-				<TextVibe style={ styles.logoutBtnText }>Logout</TextVibe>
+				<Image source={ IMAGE['LOGOUT' + (isDarkTheme ? '' : '_DARK')] } style={ styles.logoutBtnIcon }/>
+				<TextVibe style={ [styles.logoutBtnText, textColor] }>Logout</TextVibe>
 			</ButtonVibe>
 		</Animated.View>
 	);
@@ -128,10 +148,8 @@ export default function HomeUserMenu(props) {
 const styles = StyleSheet.create({
 	menu: {
 		flex: 1,
-		backgroundColor: '#0d151f',
 	},
 	menuText: {
-		color: 'white',
 		fontSize: vw(7),
 		marginLeft: vw(5),
 	},
@@ -154,7 +172,6 @@ const styles = StyleSheet.create({
 
 		pageItem: {
 			paddingLeft: vw(5),
-			color: 'white',
 			fontSize: vw(5),
 			paddingVertical: vw(2.5),
 			width: '100%',
@@ -183,11 +200,6 @@ const styles = StyleSheet.create({
 		logoutBtnText: {
 			fontSize: vw(5),
 			textAlign: 'center',
-			color: 'white',
 			textAlign: 'left',
-		},
-
-		selected: {
-			backgroundColor: '#1a283a'
 		},
 });

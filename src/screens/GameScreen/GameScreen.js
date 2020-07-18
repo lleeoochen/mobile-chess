@@ -3,10 +3,12 @@ import { StatusBar, SafeAreaView, StyleSheet, View, ScrollView, KeyboardAvoiding
 import { StackActions } from 'react-navigation';
 import Animated from 'react-native-reanimated'
 import { isIphoneX, getStatusBarHeight, getBottomSpace } from 'react-native-iphone-x-helper';
+import { ActionBar } from 'chessvibe/src/widgets';
 
 import { initGame, updateTheme, updatePlayer, reset } from 'chessvibe/src/redux/Reducer';
-import { ActionBar } from 'chessvibe/src/widgets';
 import Store from 'chessvibe/src/redux/Store';
+import { useSelector } from 'react-redux';
+
 import { THEME, TEAM, IMAGE, MAX_TIME } from 'chessvibe/src/Const';
 import Util, { vw, vh } from 'chessvibe/src/Util';
 
@@ -23,11 +25,13 @@ import Game from './Game';
 // Navigation
 GameScreen.navigationOptions = ({ navigation }) => {
 	const { params = {} } = navigation.state;
-	return ActionBar('Match', IMAGE.BACK, params.goBack, IMAGE.THEME, params.changeTheme);
+	return ActionBar('Match', 'BACK', params.goBack, 'THEME', params.changeTheme, params.isDarkTheme);
 };
 
 // Game Screen
 export default function GameScreen(props) {
+	const isDarkTheme = useSelector(state => state.isDarkTheme);
+
 	let [game, setGame] = React.useState(null);
 	let match_id = props.navigation.getParam('match');
 	let fall = new Animated.Value(1);
@@ -42,6 +46,7 @@ export default function GameScreen(props) {
 		Backend.init();
 
 		props.navigation.setParams({
+			isDarkTheme: isDarkTheme,
 			goBack: () => {
 				if (game)
 					game.ends();
@@ -132,7 +137,7 @@ export default function GameScreen(props) {
 		});
 
 		return () => isMountedRef.current = false;
-	}, []);
+	}, [isDarkTheme]);
 
 	function handleChessEvent(x, y) {
 		if (game) {
@@ -142,7 +147,7 @@ export default function GameScreen(props) {
 
 	const animatedShadowOpacity = fall.interpolate({
 		inputRange: [0, 1],
-		outputRange: [0.6, 1],
+		outputRange: [1, 1],
 	});
 
 	var isIOS = Platform.OS === 'ios';
@@ -181,6 +186,7 @@ export default function GameScreen(props) {
 						</ScrollView>
 					</Animated.View>
 					<UtilityArea
+						isDarkTheme={ isDarkTheme }
 						style={ styles.utilityArea }
 						callbackNode={ fall }
 						gameRef={ game }/>

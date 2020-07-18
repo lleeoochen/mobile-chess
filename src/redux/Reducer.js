@@ -1,4 +1,5 @@
-import { THEME, TEAM } from 'chessvibe/src/Const';
+import { THEME, TEAM, STORAGE_IS_DARK_THEME } from 'chessvibe/src/Const';
+import Storage from 'chessvibe/src/Storage';
 // import Game from 'chessvibe/src/screens/GameScreen/Game';
 
 // Action types
@@ -6,6 +7,7 @@ export const ACTION_USER = 'updateUser';
 export const ACTION_DRAWER = 'updateDrawer';
 export const ACTION_INIT_GAME = 'initGame';
 export const ACTION_THEME = 'theme';
+export const ACTION_IS_DARK_THEME = 'isDarkTheme';
 export const ACTION_RESET = 'reset';
 export const ACTION_PLAYER = 'player';
 
@@ -17,7 +19,9 @@ const initState = {
 	theme: THEME.METAL,
 	blackPlayer: null,
 	whitePlayer: null,
+
 	user: null,
+	isDarkTheme: true,
 };
 
 
@@ -30,7 +34,12 @@ function reduceUser(state, action) {
 
 export const reset = createAction(ACTION_RESET);
 function reduceReset(state, action) {
-	return { ...initState, ...{ user: state.user } };
+	state.game = initState.game;
+	state.theme = initState.theme;
+	state.blackPlayer = initState.blackPlayer;
+	state.whitePlayer = initState.whitePlayer;
+
+	return { ...state };
 }
 
 export const initGame = createAction(ACTION_INIT_GAME);
@@ -48,6 +57,12 @@ function reduceTheme(state, action) {
 	return {...state, ...{ theme: data }};
 }
 
+export const setIsDarkTheme = createAction(ACTION_IS_DARK_THEME);
+function reduceIsDarkTheme(state, action) {
+	let data = action.data;
+	return {...state, ...{ isDarkTheme: data }};
+}
+
 export const updatePlayer = createAction(ACTION_PLAYER);
 function reducePlayer(state, action) {
 	let data = action.data;
@@ -57,14 +72,15 @@ function reducePlayer(state, action) {
 
 // Reducer
 export default function Reducer(state = initState, action) {
-	// 	console.log('Action Reducer', action.data.stats, state.game.stats);
+		console.log('Action Reducer', action.data);
 	switch (action.type) {
-		case ACTION_INIT_GAME: return reduceInitGame(state, action);
-		case ACTION_THEME:     return reduceTheme(state, action);
-		case ACTION_RESET:     return reduceReset(state, action);
-		case ACTION_PLAYER:    return reducePlayer(state, action);
-		case ACTION_DRAWER:    return reduceDrawer(state, action);
-		case ACTION_USER:      return reduceUser(state, action);
+		case ACTION_INIT_GAME:     return reduceInitGame(state, action);
+		case ACTION_THEME:         return reduceTheme(state, action);
+		case ACTION_RESET:         return reduceReset(state, action);
+		case ACTION_PLAYER:        return reducePlayer(state, action);
+		case ACTION_DRAWER:        return reduceDrawer(state, action);
+		case ACTION_USER:          return reduceUser(state, action);
+		case ACTION_IS_DARK_THEME: return reduceIsDarkTheme(state, action);
 		default: return state;
 	}
 }

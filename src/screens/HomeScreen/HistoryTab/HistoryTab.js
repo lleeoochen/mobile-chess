@@ -3,7 +3,7 @@ import { Animated, View, SafeAreaView, ScrollView, StyleSheet, StatusBar, Toucha
 import { ActionBar, WebVibe, TextVibe, ModalVibe, ButtonVibe, DialogVibe } from 'chessvibe/src/widgets';
 import AutoHeightImage from 'react-native-auto-height-image';
 
-import { URL, TEAM, IMAGE } from 'chessvibe/src/Const';
+import { URL, TEAM, IMAGE, APP_THEME } from 'chessvibe/src/Const';
 import Util, { formatDate, vw, wh, winType } from 'chessvibe/src/Util';
 import Cache from 'chessvibe/src/Cache';
 import Backend from 'chessvibe/src/Backend';
@@ -16,7 +16,8 @@ const borderRadius = vw();
 
 // Home Screen
 export default function HistoryTab(props) {
-	const { oldMatches, navigateGame, refreshing, refresh } = props;
+	const { oldMatches, navigateGame, refreshing, refresh, isDarkTheme } = props;
+	const appTheme = isDarkTheme ? APP_THEME.DARK : APP_THEME.LIGHT;
 	// const [ selectedMatch, selectMatch ] = React.useState(null);
 	const user = React.useRef({});
 	const fadein = new Animated.Value(0);
@@ -40,13 +41,21 @@ export default function HistoryTab(props) {
 		});
 	}
 
+	let viewStyle = [styles.view, props.style, {
+		backgroundColor: appTheme.CONTENT_BACKGROUND
+	}];
+
+	let titleStyle = [styles.matchesTitle, {
+		color: appTheme.COLOR
+	}];
+
 	// Render function
 	function render() {
 		// Render
 		let { $containers, stats } = renderMatches();
 
 		return (
-			<SafeAreaView style={ [styles.view, props.style] }>
+			<SafeAreaView style={ viewStyle }>
 				<StatusBar hidden={ true }/>
 
 				<ScrollView
@@ -131,7 +140,7 @@ export default function HistoryTab(props) {
 			});
 			$containers.push(
 				<Animated.View key={ i } style={ [styles.playerBox, { opacity: fadein }] }>
-					<TextVibe style={ styles.playerName }>{ enemy.name }</TextVibe>
+					<TextVibe style={ titleStyle }>{ enemy.name }</TextVibe>
 					<ScrollView
 						horizontal={ true }>
 						{ $active_matches }
@@ -167,7 +176,7 @@ const styles = StyleSheet.create({
 			marginBottom: vw(),
 		},
 
-			playerName: {
+			matchesTitle: {
 				fontSize: 20,
 				color: 'white',
 				paddingBottom: vw(2),

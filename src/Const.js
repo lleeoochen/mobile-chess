@@ -24,7 +24,17 @@ export const IMAGE = {
 	LOGOUT:    require('chessvibe/assets/logout.png'),
 	HISTORY:   require('chessvibe/assets/history.png'),
 	FRIENDS:   require('chessvibe/assets/friends.png'),
-	SETTINGS:   require('chessvibe/assets/settings.png'),
+	SETTINGS:  require('chessvibe/assets/settings.png'),
+
+	BACK_DARK:     require('chessvibe/assets/dark/back.png'),
+	THEME_DARK:    require('chessvibe/assets/dark/palette.png'),
+	MENU_DARK:     require('chessvibe/assets/dark/menu.png'),
+	NEW_GAME_DARK: require('chessvibe/assets/new_game.png'),
+	DRAW_DARK:     require('chessvibe/assets/dark/draw.png'),
+	HISTORY_DARK:  require('chessvibe/assets/dark/history.png'),
+	FRIENDS_DARK:  require('chessvibe/assets/dark/friends.png'),
+	SETTINGS_DARK: require('chessvibe/assets/dark/settings.png'),
+	LOGOUT_DARK:   require('chessvibe/assets/dark/logout.png'),
 
 	// Theme images
 	CLASSIC: require('chessvibe/assets/background.jpg'),
@@ -68,6 +78,26 @@ export const IMAGE = {
 	TIME:   require('chessvibe/assets/time.png'),
 	INVITE: require('chessvibe/assets/invite.png'),
 };
+
+export const APP_THEME = Object.freeze({
+	LIGHT: {
+		APP_BACKGROUND:     '#3679cc',
+		CONTENT_BACKGROUND: '#b7ceea',
+		MENU_BACKGROUND:    '#3679cc',
+		COLOR:              'black',
+		SETTING_BACKGROUND: 'white',
+		SETTING_BORDER:     'grey',
+	},
+
+	DARK: {
+		APP_BACKGROUND:     'black',
+		CONTENT_BACKGROUND: '#1A283A',
+		MENU_BACKGROUND:    '#0D151F',
+		COLOR:              'white',
+		SETTING_BACKGROUND: '#2a4261',
+		SETTING_BORDER:     '#1a283a',
+	},
+});
 
 export const THEME = Object.freeze({
 	CLASSIC: {
@@ -178,6 +208,7 @@ export const STATS_MAX = 42; // treat king as 3 score
 export const LAST_VISITED_KEY = 'last_visited';
 export const SESSION_TOKEN = 'session_token';
 
+export const STORAGE_IS_DARK_THEME = 'STORAGE_IS_DARK_THEME';
 
 export const THEME_ID = {
 	CLASSIC: 0,

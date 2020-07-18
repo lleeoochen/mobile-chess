@@ -3,9 +3,13 @@ import { View, SafeAreaView, Text, Button, StyleSheet, StatusBar, Image, Dimensi
 import { FadeInView, TextVibe } from 'chessvibe/src/widgets';
 import { GoogleSignin, GoogleSigninButton, statusCodes } from '@react-native-community/google-signin';
 import auth from '@react-native-firebase/auth';
-import { URL } from '../Const';
+import { URL, STORAGE_IS_DARK_THEME } from '../Const';
 import Util, { vw, vh } from '../Util';
 import Cache from '../Cache';
+
+import Storage from 'chessvibe/src/Storage';
+import Store from 'chessvibe/src/redux/Store';
+import { setIsDarkTheme } from 'chessvibe/src/redux/Reducer';
 
 let logoImg = require('chessvibe/assets/logo.jpg');
 
@@ -81,6 +85,8 @@ export default function EntryScreen(props) {
 
 	// Navigate to home
 	async function navigateHome(user) {
+		Store.dispatch(setIsDarkTheme( await Storage.get(STORAGE_IS_DARK_THEME) == 'true' ));
+
 		let auth_token = await auth().currentUser.getIdToken(true);
 
 		// Login with firebase token
