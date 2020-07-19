@@ -59,10 +59,11 @@ export default class Backend {
 		});
 	}
 
-	static createMatch(theme, time) {
+	static createMatch(theme, time, AI=false) {
 		return Util.request('POST', URL.BACKEND + '/chess/create_match', {
 			theme: theme,
-			time: time || MAX_TIME
+			time: time || MAX_TIME,
+			AI: AI,
 		});
 	}
 

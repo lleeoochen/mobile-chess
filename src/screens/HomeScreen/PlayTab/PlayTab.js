@@ -85,11 +85,11 @@ export default function PlayTab(props) {
 	return (
 		<View style={ viewStyle }>
 			<ScrollView>
-				<ButtonVibe style={ styles.actionBtn } onPress={() => showCreateMenu(true)}>
+				<ButtonVibe style={ styles.actionBtn } onPress={() => showCreateMenu({ show: true })}>
 					<Image source={ IMAGE.NATURE } style={ styles.actionBtnImage } blurRadius={vw(0)}/>
 					<TextVibe style={ styles.actionBtnText }>Play Friend</TextVibe>
 				</ButtonVibe>
-				<ButtonVibe style={ styles.actionBtn } onPress={() => showCreateMenu(true)}>
+				<ButtonVibe style={ styles.actionBtn } onPress={() => showCreateMenu({ show: true, modeAI: true })}>
 					<Image source={ IMAGE.METAL } style={ styles.actionBtnImage } blurRadius={vw(0)}/>
 					<TextVibe style={ styles.actionBtnText }>Play Computer</TextVibe>
 				</ButtonVibe>

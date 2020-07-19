@@ -21,6 +21,7 @@ import BackImage from './BackImage';
 import UtilityArea from './UtilityArea';
 
 import Game from './Game';
+import GameAI from './Game/GameAI';
 
 // Navigation
 GameScreen.navigationOptions = ({ navigation }) => {
@@ -71,7 +72,14 @@ export default function GameScreen(props) {
 		// Initialize game
 		Backend.listenMatch(Cache.userID, match_id, async (match, team) => {
 			if (!game) {
-				game = new Game(team, match_id, match, isMountedRef);
+				console.log(match);
+
+				// Logic to choose between Game and GameAI
+				if (match.white == 'AI')
+					game = new GameAI(team, match_id, match, isMountedRef);
+				else
+					game = new Game(team, match_id, match, isMountedRef);
+
 				setGame(game);
 
 				if (isMountedRef.current) {

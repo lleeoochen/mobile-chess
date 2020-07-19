@@ -72,7 +72,7 @@ function reducePlayer(state, action) {
 
 // Reducer
 export default function Reducer(state = initState, action) {
-		console.log('Action Reducer', action.data);
+	// console.log('Action Reducer', action.data);
 	switch (action.type) {
 		case ACTION_INIT_GAME:     return reduceInitGame(state, action);
 		case ACTION_THEME:         return reduceTheme(state, action);

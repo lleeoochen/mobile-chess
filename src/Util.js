@@ -66,13 +66,17 @@ export default class Util {
 		};
 
 		if (flipped) {
-			move.old_x = BOARD_SIZE - move.old_x - 1;
-			move.new_x = BOARD_SIZE - move.new_x - 1;
-			move.old_y = BOARD_SIZE - move.old_y - 1;
-			move.new_y = BOARD_SIZE - move.new_y - 1;
+			move.old_x = this.flipCoord(move.old_x);
+			move.new_x = this.flipCoord(move.new_x);
+			move.old_y = this.flipCoord(move.old_y);
+			move.new_y = this.flipCoord(move.new_y);
 		}
 
 		return move;
+	}
+
+	static flipCoord(x) {
+		return BOARD_SIZE - x - 1;
 	}
 
 	static packTheme(theme) {

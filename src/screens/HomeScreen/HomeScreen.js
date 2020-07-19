@@ -49,7 +49,7 @@ export default function HomeScreen(props) {
 	const isDarkTheme = useSelector(state => state.isDarkTheme);
 
 	const [ matches, setMatches ] = React.useState({});
-	const [ createMenuVisible, showCreateMenu ] = React.useState(false);
+	const [ createMenuVisible, showCreateMenu ] = React.useState({ show: false });
 	const [ refreshing, setRefreshing ] = React.useState(false);
 	const onRefresh = React.useCallback(() => refresh(), []);
 	const user = React.useRef({});
@@ -82,7 +82,7 @@ export default function HomeScreen(props) {
 				props.screenProps.openDrawer(true);
 			},
 			openCreate: () => {
-				showCreateMenu(true)
+				showCreateMenu({ show: true })
 			},
 		});
 	}, [tab, isDarkTheme]);
@@ -121,11 +121,11 @@ export default function HomeScreen(props) {
 					style={ tab == 'settings' ? {} : hidden }/>
 
 				<HomeCreateMenu
-					visible={ createMenuVisible }
-					onDismiss={ () => showCreateMenu(false) }
+					visible={ createMenuVisible.show }
+					onDismiss={ () => showCreateMenu({ show: false }) }
 					onSubmit={(theme, time) => {
-						showCreateMenu(false);
-						createMatch(theme, time);
+						createMatch(theme, time, createMenuVisible.modeAI);
+						showCreateMenu({ show: false });
 					}}/>
 			</SafeAreaView>
 		);
@@ -142,8 +142,8 @@ export default function HomeScreen(props) {
 	}
 
 	// Create new match
-	function createMatch(theme, time) {
-		Backend.createMatch(theme, time).then(match_id => {
+	function createMatch(theme, time, AI) {
+		Backend.createMatch(theme, time, AI).then(match_id => {
 			Cache.theme[match_id] = theme;
 			fetchMatches();
 			navigateGame(match_id);
@@ -154,8 +154,6 @@ export default function HomeScreen(props) {
 	function fetchMatches() {
 		let matches_dict = {};
 		let matches_promises = [];
-
-		console.log("yo im refreshing matches");
 
 		user.current.matches.forEach(match => {
 			let [match_id, enemy_id] = match.split('-');

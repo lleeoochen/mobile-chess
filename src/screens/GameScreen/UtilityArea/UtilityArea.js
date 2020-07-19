@@ -107,7 +107,7 @@ export default function UtilityArea(props) {
 		return (
 			<View style={ [styles.content] }>
 				{/*<View style={ styles.divider }/>*/}
-				
+
 				{/*<TextVibe style={ styles.sectionTitle }>Send Invite</TextVibe>*/}
 				<InvitePanel
 					gameRef={ gameRef }
