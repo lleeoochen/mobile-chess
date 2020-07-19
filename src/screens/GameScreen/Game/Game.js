@@ -233,6 +233,15 @@ export default class Game {
 				Backend.stalemate();
 				break;
 		}
+
+		switch(this.isCheckmate(this.enemy)) {
+			case Const.STATUS_CHECKMATE:
+				Backend.checkmate(this.enemy == Const.TEAM.W ? Const.TEAM.B : Const.TEAM.W);
+				break;
+			case Const.STATUS_STALEMATE:
+				Backend.stalemate();
+				break;
+		}
 	}
 
 	updateMatchTimer(match) {
@@ -822,8 +831,7 @@ export default class Game {
 
 	unmovePawnToQueen(newGrid, oldGrid, eaten_piece) {
 		oldGrid.piece = newGrid.piece;
-		piecesLayer.removeChild(this.get_piece(newGrid).image);
-		initEachPiece(this.id++, oldGrid.x, oldGrid.y, this.get_piece(oldGrid).team, Const.CHESS.Pawn);
+		this.initEachPiece(this.id++, oldGrid.x, oldGrid.y, this.get_piece(oldGrid).team, Const.CHESS.Pawn);
 
 		this.stats[this.get_piece(oldGrid).team] += Const.VALUE[Const.CHESS.Pawn] - Const.VALUE[Const.CHESS.Queen];
 	}

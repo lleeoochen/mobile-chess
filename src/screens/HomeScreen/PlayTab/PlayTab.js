@@ -53,21 +53,18 @@ export default function PlayTab(props) {
 				let d = new Date(match_data.updated);
 				let d_str = formatDate(d, '%M/%D');
 
-				let color = (match_data.black == Cache.userID) ? TEAM.B : TEAM.W;
 				let active = Math.floor(match_data.moves[match_data.moves.length - 1] / 10) != 0;
 				let borderStyle = match_data.black == Cache.userID ? styles.blackBorder : styles.whiteBorder;
 				let colorStyle = active ? styles.greenColor : styles.greyColor;
 
-				if (active) {
-					$matches.push(
-						<ButtonVibe key={ i + '' + j } style={ {...styles.matchView, ...borderStyle} } onPress={() => navigateGame(match_name)}>
-							<AutoHeightImage width={ matchSize } source={ enemy.photo ? { uri: enemy.photo + '=c' } : IMAGE.NEW_MATCH } style={ styles.matchImg }/>
-							<View style={ {...styles.matchDate, ...colorStyle} }>
-								<TextVibe> { d_str } </TextVibe>
-							</View>
-						</ButtonVibe>
-					);
-				}
+				$matches.push(
+					<ButtonVibe key={ i + '' + j } style={ {...styles.matchView, ...borderStyle} } onPress={() => navigateGame(match_name)}>
+						<AutoHeightImage width={ matchSize } source={ enemy.photo ? { uri: enemy.photo + '=c' } : IMAGE.NEW_MATCH } style={ styles.matchImg }/>
+						<View style={ {...styles.matchDate, ...colorStyle} }>
+							<TextVibe> { d_str } </TextVibe>
+						</View>
+					</ButtonVibe>
+				);
 			});
 		}
 

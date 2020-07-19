@@ -15,62 +15,42 @@ export default class GameAI extends Game {
 	}
 
 
-	async updatePlayerData(match) {
-		let blackPlayer = Store.getState().blackPlayer;
-		let whitePlayer = Store.getState().whitePlayer;
-
-		if (blackPlayer && whitePlayer) return;
-
-		if (!blackPlayer && match.black) {
-			blackPlayer = (await Backend.getUser(match.black)).data;
-		}
-
-		if (!whitePlayer) {
-			whitePlayer = {
-				name: 'AI',
-			};
-		}
-
-		Cache.users[match.black] = blackPlayer;
-
-		if (this.isMountedRef.current) {
-			Store.dispatch(Reducer.updatePlayer( { blackPlayer, whitePlayer } ));
-		}
-	}
-
-
 	async updateMatchMoves(match) {
 		await super.updateMatchMoves(match);
 
 		if (this.turn == Const.TEAM.W) {
-			this.moveAI();
+			this.calculateMoveAI();
 		}
 	}
 
-	moveAI() {
+	calculateMoveAI() {
 		for (let i in this.chessboard) {
 			for (let j in this.chessboard[i]) {
 
-				let grid = this.chessboard[i][j];
-				let piece = this.get_piece(grid);
+				let oldGrid = this.chessboard[i][j];
+				let piece = this.get_piece(oldGrid);
 				if (!piece || piece.team != this.turn) continue;
 
-				let moves = piece.getPossibleMoves(this, this.chessboard, grid, !this.downward);
+				let moves = piece.getPossibleMoves(this, this.chessboard, oldGrid, !this.downward);
+
 				for (let m in moves) {
 					let newGrid = this.chessboard[moves[m].x][moves[m].y];
-
-					let grid1 = this.chessboard[Util.flipCoord(grid.x)][Util.flipCoord(grid.y)];
-					let grid2 = this.chessboard[Util.flipCoord(newGrid.x)][Util.flipCoord(newGrid.y)];
-					Backend.updateChessboard(grid1, grid2, this.turn, this.black_timer, this.white_timer).catch(err => {
-						this.clearMoves();
-						this.unmoveChess();
-					});
-					this.moveChess(grid, newGrid);
-					return;
+					let success = this.moveAI(oldGrid, newGrid);
+					if (success) return;
 				}
 			}
 		}
 	}
 
+	moveAI(oldGrid, newGrid) {
+		let isLegal = this.isKingSafe(this.turn, oldGrid, newGrid);
+		if (!isLegal) return false;
 
+		let grid1 = this.chessboard[Util.flipCoord(oldGrid.x)][Util.flipCoord(oldGrid.y)];
+		let grid2 = this.chessboard[Util.flipCoord(newGrid.x)][Util.flipCoord(newGrid.y)];
+
+		Backend.updateChessboard(grid1, grid2, this.turn, this.black_timer, this.white_timer);
+		this.moveChess(oldGrid, newGrid);
+		return true;
+	}
 }
