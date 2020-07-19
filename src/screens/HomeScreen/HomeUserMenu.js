@@ -78,7 +78,14 @@ export default function HomeUserMenu(props) {
 	};
 
 	let selectedStyle = {
-		backgroundColor: appTheme.CONTENT_BACKGROUND
+		backgroundColor: appTheme.CONTENT_BACKGROUND,
+		shadowOffset: {
+			height: 0,
+		},
+		shadowColor: 'black',
+		shadowOpacity: 0.2,
+		shadowRadius: vw(0.5),
+		elevation: 2,
 	};
 
 

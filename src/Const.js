@@ -83,7 +83,7 @@ export const APP_THEME = Object.freeze({
 	LIGHT: {
 		APP_BACKGROUND:     '#3679cc',
 		CONTENT_BACKGROUND: '#b7ceea',
-		MENU_BACKGROUND:    '#3679cc',
+		MENU_BACKGROUND:    '#90b7e6',
 		COLOR:              'black',
 		SETTING_BACKGROUND: 'white',
 		SETTING_BORDER:     'grey',

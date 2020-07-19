@@ -154,6 +154,7 @@ export default function HomeScreen(props) {
 	function fetchMatches() {
 		let matches_dict = {};
 		let matches_promises = [];
+		console.log("Fetching matches...");
 
 		user.current.matches.forEach(match => {
 			let [match_id, enemy_id] = match.split('-');
