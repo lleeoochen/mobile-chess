@@ -72,8 +72,6 @@ export default function GameScreen(props) {
 		// Initialize game
 		Backend.listenMatch(Cache.userID, match_id, async (match, team) => {
 			if (!game) {
-				console.log(match);
-
 				// Logic to choose between Game and GameAI
 				if (match.white == 'AI')
 					game = new GameAI(team, match_id, match, isMountedRef);

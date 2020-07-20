@@ -225,6 +225,8 @@ export default class Game {
 			if (breakloop) break;
 		}
 
+		// console.log(this.isCheckmate(this.team));
+		// console.log(this.isCheckmate(this.enemy));
 		switch(this.isCheckmate(this.team)) {
 			case Const.STATUS_CHECKMATE:
 				Backend.checkmate(this.team == Const.TEAM.W ? Const.TEAM.B : Const.TEAM.W);
