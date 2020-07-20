@@ -178,6 +178,6 @@ const styles = StyleSheet.create({
 			// shadowOpacity: 0.5,
 			// shadowRadius: 3,
 			// elevation: 1,
-			height: panel_height,
+			height: Platform.OS === 'android' ? panel_height * 1.2 : panel_height,
 		},
 });
