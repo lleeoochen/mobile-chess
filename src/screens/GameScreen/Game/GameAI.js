@@ -20,29 +20,42 @@ export default class GameAI extends Game {
 
 		if (this.turn == Const.TEAM.W) {
 			let chosens = this.getBestMove(this.chessboard, this.turn, 3);
-			// let randomIndex = Math.floor(Math.random() * chosens.length);
-			// console.log(chosens);
 
-			let otherTeam = this.team == Const.TEAM.B ? Const.TEAM.W : Const.TEAM.B;
+			let otherTeam = this.turn == Const.TEAM.B ? Const.TEAM.W : Const.TEAM.B;
 			let kingDistanceSort = (a, b) => {
 				let { x, y } = this.king_grid[otherTeam];
-				let aDist = Math.sqrt(Math.pow(a.newGrid.x - x, 2) + Math.pow(a.newGrid.y - y, 2));
-				let bDist = Math.sqrt(Math.pow(b.newGrid.x - x, 2) + Math.pow(b.newGrid.y - y, 2));
+				let aDist = Math.sqrt(Math.pow(a.oldGrid.x - x, 2) + Math.pow(a.oldGrid.y - y, 2));
+				let bDist = Math.sqrt(Math.pow(b.oldGrid.x - x, 2) + Math.pow(b.oldGrid.y - y, 2));
 				return aDist - bDist;
 			}
 
 			chosens.sort(kingDistanceSort);
 
+			let totalWeight = (chosens.length + 1) * chosens.length / 2;
+			let rand = Math.floor(Math.random() * totalWeight);
+
 			let chosen = chosens[0];
+			for (let i in chosens) {
+				if (rand < chosens.length - i) {
+					chosen = chosens[i];
+					console.log("i:", i);
+					break;
+				}
+			}
+
 			this.moveAI(this.chessboard[chosen.oldGrid.x][chosen.oldGrid.y], this.chessboard[chosen.newGrid.x][chosen.newGrid.y]);
 		}
 	}
 
 	getBestMove(board, team, depth) {
-		let chosen = [];
+		let chosenGroups = {
+			normal: [],
+			check: [],
+			stale: [],
+		};
 
 		if (depth <= 0) {
-			return chosen;
+			return [];
 		}
 
 		for (let i in board) {
@@ -75,29 +88,40 @@ export default class GameAI extends Game {
 						// Find best move for next round
 						let otherTeam = team == Const.TEAM.B ? Const.TEAM.W : Const.TEAM.B;
 						let nextBestMoves = this.getBestMove(tempBoard, otherTeam, depth - 1);
+						let chosen = 'normal';
 
 						// Add next best move's value
 						if (nextBestMoves.length > 0) {
 							value += nextBestMoves[0].value * Math.pow(0.9, 4 - depth);
 						}
+						// Handle checkmate/stalemate cases
+						else if (depth != 1) {
+							// Checkmate if other team's king is targeted.
+							if (this.getReachablePieces(board, this.king_grid[otherTeam], otherTeam).enemies.length != 0) {
+								chosen = 'check';
+							}
+							else {
+								chosen = 'stale';
+							}
+						}
 
 						// Overwrite chosen if value is larger/smaller
 						if (team == this.turn) {
 							// Maximizer (friend)
-							if (chosen.length == 0 || value > chosen[0].value) {
-								chosen = [{ oldGrid, newGrid, value }];
+							if (chosenGroups[chosen].length == 0 || value > chosenGroups[chosen][0].value) {
+								chosenGroups[chosen] = [{ oldGrid, newGrid, value }];
 							}
-							else if (value == chosen[0].value) {
-								chosen.push({ oldGrid, newGrid, value })
+							else if (value == chosenGroups[chosen][0].value) {
+								chosenGroups[chosen].push({ oldGrid, newGrid, value })
 							}
 						}
 						else {
 							// Minimizer (opponent)
-							if (chosen.length == 0 || value < chosen[0].value) {
-								chosen = [{ oldGrid, newGrid, value }];
+							if (chosenGroups[chosen].length == 0 || value < chosenGroups[chosen][0].value) {
+								chosenGroups[chosen] = [{ oldGrid, newGrid, value }];
 							}
-							else if (value == chosen[0].value) {
-								chosen.push({ oldGrid, newGrid, value })
+							else if (value == chosenGroups[chosen][0].value) {
+								chosenGroups[chosen].push({ oldGrid, newGrid, value })
 							}
 						}
 
@@ -112,7 +136,13 @@ export default class GameAI extends Game {
 			}
 		}
 
-		return chosen;
+		if (chosenGroups.check.length > 0)
+			return chosenGroups.check;
+
+		if (chosenGroups.normal.length > 0)
+			return chosenGroups.normal;
+
+		return chosenGroups.stale;
 	}
 
 	moveAI(oldGrid, newGrid) {

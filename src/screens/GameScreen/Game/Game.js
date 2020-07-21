@@ -220,7 +220,7 @@ export default class Game {
 				setTimeout(() => {
 					breakloop = !this.moveChess(this.chessboard[move.old_x][move.old_y], this.chessboard[move.new_x][move.new_y]);
 					resolve();
-				}, 100);
+				}, 10);
 			});
 			if (breakloop) break;
 		}
