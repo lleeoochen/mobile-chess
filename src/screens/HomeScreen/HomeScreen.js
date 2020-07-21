@@ -9,7 +9,7 @@ import { useSelector } from 'react-redux';
 import { showDrawer, updateUser, updateTheme } from 'chessvibe/src/redux/Reducer';
 
 import { URL, TEAM, IMAGE } from 'chessvibe/src/Const';
-import Util, { formatDate, vw, wh, winType } from 'chessvibe/src/Util';
+import Util, { formatDate, vw, wh, winType, strict_equal } from 'chessvibe/src/Util';
 import Cache from 'chessvibe/src/Cache';
 import Backend from 'chessvibe/src/Backend';
 
@@ -48,7 +48,7 @@ HomeScreen.navigationOptions = ({navigation}) => {
 export default function HomeScreen(props) {
 	const isDarkTheme = useSelector(state => state.isDarkTheme);
 
-	const [ matches, setMatches ] = React.useState({});
+	const [ matches, setMatches ] = React.useState({ new: [], old: [] });
 	const [ createMenuVisible, showCreateMenu ] = React.useState({ show: false });
 	const [ refreshing, setRefreshing ] = React.useState(false);
 	const onRefresh = React.useCallback(() => refresh(), []);
@@ -65,14 +65,18 @@ export default function HomeScreen(props) {
 
 	// Mount
 	React.useEffect(() => {
-		Backend.init();
-		Backend.listenProfile(res => {
-			user.current = res.data;
+		// Call when switching nav stack
+		props.navigation.addListener('didFocus', () => {
+			Backend.init();
+			Backend.listenProfile(res => {
+				user.current = res.data;
 
-			Store.dispatch(updateUser( user.current ));
-			fetchMatches();
+				Store.dispatch(updateUser( user.current ));
+				fetchMatches();
+			});
 		});
 	}, []);
+
 
 	React.useEffect(() => {
 		props.navigation.setParams({
@@ -145,7 +149,6 @@ export default function HomeScreen(props) {
 	function createMatch(theme, time, AI) {
 		Backend.createMatch(theme, time, AI).then(match_id => {
 			Cache.theme[match_id] = theme;
-			fetchMatches();
 			navigateGame(match_id);
 		});
 	}
@@ -222,10 +225,12 @@ export default function HomeScreen(props) {
 				else                       newMatches.push(results[i]);
 			}
 
-			setMatches({
+			let resultMatches = {
 				new: newMatches,
 				old: oldMatches,
-			});
+			};
+
+			setMatches(resultMatches);
 			setRefreshing(false);
 		});
 	}

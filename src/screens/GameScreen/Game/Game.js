@@ -230,18 +230,22 @@ export default class Game {
 		switch(this.isCheckmate(this.team)) {
 			case Const.STATUS_CHECKMATE:
 				Backend.checkmate(this.team == Const.TEAM.W ? Const.TEAM.B : Const.TEAM.W);
+				this.ends();
 				break;
 			case Const.STATUS_STALEMATE:
 				Backend.stalemate();
+				this.ends();
 				break;
 		}
 
 		switch(this.isCheckmate(this.enemy)) {
 			case Const.STATUS_CHECKMATE:
 				Backend.checkmate(this.enemy == Const.TEAM.W ? Const.TEAM.B : Const.TEAM.W);
+				this.ends();
 				break;
 			case Const.STATUS_STALEMATE:
 				Backend.stalemate();
+				this.ends();
 				break;
 		}
 	}

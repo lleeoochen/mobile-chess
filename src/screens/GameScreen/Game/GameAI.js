@@ -18,7 +18,7 @@ export default class GameAI extends Game {
 	async updateMatchMoves(match) {
 		await super.updateMatchMoves(match);
 
-		if (this.turn == Const.TEAM.W) {
+		if (this.turn == Const.TEAM.W && !this.ended) {
 			let chosens = this.getBestMove(this.chessboard, this.turn, 3);
 
 			let otherTeam = this.turn == Const.TEAM.B ? Const.TEAM.W : Const.TEAM.B;
@@ -31,16 +31,19 @@ export default class GameAI extends Game {
 
 			chosens.sort(kingDistanceSort);
 
+			// Weighted random
 			let totalWeight = (chosens.length + 1) * chosens.length / 2;
 			let rand = Math.floor(Math.random() * totalWeight);
-
 			let chosen = chosens[0];
+
+			// Choose move based on where rand falls
 			for (let i in chosens) {
-				if (rand < chosens.length - i) {
+				let weight = chosens.length - i;
+				if (rand < weight) {
 					chosen = chosens[i];
-					console.log("i:", i);
 					break;
 				}
+				rand -= weight;
 			}
 
 			this.moveAI(this.chessboard[chosen.oldGrid.x][chosen.oldGrid.y], this.chessboard[chosen.newGrid.x][chosen.newGrid.y]);
