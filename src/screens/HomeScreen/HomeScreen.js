@@ -6,12 +6,13 @@ import SideMenu from 'react-native-side-menu';
 
 import Store from 'chessvibe/src/redux/Store';
 import { useSelector } from 'react-redux';
-import { showDrawer, updateUser, updateTheme } from 'chessvibe/src/redux/Reducer';
+import { showDrawer, updateUser, updateTheme, setIsDarkTheme } from 'chessvibe/src/redux/Reducer';
 
-import { URL, TEAM, IMAGE } from 'chessvibe/src/Const';
+import { URL, TEAM, IMAGE, STORAGE_IS_DARK_THEME } from 'chessvibe/src/Const';
 import Util, { formatDate, vw, wh, winType, strict_equal } from 'chessvibe/src/Util';
 import Cache from 'chessvibe/src/Cache';
 import Backend from 'chessvibe/src/Backend';
+import Storage from 'chessvibe/src/Storage';
 
 import HomeUserMenu from './HomeUserMenu';
 import HomeCreateMenu from './HomeCreateMenu';
@@ -40,7 +41,7 @@ const wait = (timeout) => {
 // Navigation
 HomeScreen.navigationOptions = ({navigation}) => {
 	const { params = {} } = navigation.state;
-	return ActionBar(NAV_TITLE[params.tab], 'MENU', params.openMenu, 'NEW_GAME', params.openCreate, params.isDarkTheme);
+	return ActionBar(NAV_TITLE[params.tab], 'MENU', params.openMenu, 'HALFMOON', params.openCreate, params.isDarkTheme);
 };
 
 
@@ -86,7 +87,8 @@ export default function HomeScreen(props) {
 				props.screenProps.openDrawer(true);
 			},
 			openCreate: () => {
-				showCreateMenu({ show: true })
+				Store.dispatch(setIsDarkTheme( !isDarkTheme ));
+				Storage.set(STORAGE_IS_DARK_THEME, !isDarkTheme + '');
 			},
 		});
 	}, [tab, isDarkTheme]);

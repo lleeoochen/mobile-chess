@@ -39,14 +39,14 @@ export default function SettingsTab(props) {
 
 					<Setting
 						title={ 'Dark Theme' }
-						initEnabled={ isDarkTheme }
+						enabled={ isDarkTheme }
 						appTheme={ appTheme }
 						onChange={ (enabled) => {
 							Store.dispatch(setIsDarkTheme( enabled ));
 							Storage.set(STORAGE_IS_DARK_THEME, enabled + '');
 						} }/>
 					<View style={ borderStyle }/>
-					<Setting title={ 'Push Notification' } initEnabled={ true } appTheme={ appTheme }/>
+					<Setting title={ 'Push Notification' } enabled={ true } appTheme={ appTheme }/>
 
 				<View style={ borderStyle }/>
 
@@ -65,11 +65,10 @@ export default function SettingsTab(props) {
 }
 
 function Setting(props) {
-	const { title, appTheme, initEnabled=false, type='switch', onChange=()=>{} } = props;
-	const [isEnabled, setIsEnabled] = React.useState(initEnabled);
+	const { title, appTheme, enabled=false, type='switch', onChange=()=>{} } = props;
+
 	const toggleSwitch = () => {
-		onChange(!isEnabled);
-		setIsEnabled(previousState => !previousState);
+		onChange(!enabled);
 	};
 
 	let settingStyle = [styles.setting, {
@@ -88,7 +87,7 @@ function Setting(props) {
 				<Switch
 					onValueChange={ toggleSwitch }
 					trackColor={{ false: "#767577", true: "#81b0ff" }}
-					value={ isEnabled }
+					value={ enabled }
 					style={ styles.settingBtn }/>
 			</View>
 		);

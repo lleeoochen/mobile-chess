@@ -25,6 +25,7 @@ export const IMAGE = {
 	HISTORY:   require('chessvibe/assets/history.png'),
 	FRIENDS:   require('chessvibe/assets/friends.png'),
 	SETTINGS:  require('chessvibe/assets/settings.png'),
+	HALFMOON:  require('chessvibe/assets/halfmoon.png'),
 
 	BACK_DARK:     require('chessvibe/assets/dark/back.png'),
 	THEME_DARK:    require('chessvibe/assets/dark/palette.png'),
@@ -35,6 +36,7 @@ export const IMAGE = {
 	FRIENDS_DARK:  require('chessvibe/assets/dark/friends.png'),
 	SETTINGS_DARK: require('chessvibe/assets/dark/settings.png'),
 	LOGOUT_DARK:   require('chessvibe/assets/dark/logout.png'),
+	HALFMOON_DARK: require('chessvibe/assets/dark/halfmoon.png'),
 
 	// Theme images
 	CLASSIC: require('chessvibe/assets/background.jpg'),

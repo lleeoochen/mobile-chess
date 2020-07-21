@@ -61,7 +61,7 @@ export default function HistoryTab(props) {
 				<ScrollView
 					contentContainerStyle={ styles.playerScroll }
 					refreshControl={
-						<RefreshControl refreshing={ refreshing } onRefresh={ onRefresh } />
+						<RefreshControl refreshing={ refreshing } onRefresh={ onRefresh } tintColor={ appTheme.COLOR } />
 					}>
 					{ $containers }
 				</ScrollView>
