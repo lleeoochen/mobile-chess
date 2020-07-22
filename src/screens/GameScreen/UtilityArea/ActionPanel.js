@@ -108,6 +108,7 @@ export default function ActionPanel(props) {
 				key={ index }
 				disabled={ disabled }
 				style={ btnStyle }
+				useGestureButton={ Platform.OS === "android" }
 				onPress={ onPress }>
 				<TextVibe style={ styles.btnText }> { text } </TextVibe>
 			</ButtonVibe>
@@ -137,6 +138,7 @@ const styles = StyleSheet.create({
 		btn: {
 			flex: 1,
 			marginRight: vw(0.5),
+			width: vw(25 - 3.5 / 4),
 		},
 
 			btnText: {

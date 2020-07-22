@@ -127,7 +127,8 @@ export default function ActionPanel(props) {
 				key={ index }
 				disabled={ disabled }
 				style={ btnStyle }
-				onPress={ onPress }>
+				onPress={ onPress }
+				useGestureButton={ Platform.OS === "android" }>
 				<AutoHeightImage width={ vw(5) } source={ image }/>
 			</ButtonVibe>
 		);
@@ -144,6 +145,7 @@ const styles = StyleSheet.create({
 	btn: {
 		flex: 1,
 		marginRight: vw(0.5),
+		width: vw(20 - 4 / 5),
 	},
 
 		btnText: {

@@ -24,6 +24,7 @@ export default function InvitePanel(props) {
 		<ButtonVibe
 			disabled={ gameRef == null }
 			style={ btnStyle }
+			useGestureButton={ Platform.OS === "android" }
 			onPress={ async () => {
 				Clipboard.setString(URL.FRONTEND + '/game?match=' + gameRef.match_id);
 				setInviteState(DIALOG.REQUEST_SHOW);
@@ -47,6 +48,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 		marginRight: vw(0.5),
 		flexDirection: 'row',
+		width: vw(98),
 	},
 
 		btnText: {

@@ -164,6 +164,9 @@ export default function UtilityArea(props) {
 				renderContent={ renderContent }
 				renderHeader={ renderHeader }
 				enabledBottomClamp={ true }
+				// enabledContentGestureInteraction={false}
+				enabledInnerScrolling={ true }
+				// enabledContentTapInteraction={false}
 				style={ styles.pullupView }
 				onCloseEnd={ () => onCloseEnd() }
 				onOpenStart={ () => onOpenStart() }/>
@@ -278,7 +281,7 @@ const styles = StyleSheet.create({
 			height: vw(1.2),
 			borderRadius: vw(),
 			marginVertical: vw(),
-			zIndex: 10,
+			// zIndex: 10,
 		},
 
 		headerPanel: {
@@ -307,6 +310,9 @@ const styles = StyleSheet.create({
 			shadowRadius: vw(0.5),
 			shadowOpacity: 0.3,
 			elevation: 2,
+
+			width: '100%',
+			backgroundColor: 'orange',
 		},
 
 	// Pullup Content

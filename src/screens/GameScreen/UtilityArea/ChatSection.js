@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { View, ScrollView, StyleSheet, TextInput } from 'react-native';
+import { View, StyleSheet, TextInput, Animated } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
 import Clipboard from '@react-native-community/clipboard';
 import { useSelector } from 'react-redux';
 import Util, { vw, vh, strict_equal } from 'chessvibe/src/Util';
@@ -105,7 +106,7 @@ function ChatBubble(props) {
 	}
 
 	return (
-		<ButtonVibe style={ viewStyle } onPress={ props.onPress }>
+		<ButtonVibe style={ viewStyle } useGestureButton={ Platform.OS === "android" } onPress={ props.onPress }>
 			<TextVibe style={ textStyle }>{ props.children }</TextVibe>
 		</ButtonVibe>
 	);
