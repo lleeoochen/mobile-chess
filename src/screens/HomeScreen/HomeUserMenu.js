@@ -59,15 +59,6 @@ export default function HomeUserMenu(props) {
 		}
 	}
 
-	// <TextVibe style={ styles.menuStat }>Win Rate { (stats.win * 100.0 / (stats.win + stats.lose)).toFixed(2) }%.</TextVibe>
-	// <TextVibe style={ styles.menuStat }>Win { stats.win } games.</TextVibe>
-	// <TextVibe style={ styles.menuStat }>Lose { stats.lose } games.</TextVibe>
-	// <TextVibe style={ styles.menuStat }>Draw { stats.draw } games.</TextVibe>
-	// <TextVibe style={ styles.menuStat }>Stalemate { stats.stalemate } games.</TextVibe>
-	// <TextVibe style={ styles.menuStat }>Resign { stats.draw } games.</TextVibe>
-	// <TextVibe style={ styles.menuStat }>Ongoing { stats.ongoing } games.</TextVibe>
-
-
 	// Theme configuration
 	let menuStyle = [styles.menu, { transform: [{ scale: zoomIn }] }, {
 		backgroundColor: appTheme.MENU_BACKGROUND

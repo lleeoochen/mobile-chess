@@ -83,21 +83,23 @@ export const IMAGE = {
 
 export const APP_THEME = Object.freeze({
 	LIGHT: {
-		APP_BACKGROUND:     '#3679cc',
-		CONTENT_BACKGROUND: '#b7ceea',
-		MENU_BACKGROUND:    '#90b7e6',
-		COLOR:              'black',
-		SETTING_BACKGROUND: 'white',
-		SETTING_BORDER:     'grey',
+		APP_BACKGROUND:     '#3679cc', // Top bar, app background color
+		CONTENT_BACKGROUND: '#b7ceea', // Main container background color
+		MENU_BACKGROUND:    '#90b7e6', // Side menu background color
+		COLOR:              'black', // Text color
+		SUB_COLOR:          'darkslategrey', // Subtext color
+		SETTING_BACKGROUND: 'white',  // Setting item color
+		SETTING_BORDER:     'grey', // Setting item border
 	},
 
 	DARK: {
-		APP_BACKGROUND:     'black',
-		CONTENT_BACKGROUND: '#1A283A',
-		MENU_BACKGROUND:    '#0D151F',
-		COLOR:              'white',
-		SETTING_BACKGROUND: '#2a4261',
-		SETTING_BORDER:     '#1a283a',
+		APP_BACKGROUND:     'black', // Top bar, app background color
+		CONTENT_BACKGROUND: '#1A283A', // Main container background color
+		MENU_BACKGROUND:    '#0D151F', // Side menu background color
+		COLOR:              'white', // Text color
+		SUB_COLOR:          'grey', // Subtext color
+		SETTING_BACKGROUND: '#2a4261', // Setting item color
+		SETTING_BORDER:     '#1a283a', // Setting item border
 	},
 });
 

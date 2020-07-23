@@ -52,7 +52,7 @@ export default function HistoryTab(props) {
 	// Render function
 	function render() {
 		// Render
-		let { $containers, stats } = renderMatches();
+		let $containers = renderMatches();
 
 		return (
 			<SafeAreaView style={ viewStyle }>
@@ -83,14 +83,6 @@ export default function HistoryTab(props) {
 	// Render user matches
 	function renderMatches() {
 		let $containers = [];
-		let stats = {
-			draw: 0,
-			stalemate: 0,
-			win: 0,
-			lose: 0,
-			ongoing: 0,
-			resign: 0,
-		};
 
 		for (let i in oldMatches) {
 			let { enemy, matches } = oldMatches[i];
@@ -129,13 +121,6 @@ export default function HistoryTab(props) {
 							</View>
 						</ButtonVibe>
 					);
-
-					let win = winType(match_data.moves[match_data.moves.length - 1], color);
-					if (win === true) stats.win += 1;
-					else if (win === false) stats.lose += 1;
-					else if (win === 0) stats.draw += 1;
-					else if (win === 1) stats.stalemate += 1;
-					else if (win === 2) stats.resign += 1;
 				}
 			});
 			$containers.push(
@@ -150,7 +135,7 @@ export default function HistoryTab(props) {
 			);
 		}
 
-		return { $containers, stats };
+		return $containers;
 	}
 
 

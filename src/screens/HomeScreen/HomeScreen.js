@@ -49,6 +49,7 @@ HomeScreen.navigationOptions = ({navigation}) => {
 export default function HomeScreen(props) {
 	const isDarkTheme = useSelector(state => state.isDarkTheme);
 
+	const [ opponents, setOpponents ] = React.useState([]);
 	const [ matches, setMatches ] = React.useState({ new: [], old: [] });
 	const [ createMenuVisible, showCreateMenu ] = React.useState({ show: false });
 	const [ refreshing, setRefreshing ] = React.useState(false);
@@ -119,6 +120,7 @@ export default function HomeScreen(props) {
 				<FriendsTab
 					navigation={ props.navigation }
 					isDarkTheme={ isDarkTheme }
+					opponents={ opponents }
 					style={ tab == 'friends' ? {} : hidden }/>
 
 				<SettingsTab
@@ -159,7 +161,6 @@ export default function HomeScreen(props) {
 	function fetchMatches() {
 		let matches_dict = {};
 		let matches_promises = [];
-		console.log("Fetching matches...");
 
 		user.current.matches.forEach(match => {
 			let [match_id, enemy_id] = match.split('-');
@@ -232,6 +233,44 @@ export default function HomeScreen(props) {
 				old: oldMatches,
 			};
 
+			// Calculate opponent stats
+			let opponentsSet = new Set();
+			results.forEach(result => {
+				let { enemy, matches } = result;
+				let stats = {
+					draw: 0,
+					stalemate: 0,
+					win: 0,
+					lose: 0,
+					ongoing: 0,
+					resign: 0,
+				};
+
+				matches.forEach((match, j) => {
+					let match_data = match[1];
+
+					let color = (match_data.black == Cache.userID) ? TEAM.B : TEAM.W;
+					let win = winType(match_data.moves[match_data.moves.length - 1], color);
+					if (win === true) stats.win += 1;
+					else if (win === false) stats.lose += 1;
+					else if (win === 0) stats.draw += 1;
+					else if (win === 1) stats.stalemate += 1;
+					else if (win === 2) stats.resign += 1;
+				});
+
+				if (enemy.name) {
+					opponentsSet.add([enemy, stats]);
+				}
+			});
+
+			setOpponents([...opponentsSet].sort((a, b) => {
+
+				if (a[0].name < b[0].name)
+					return -1;
+				if (a[0].name > b[0].name)
+					return 1;
+				return 0;
+			}));
 			setMatches(resultMatches);
 			setRefreshing(false);
 		});
