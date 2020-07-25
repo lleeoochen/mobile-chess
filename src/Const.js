@@ -90,6 +90,7 @@ export const APP_THEME = Object.freeze({
 		SUB_COLOR:          'darkslategrey', // Subtext color
 		SETTING_BACKGROUND: 'white',  // Setting item color
 		SETTING_BORDER:     'grey', // Setting item border
+		ACTION_BUTTON:      '#5bad29', // Action button background color
 	},
 
 	DARK: {
@@ -100,6 +101,7 @@ export const APP_THEME = Object.freeze({
 		SUB_COLOR:          'grey', // Subtext color
 		SETTING_BACKGROUND: '#2a4261', // Setting item color
 		SETTING_BORDER:     '#1a283a', // Setting item border
+		ACTION_BUTTON:      '#437149', // Action button background color
 	},
 });
 

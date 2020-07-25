@@ -28,11 +28,11 @@ export default function FriendsTab(props) {
 
 	let Search = isDarkTheme ? SearchDark : SearchLight;
 
-	opponents.sort((a, b) => {
-		let statusA = friends[a[0].user_id] || 0;
-		let statusB = friends[b[0].user_id] || 0;
-		return statusB - statusA;
-	});
+	// opponents.sort((a, b) => {
+	// 	let statusA = friends[a[0].user_id] || 0;
+	// 	let statusB = friends[b[0].user_id] || 0;
+	// 	return statusB - statusA;
+	// });
 
 	let people = opponents.map(data => {
 		if (searchText != '' && !data[0].name.toLowerCase().includes(searchText.toLowerCase()))
@@ -96,26 +96,59 @@ function SearchInput(props) {
 function FriendItem(props) {
 	let { data, appTheme, onPress, friendStatus, addFriend=()=>{}, acceptFriend=()=>{} } = props;
 	let [ enemy, stats ] = data;
+	let [ friendState, setFriendState ] = React.useState(friendStatus);
 
+	// Change state when prop changes
+	React.useEffect(() => {
+		console.log("Friend Status: ", friendStatus);
+		setFriendState(friendStatus);
+	},
+	[friendStatus, enemy]);
+
+	// Theme colors
 	let color = { color: appTheme.COLOR };
 	let subColor = { color: appTheme.SUB_COLOR };
-	let btnColor = { backgroundColor: appTheme.MENU_BACKGROUND };
+	// let btnColor = { backgroundColor: appTheme.MENU_BACKGROUND };
 
+	// Win stats
 	let winPercent = (stats.win * 100.0 / (stats.win + stats.lose)).toFixed(2);
 	if (winPercent == 'NaN') winPercent = '--';
 
-	let disabled = friendStatus != null && friendStatus != FRIEND.REQUEST_RECEIVED;
-	let styleDisabled = disabled ? {
-		backgroundColor: 'transparent'
-	} : null;
+	// Action button state
+	let disabled = friendState != null && friendState != FRIEND.REQUEST_RECEIVED;
 
+	// Action button style
+	let customStyle =
+		disabled                               ? '' :
+		friendState == FRIEND.REQUEST_RECEIVED ? { backgroundColor: appTheme.ACTION_BUTTON } :
+												 { backgroundColor: appTheme.MENU_BACKGROUND };
+
+	// Action button text
 	let text =
-		friendStatus == FRIEND.REQUEST_SENT ? 'Requested' :
-		friendStatus == FRIEND.REQUEST_RECEIVED ? 'Accept Friend' :
-		friendStatus == FRIEND.FRIENDED ? '' :
-		'+ Add Friend';
+		friendState == FRIEND.REQUEST_SENT     ? 'Requested' :
+		friendState == FRIEND.REQUEST_RECEIVED ? 'Accept Friend' :
+		friendState == FRIEND.FRIENDED         ? 'Friend' :
+												 '+ Add Friend';
 
-	let action = friendStatus == FRIEND.REQUEST_RECEIVED ? acceptFriend : addFriend;
+	// Action button config
+	let action = friendState == FRIEND.REQUEST_RECEIVED ? acceptFriend : addFriend;
+	let actionButton = disabled ?
+		(
+			<TextVibe style={ [styles.addBtnText] }>{ text }</TextVibe>
+		)
+		:
+		(
+			<ButtonVibe
+				style={ [styles.addBtn, customStyle] }
+				disabled={ disabled }
+				onPress={ () => {
+					if (friendState == null) setFriendState(FRIEND.REQUEST_SENT);
+					if (friendState == FRIEND.REQUEST_RECEIVED) setFriendState(FRIEND.FRIENDED);
+					action(enemy.user_id);
+				} }>
+				<TextVibe style={ [styles.addBtnText, color] }>{ text }</TextVibe>
+			</ButtonVibe>
+		);
 
 	return (
 		<ButtonVibe style={ styles.friendBox } onPress={ onPress }>
@@ -125,10 +158,7 @@ function FriendItem(props) {
 				<TextVibe style={ [styles.friendStat, subColor] }>Win: { winPercent }%</TextVibe>
 				<TextVibe style={ [styles.friendStat, subColor] }>Total: { stats.lose + stats.win }</TextVibe>
 			</View>
-
-			<ButtonVibe style={ [styles.addBtn, btnColor, styleDisabled] } disabled={ disabled } onPress={ () => action(enemy.user_id) }>
-				<TextVibe style={ [styles.addBtnText, color] }>{ text }</TextVibe>
-			</ButtonVibe>
+			{ actionButton }
 		</ButtonVibe>
 	);
 }
@@ -196,7 +226,8 @@ const styles = StyleSheet.create({
 		},
 
 			addBtnText: {
-
+				fontSize: vw(5),
+				color: 'grey',
 			},
 
 	modalTitle: {
