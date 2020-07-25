@@ -121,6 +121,7 @@ export default function HomeScreen(props) {
 					navigation={ props.navigation }
 					isDarkTheme={ isDarkTheme }
 					opponents={ opponents }
+					friends={ user.current.friends }
 					style={ tab == 'friends' ? {} : hidden }/>
 
 				<SettingsTab
@@ -258,7 +259,7 @@ export default function HomeScreen(props) {
 					else if (win === 2) stats.resign += 1;
 				});
 
-				if (enemy.name) {
+				if (enemy.name && enemy.name != 'Computer') {
 					opponentsSet.add([enemy, stats]);
 				}
 			});

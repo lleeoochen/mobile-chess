@@ -176,6 +176,12 @@ export const DIALOG = Object.freeze({
 	CLOSING: 3,
 });
 
+export const FRIEND = Object.freeze({
+	REQUEST_SENT: 1,
+	REQUEST_RECEIVED: 2,
+	FRIENDED: 3,
+});
+
 export const COLOR_ORIGINAL = 0;
 export const COLOR_HIGHLIGHT = 1;
 export const COLOR_LAST_MOVE = 2;

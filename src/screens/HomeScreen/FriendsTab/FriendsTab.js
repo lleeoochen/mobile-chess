@@ -4,7 +4,7 @@ import { ActionBar, WebVibe, TextVibe, ModalVibe, ButtonVibe, DialogVibe } from 
 import AutoHeightImage from 'react-native-auto-height-image';
 import SearchBar from 'react-native-search-bar';
 
-import { URL, TEAM, IMAGE, APP_THEME } from 'chessvibe/src/Const';
+import { URL, TEAM, IMAGE, APP_THEME, FRIEND } from 'chessvibe/src/Const';
 import Util, { formatDate, vw, wh, winType } from 'chessvibe/src/Util';
 import Cache from 'chessvibe/src/Cache';
 import Backend from 'chessvibe/src/Backend';
@@ -17,7 +17,7 @@ const borderRadius = vw();
 
 // Home Screen
 export default function FriendsTab(props) {
-	const { isDarkTheme, opponents } = props;
+	const { isDarkTheme, opponents, friends={} } = props;
 	const appTheme = isDarkTheme ? APP_THEME.DARK : APP_THEME.LIGHT;
 	let [ searchText, setSearchText ] = React.useState('');
 	let [ userModalData, showUserModal ] = React.useState(null);
@@ -27,11 +27,26 @@ export default function FriendsTab(props) {
 	}];
 
 	let Search = isDarkTheme ? SearchDark : SearchLight;
-	let friends = opponents.map(data => {
+
+	opponents.sort((a, b) => {
+		let statusA = friends[a[0].user_id] || 0;
+		let statusB = friends[b[0].user_id] || 0;
+		return statusB - statusA;
+	});
+
+	let people = opponents.map(data => {
 		if (searchText != '' && !data[0].name.toLowerCase().includes(searchText.toLowerCase()))
 			return null;
 
-		return <FriendItem data={ data } appTheme={ appTheme } onPress={ () => showUserModal(data) }/>;
+		return (
+			<FriendItem
+				data={ data }
+				appTheme={ appTheme }
+				friendStatus={ friends[data[0].user_id] }
+				addFriend={ (id) => Backend.requestFriend(id) }
+				acceptFriend={ (id) => Backend.acceptFriend(id) }
+				onPress={ () => showUserModal(data) }/>
+		);
 	});
 
 	return (
@@ -42,7 +57,7 @@ export default function FriendsTab(props) {
 				onSubmit={ (text) => { setSearchText(text) } }
 				onDismiss={ () => { setSearchText('') } }/>
 			<ScrollView>
-				{ friends }
+				{ people }
 			</ScrollView>
 
 			<FriendModal appTheme={ appTheme } data={ userModalData } onDismiss={ () => showUserModal(null) }/>
@@ -79,7 +94,7 @@ function SearchInput(props) {
 
 // Friend clickable item on list
 function FriendItem(props) {
-	let { data, appTheme, onPress } = props;
+	let { data, appTheme, onPress, friendStatus, addFriend=()=>{}, acceptFriend=()=>{} } = props;
 	let [ enemy, stats ] = data;
 
 	let color = { color: appTheme.COLOR };
@@ -88,6 +103,19 @@ function FriendItem(props) {
 
 	let winPercent = (stats.win * 100.0 / (stats.win + stats.lose)).toFixed(2);
 	if (winPercent == 'NaN') winPercent = '--';
+
+	let disabled = friendStatus != null && friendStatus != FRIEND.REQUEST_RECEIVED;
+	let styleDisabled = disabled ? {
+		backgroundColor: 'transparent'
+	} : null;
+
+	let text =
+		friendStatus == FRIEND.REQUEST_SENT ? 'Requested' :
+		friendStatus == FRIEND.REQUEST_RECEIVED ? 'Accept Friend' :
+		friendStatus == FRIEND.FRIENDED ? '' :
+		'+ Add Friend';
+
+	let action = friendStatus == FRIEND.REQUEST_RECEIVED ? acceptFriend : addFriend;
 
 	return (
 		<ButtonVibe style={ styles.friendBox } onPress={ onPress }>
@@ -98,8 +126,8 @@ function FriendItem(props) {
 				<TextVibe style={ [styles.friendStat, subColor] }>Total: { stats.lose + stats.win }</TextVibe>
 			</View>
 
-			<ButtonVibe style={ [styles.addBtn, btnColor] }>
-				<TextVibe style={ [styles.addBtnText, color] }>+ Add Friend</TextVibe>
+			<ButtonVibe style={ [styles.addBtn, btnColor, styleDisabled] } disabled={ disabled } onPress={ () => action(enemy.user_id) }>
+				<TextVibe style={ [styles.addBtnText, color] }>{ text }</TextVibe>
 			</ButtonVibe>
 		</ButtonVibe>
 	);

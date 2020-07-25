@@ -72,4 +72,18 @@ export default class Backend {
 			match_id: match_id,
 		});
 	}
+
+	static requestFriend(friend_id) {
+		console.log("requestFriend");
+		return Util.request('POST', URL.BACKEND + '/chess/request_friend', {
+			user_id: friend_id,
+		});
+	}
+
+	static acceptFriend(friend_id) {
+		console.log("acceptFriend");
+		return Util.request('POST', URL.BACKEND + '/chess/accept_friend', {
+			user_id: friend_id,
+		});
+	}
 }
