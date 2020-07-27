@@ -34,12 +34,13 @@ export default function FriendsTab(props) {
 	// 	return statusB - statusA;
 	// });
 
-	let people = opponents.map(data => {
+	let people = opponents.map((data, key) => {
 		if (searchText != '' && !data[0].name.toLowerCase().includes(searchText.toLowerCase()))
 			return null;
 
 		return (
 			<FriendItem
+				key={ key }
 				data={ data }
 				appTheme={ appTheme }
 				friendStatus={ friends[data[0].user_id] }

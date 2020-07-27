@@ -22,7 +22,7 @@ export default function ChatSection(props) {
 	const chat = useSelector(state => state.game.match ? state.game.match.chat : [], strict_equal);
 	const contentRef = React.useRef();
 	const [ messageCache, setMessageCache ] = React.useState(null);
-	const { gameRef, setChatState } = props;
+	const { gameRef, setChatState, minimizeDrawer=()=>{} } = props;
 
 	let colorLight = { backgroundColor: theme.COLOR_BOARD_LIGHT };
 	let colorDark = { backgroundColor: theme.COLOR_BOARD_DARK };
@@ -47,6 +47,7 @@ export default function ChatSection(props) {
 					onPress={ async () => {
 						Clipboard.setString(messageObj.message);
 						setChatState(DIALOG.REQUEST_SHOW);
+						minimizeDrawer();
 					}}>
 					{ messageObj.message }
 				</ChatBubble>

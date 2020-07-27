@@ -120,6 +120,7 @@ export default function UtilityArea(props) {
 				<ChatSection
 					gameRef={ gameRef }
 					setChatState={ chatHook[1] }
+					minimizeDrawer={ minimizeDrawer }
 					style={ styles.chatSection }/>
 			</View>
 		);

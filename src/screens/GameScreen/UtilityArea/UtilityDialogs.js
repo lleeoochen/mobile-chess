@@ -38,126 +38,87 @@ export default function UtilityDialogs(props) {
 
 	function resign() {
 		Backend.resign(game.team == TEAM.W ? TEAM.B : TEAM.W);
-		setResignState(DIALOG.CLOSING);
+		setResignState(DIALOG.HIDE);
 	}
 
 	function cancelDraw() {
 		Backend.cancelDraw().then(() => {
-			setDrawState(DIALOG.CLOSING);
+			setDrawState(DIALOG.HIDE);
 		});
 	}
 
 	function cancelMercy() {
 		Backend.cancelUndo().then(() => {
-			setUndoState(DIALOG.CLOSING);
+			setUndoState(DIALOG.HIDE);
 		});
 	}
 
 	function acceptDraw() {
 		Backend.draw().then(() => {
-			setDrawState(DIALOG.CLOSING);
+			setDrawState(DIALOG.HIDE);
 		});
 	}
 
 	function acceptMercy() {
 		Backend.undoMove().then(() => {
-			setUndoState(DIALOG.CLOSING);
+			setUndoState(DIALOG.HIDE);
 		});
 	}
 
 
-
 	// Render
-	showDialogOnIdle(dialogHooks);
-
 	return (
 		<View>
 			<DialogVibe
 				title={ 'Are you sure you want to resign match?' }
 				confirmBtnText={ 'Resign Match' }
 				theme={ theme }
-				visible={ resignState == DIALOG.SHOW }
-				onDismiss={ () => setResignState(DIALOG.CLOSING) }
-				onSuccess={ () => resign() }
-				onModalHide={ () => switchDialog(dialogHooks) }/>
+				visible={ resignState == DIALOG.REQUEST_SHOW }
+				onDismiss={ () => setResignState(DIALOG.HIDE) }
+				onSuccess={ () => resign() }/>
 
 			<DialogVibe
 				title={ (enemy.name || 'Opponent') + ' is asking for a draw. Confirm?' }
 				confirmBtnText={ 'Draw Match' }
 				theme={ theme }
-				visible={ drawState == DIALOG.SHOW }
+				visible={ drawState == DIALOG.REQUEST_SHOW }
 				onDismiss={ () => cancelDraw() }
-				onSuccess={ () => acceptDraw() }
-				onModalHide={ () => switchDialog(dialogHooks) }/>
+				onSuccess={ () => acceptDraw() }/>
 
 			<DialogVibe
 				title={ (enemy.name || 'Opponent') + ' is asking for your mercy.' }
 				confirmBtnText={ 'Undo Move' }
 				theme={ theme }
-				visible={ undoState == DIALOG.SHOW }
+				visible={ undoState == DIALOG.REQUEST_SHOW }
 				onDismiss={ () => cancelMercy() }
-				onSuccess={ () => acceptMercy() }
-				onModalHide={ () => switchDialog(dialogHooks) }/>
+				onSuccess={ () => acceptMercy() }/>
 
 			<DialogVibe
 				title={ 'Invite Link Copied!' }
 				showCancelBtn={ false }
 				showConfirmBtn={ false }
 				theme={ theme }
-				visible={ inviteState == DIALOG.SHOW }
-				onDismiss={ () => setInviteState(DIALOG.CLOSING) }
-				onSuccess={ () => setInviteState(DIALOG.CLOSING) }
-				onModalHide={ () => switchDialog(dialogHooks) }/>
+				visible={ inviteState == DIALOG.REQUEST_SHOW }
+				onDismiss={ () => setInviteState(DIALOG.HIDE) }
+				onSuccess={ () => setInviteState(DIALOG.HIDE) }/>
 
 			<DialogVibe
 				title={ 'Message Copied!' }
 				showCancelBtn={ false }
 				showConfirmBtn={ false }
 				theme={ theme }
-				visible={ chatState == DIALOG.SHOW }
-				onDismiss={ () => setChatState(DIALOG.CLOSING) }
-				onSuccess={ () => setChatState(DIALOG.CLOSING) }
-				onModalHide={ () => switchDialog(dialogHooks) }/>
+				visible={ chatState == DIALOG.REQUEST_SHOW }
+				onDismiss={ () => setChatState(DIALOG.HIDE) }
+				onSuccess={ () => setChatState(DIALOG.HIDE) }/>
 
 			<DialogVibe
 				title={ winMessage }
 				showCancelBtn={ false }
 				showConfirmBtn={ false }
 				theme={ theme }
-				visible={ endingState == DIALOG.SHOW }
-				onDismiss={ () => setEndingState(DIALOG.CLOSING) }
-				onSuccess={ () => setEndingState(DIALOG.CLOSING) }
-				onModalHide={ () => switchDialog(dialogHooks) }/>
+				visible={ endingState == DIALOG.REQUEST_SHOW }
+				onDismiss={ () => setEndingState(DIALOG.HIDE) }
+				onSuccess={ () => setEndingState(DIALOG.HIDE) }/>
 		</View>
 	);
-}
-
-
-// Switch between dialogs
-async function switchDialog(dialogHooks) {
-	for (let hook of dialogHooks) {
-		if (hook[0] == DIALOG.CLOSING) {
-			hook[1](DIALOG.HIDE);
-		}
-	}
-
-	for (let hook of dialogHooks) {
-		if (hook[0] == DIALOG.REQUEST_SHOW) {
-			hook[1](DIALOG.SHOW);
-			break;
-		}
-	}
-}
-
-// Open requesting dialog if idle
-function showDialogOnIdle(dialogHooks) {
-	let openDialogSafe = Object.values(dialogHooks).every(hook => hook[0] != DIALOG.SHOW && hook[0] != DIALOG.CLOSING);
-	if (openDialogSafe) {
-		for (let hook of dialogHooks) {
-			if (hook[0] == DIALOG.REQUEST_SHOW) {
-				hook[1](DIALOG.SHOW);
-				break;
-			}
-		}
-	}
 }

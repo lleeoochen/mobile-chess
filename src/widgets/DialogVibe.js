@@ -8,6 +8,9 @@ import TextVibe from './TextVibe';
 import ButtonVibe from './ButtonVibe';
 import ModalVibe from './ModalVibe';
 
+const handle_height = 20 + vw(3);
+const panel_height = vw(12);
+const header_height = panel_height + handle_height;
 export default function DialogVibe(props) {
 	const isDarkTheme = useSelector(state => state.isDarkTheme);
 	const appTheme = isDarkTheme ? APP_THEME.DARK : APP_THEME.LIGHT;
@@ -56,7 +59,8 @@ export default function DialogVibe(props) {
 		<ModalVibe
 			isVisible={ visible }
 			onDismiss={ () => onDismiss() }
-			onModalHide={ () => onModalHide() }>
+			onModalHide={ () => onModalHide() }
+			style={{ top: vh(-100) + header_height }}>
 			<View style={ styles.squareBack }></View>
 
 			<TextVibe style={ [styles.text, textColor] }>{ title }</TextVibe>
@@ -70,34 +74,34 @@ export default function DialogVibe(props) {
 
 const styles = StyleSheet.create({
 	btnContainer: {
-		flex: 1,
+		// flex: 1,
 		flexDirection: 'row',
 		paddingHorizontal: vw(2),
-		// backgroundColor: 'darkslategrey',
+		justifyContent: 'center',
 	},
 
-			btnText: {
-				fontSize: vw(5),
-				textAlign: 'center',
-				color: 'white',
-			},
+		btnText: {
+			fontSize: vw(5),
+			textAlign: 'center',
+			color: 'white',
+		},
 
-			cancelBtn: {
-				backgroundColor: 'white',
-				paddingVertical: vw(),
-				paddingHorizontal: vw(3),
-				margin: vw(),
-				marginTop: vw(5),
-			},
+		cancelBtn: {
+			backgroundColor: 'white',
+			paddingVertical: vw(),
+			paddingHorizontal: vw(3),
+			margin: vw(),
+			marginTop: vw(5),
+		},
 
-			confirmBtn: {
-				backgroundColor: '#57bf69',
-				paddingVertical: vw(),
-				paddingHorizontal: vw(3),
-				margin: vw(),
-				fontWeight: 'bold',
-				marginTop: vw(5),
-			},
+		confirmBtn: {
+			backgroundColor: '#57bf69',
+			paddingVertical: vw(),
+			paddingHorizontal: vw(3),
+			margin: vw(),
+			fontWeight: 'bold',
+			marginTop: vw(5),
+		},
 
 	text: {
 		fontSize: vw(5),
