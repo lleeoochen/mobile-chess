@@ -15,6 +15,21 @@ export default function BaseBoard(props) {
 	const downward = useSelector(state => state.game.downward);
 	const team = useSelector(state => state.game.team);
 
+
+	//Get numbering from grid
+	function getNumbering(x, y) {
+		let result = {
+			x: (team == Const.TEAM.B) ? y + 1 : Const.BOARD_SIZE - y,
+			y: (team == Const.TEAM.B) ? String.fromCharCode(97 + 7 - x) : String.fromCharCode(x + 97)
+		};
+
+		if (x != 0) result.x = null;
+		if (y != Const.BOARD_SIZE - 1) result.y = null;
+
+		return result;
+	}
+
+
 	// Render
 	let grids = [];
 
@@ -24,15 +39,20 @@ export default function BaseBoard(props) {
 			let color = isLight ? theme.COLOR_BOARD_LIGHT : theme.COLOR_BOARD_DARK;
 
 			let gridStyle = {
-				width: cell_size + (x < Const.BOARD_SIZE - 1 ? vw() : 0), // Prevent gap between cells
-				height: cell_size + (y < Const.BOARD_SIZE - 1 ? vw() : 0),
-				position: 'absolute'
+				width: cell_size,
+				height: cell_size,
+				position: 'absolute',
+
+				// Prevent gap between cells
+				paddingRight: (x < Const.BOARD_SIZE - 1 ? vw() : 0),
+				paddingBottom: (y < Const.BOARD_SIZE - 1 ? vw() : 0),
 			};
 
 			grids.push(
 				<BaseBoardGrid
 					x={x}
 					y={y}
+					numbering={getNumbering(x, y)}
 					key={x + '-' + y}
 					style={[gridStyle, styles['x' + x], styles['y' + y]]}
 					color={color}

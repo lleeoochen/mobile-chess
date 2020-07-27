@@ -70,12 +70,12 @@ export default function UtilityDialogs(props) {
 	return (
 		<View>
 			<DialogVibe
-				title={ 'Are you sure you want to resign match?' }
-				confirmBtnText={ 'Resign Match' }
+				title={ (enemy.name || 'Opponent') + ' is asking for your mercy.' }
+				confirmBtnText={ 'Undo Move' }
 				theme={ theme }
-				visible={ resignState == DIALOG.REQUEST_SHOW }
-				onDismiss={ () => setResignState(DIALOG.HIDE) }
-				onSuccess={ () => resign() }/>
+				visible={ undoState == DIALOG.REQUEST_SHOW }
+				onDismiss={ () => cancelMercy() }
+				onSuccess={ () => acceptMercy() }/>
 
 			<DialogVibe
 				title={ (enemy.name || 'Opponent') + ' is asking for a draw. Confirm?' }
@@ -86,12 +86,12 @@ export default function UtilityDialogs(props) {
 				onSuccess={ () => acceptDraw() }/>
 
 			<DialogVibe
-				title={ (enemy.name || 'Opponent') + ' is asking for your mercy.' }
-				confirmBtnText={ 'Undo Move' }
+				title={ 'Are you sure you want to resign match?' }
+				confirmBtnText={ 'Resign Match' }
 				theme={ theme }
-				visible={ undoState == DIALOG.REQUEST_SHOW }
-				onDismiss={ () => cancelMercy() }
-				onSuccess={ () => acceptMercy() }/>
+				visible={ resignState == DIALOG.REQUEST_SHOW }
+				onDismiss={ () => setResignState(DIALOG.HIDE) }
+				onSuccess={ () => resign() }/>
 
 			<DialogVibe
 				title={ 'Invite Link Copied!' }
