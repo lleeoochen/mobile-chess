@@ -41,7 +41,7 @@ const wait = (timeout) => {
 // Navigation
 HomeScreen.navigationOptions = ({navigation}) => {
 	const { params = {} } = navigation.state;
-	return ActionBar(NAV_TITLE[params.tab], 'MENU', params.openMenu, 'HALFMOON', params.openCreate, params.isDarkTheme);
+	return ActionBar(NAV_TITLE[params.tab], 'MENU', params.openMenu, 'BELL', params.openCreate, params.isDarkTheme);
 };
 
 

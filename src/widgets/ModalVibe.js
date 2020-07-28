@@ -102,12 +102,8 @@ export default function ModalVibe(props) {
 const styles = StyleSheet.create({
 
 	full: {
-		// ...StyleSheet.absoluteFillObject,
-		position: 'absolute',
-		    top: 0,
-		    bottom: 0,
-		    left: 0,
-		    right: 0,
+		...StyleSheet.absoluteFillObject,
+		zIndex: 1000,
 	},
 
 	menuWrap: {

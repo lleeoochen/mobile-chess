@@ -17,6 +17,8 @@ const header_height = 70;
 const handle_height = 20 + vw(3);
 const panel_height = header_height - handle_height;
 
+const copied_width = 50;
+
 export default function ChatSection(props) {
 	const theme = useSelector(state => state.theme);
 	const chat = useSelector(state => state.game.match ? state.game.match.chat : [], strict_equal);
@@ -46,8 +48,8 @@ export default function ChatSection(props) {
 					right={ messageObj.team == gameRef.team }
 					onPress={ async () => {
 						Clipboard.setString(messageObj.message);
-						setChatState(DIALOG.REQUEST_SHOW);
-						minimizeDrawer();
+						// setChatState(DIALOG.REQUEST_SHOW);
+						// minimizeDrawer();
 					}}>
 					{ messageObj.message }
 				</ChatBubble>
@@ -96,20 +98,69 @@ export default function ChatSection(props) {
 
 function ChatBubble(props) {
 	const theme = useSelector(state => state.theme);
+	const [ showCopiedMessage, setShowCopiedMessage ] = React.useState(false);
+	const [ shift ] = React.useState(new Animated.Value(1));
 	let { right=false, onPress=() => {} } = props;
+
+	// Start raw animation 0 to 1
+	Animated.spring(shift, {
+		toValue: showCopiedMessage ? 0 : 1,
+		speed: 20,
+		useNativeDriver: true,
+	}).start();
+
+	// Animation mapped to copied_width
+	let translateX = shift.interpolate({
+		inputRange: [0, 1],
+		outputRange: [0, (right ? 1 : -1) * copied_width],
+	});
+
+
+	// Custom styling
+	let wrapStyle = [styles.chatBubbleWrap, { transform: [{ translateX: translateX }] }];
 	let viewStyle = [styles.chatBubble];
 	let textStyle = [styles.chatMessage];
 	let colorDark = { backgroundColor: theme.COLOR_BOARD_DARK };
 
 	if (right) {
+		wrapStyle.push({ justifyContent: 'flex-end' });
 		viewStyle.push(styles.rightBubble, colorDark);
 		textStyle.push(styles.rightMessage);
 	}
 
-	return (
-		<ButtonVibe style={ viewStyle } useGestureButton={ Platform.OS === "android" } onPress={ props.onPress }>
+
+	// Render
+	let chatBubble = (
+		<ButtonVibe
+			style={ viewStyle }
+			useGestureButton={ Platform.OS === "android" }
+			onPress={ () => {
+				setShowCopiedMessage(true);
+				props.onPress();
+				setTimeout(() => {
+					setShowCopiedMessage(false);
+				}, 1000);
+			} }>
 			<TextVibe style={ textStyle }>{ props.children }</TextVibe>
 		</ButtonVibe>
+	);
+
+	let chatCopiedMessage = (
+		<Animated.View>
+			<TextVibe style={ [...textStyle, styles.chatCopiedMessage] }>
+				Copied!
+			</TextVibe>
+		</Animated.View>
+	);
+
+	return (
+		<Animated.View style={ [wrapStyle] }>
+			{
+				right
+				? [chatBubble, chatCopiedMessage]
+				: [chatCopiedMessage, chatBubble]
+			}
+		</Animated.View>
 	);
 }
 
@@ -123,37 +174,45 @@ const styles = StyleSheet.create({
 		paddingHorizontal: vw(),
 	},
 
-		chatBubble: {
-			backgroundColor: 'darkslategrey',
-			marginBottom: vw(),
-			padding: vw(2),
-			maxWidth: '90%',
-			borderRadius: vw(),
-			alignSelf: 'flex-start',
+		chatBubbleWrap: {
+			flexDirection: 'row',
+			justifyContent: 'flex-start',
+			alignItems: 'center',
 		},
 
-			rightBubble: {
-				alignSelf: 'flex-end',
+			chatBubble: {
+				backgroundColor: 'darkslategrey',
+				marginBottom: vw(),
+				padding: vw(2),
+				maxWidth: '90%',
+				borderRadius: vw(),
 			},
 
-			chatMessage: {
-				color: 'lightgrey',
-				fontSize: vw(5),
-			},
+				chatMessage: {
+					color: 'lightgrey',
+					fontSize: vw(5),
+				},
 
-			rightMessage: {
-				textAlign: 'right',
-			},
+				rightMessage: {
+					textAlign: 'right',
+				},
 
-			systemMessage: {
-				textAlign: 'center',
-				color: 'lightgrey',
-			},
+				systemMessage: {
+					textAlign: 'center',
+					color: 'lightgrey',
+				},
 
-		chatDivider: {
-			height: vw(2),
-			width: '100%',
-		},
+				chatCopiedMessage: {
+					fontSize: vw(3),
+					color: 'lightgrey',
+					width: copied_width,
+					textAlign: 'center',
+				},
+
+			chatDivider: {
+				height: vw(2),
+				width: '100%',
+			},
 
 	chatBottom: {
 		flexDirection: 'row',
