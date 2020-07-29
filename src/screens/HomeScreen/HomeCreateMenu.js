@@ -64,6 +64,7 @@ export default function HomeCreateMenu(props) {
 
 	return (
 		<ModalVibe
+			coverAll={ true }
 			isVisible={ visible }
 			onDismiss={ onDismiss }>
 
@@ -162,8 +163,7 @@ const styles = StyleSheet.create({
 
 		themeBtn: {
 			flex: 1,
-			height: vw(64.5),
-			backgroundColor: '#ffffff2e',
+			height: vw(65),
 			borderRadius: 0,
 		},
 

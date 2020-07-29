@@ -106,7 +106,8 @@ export default function PlayTab(props) {
 				data={ actionData }
 				renderItem={ actionItem }
 				loop={ true }
-				lockScrollWhileSnapping={ true }
+				loopClonesPerSide={ 5 }
+				useScrollView={ true }
 				// autoplay={ true }
 				// autoplayInterval={ 5000 }
 				sliderWidth={ vw(100) }

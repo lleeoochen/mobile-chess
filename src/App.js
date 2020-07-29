@@ -38,7 +38,6 @@ const Navigator = createStackNavigator(
 			},
 			gestureEnabled: false,
 		},
-		cardStyle: { backgroundColor: 'green' },
 	}
 );
 

@@ -1,13 +1,13 @@
 import * as React from 'react';
-import { StyleSheet, TouchableWithoutFeedback, View, Modal, Animated } from 'react-native';
-// import Modal from 'react-native-modal';
+import { StyleSheet, TouchableWithoutFeedback, View, Animated, SafeAreaView } from 'react-native';
+import Modal from 'react-native-modal';
 import { vw, vh } from '../Util';
 import { APP_THEME } from '../Const';
 import Store from 'chessvibe/src/redux/Store';
 import { useSelector } from 'react-redux';
 
 export default function ModalVibe(props) {
-	const { isVisible=false, style={} } = props;
+	const { isVisible=false, style={}, coverAll=false } = props;
 	const wantVisible = isVisible;
 	const duration = 200;
 
@@ -29,6 +29,32 @@ export default function ModalVibe(props) {
 		}
 	},
 	[wantVisible]);
+
+	// Render default modal if requested
+	if (coverAll) {
+		return (
+			<Modal
+				isVisible={ props.isVisible || false }
+				// animationIn={'fadeIn'}
+				// animationOut={'fadeOut'}
+				animationInTiming={100}
+				animationOutTiming={100}
+				backdropTransitionInTiming={100}
+				backdropTransitionOutTiming={100}
+				activeOpacity={ 0 }
+				hideModalContentWhileAnimating={ true }
+				backdropTransitionOutTiming={ 0 }
+				onModalHide={ props.onModalHide }
+				style={ styles.modal }>
+				<TouchableWithoutFeedback onPress={ props.onDismiss }>
+					<View style={ styles.menuOutside }></View>
+				</TouchableWithoutFeedback>
+				<View style={ menuStyle }>
+					{ props.children }
+				</View>
+			</Modal>
+		);
+	}
 
 	// Want to open modal
 	if (wantVisible) {
@@ -83,7 +109,7 @@ export default function ModalVibe(props) {
 	}
 
 	return (
-		<View style={ [styles.full, { display: wantVisible || modalVisible ? 'flex' : 'none' }] }>
+		<SafeAreaView style={ [styles.full, { display: wantVisible || modalVisible ? 'flex' : 'none' }] }>
 			<Animated.View style={ [styles.full, style, { backgroundColor: 'black', opacity: shadowIndex }] }/>
 			<Animated.View style={ [styles.full, style, { transform: [{ translateY: top }] }] }>
 				<View style={ styles.menuWrap }>
@@ -95,15 +121,21 @@ export default function ModalVibe(props) {
 					</View>
 				</View>
 			</Animated.View>
-		</View>
+		</SafeAreaView>
 	);
 }
 
 const styles = StyleSheet.create({
+	modal: {
+		flex: 1,
+		margin: 0,
+		alignItems: 'center',
+		justifyContent: 'center',
+	},
 
 	full: {
 		...StyleSheet.absoluteFillObject,
-		zIndex: 1000,
+		zIndex: 100,
 	},
 
 	menuWrap: {
