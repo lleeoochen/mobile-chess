@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Animated, View, SafeAreaView, ScrollView, StyleSheet, StatusBar, TouchableOpacity, Image, Button, RefreshControl } from 'react-native';
 import { ActionBar, WebVibe, TextVibe, ModalVibe, ButtonVibe, DialogVibe } from 'chessvibe/src/widgets';
 import AutoHeightImage from 'react-native-auto-height-image';
+import Carousel from 'react-native-snap-carousel';
 
 import { URL, TEAM, IMAGE, APP_THEME } from 'chessvibe/src/Const';
 import Util, { formatDate, vw, wh, winType } from 'chessvibe/src/Util';
@@ -29,6 +30,7 @@ export default function PlayTab(props) {
 		.start();
 	}, [newMatches]);
 
+	// Custom theme styles
 	let viewStyle = [styles.view, props.style, {
 		backgroundColor: appTheme.CONTENT_BACKGROUND
 	}];
@@ -37,6 +39,7 @@ export default function PlayTab(props) {
 		color: appTheme.COLOR
 	}];
 
+	// Render recent matches
 	function renderMatches() {
 		if (!newMatches || newMatches.length < 1) return;
 
@@ -78,19 +81,37 @@ export default function PlayTab(props) {
 		);
 	}
 
+	// Render carousel action buttons
+	let actionItem = ({ item, index }) => {
+		return (
+			<ButtonVibe style={ styles.actionBtn } onPress={() => showCreateMenu({ show: true })}>
+				<Image source={ item.image } style={ styles.actionBtnImage } blurRadius={vw(0)}/>
+				<TextVibe style={ styles.actionBtnText }>{ item.text }</TextVibe>
+			</ButtonVibe>
+		);
+	}
+
+	let actionData = [
+		{ text: 'Friend', image: IMAGE.NATURE },
+		{ text: 'Computer', image: IMAGE.METAL },
+		{ text: 'Sandbox', image: IMAGE.WINTER },
+	];
+
+	// Render
 	let $container = renderMatches();
 	return (
 		<View style={ viewStyle }>
-			<ScrollView>
-				<ButtonVibe style={ styles.actionBtn } onPress={() => showCreateMenu({ show: true })}>
-					<Image source={ IMAGE.NATURE } style={ styles.actionBtnImage } blurRadius={vw(0)}/>
-					<TextVibe style={ styles.actionBtnText }>Play Friend</TextVibe>
-				</ButtonVibe>
-				<ButtonVibe style={ styles.actionBtn } onPress={() => showCreateMenu({ show: true, modeAI: true })}>
-					<Image source={ IMAGE.METAL } style={ styles.actionBtnImage } blurRadius={vw(0)}/>
-					<TextVibe style={ styles.actionBtnText }>Play Computer</TextVibe>
-				</ButtonVibe>
-			</ScrollView>
+			<Carousel
+				layout={ 'default' }
+				data={ actionData }
+				renderItem={ actionItem }
+				loop={ true }
+				lockScrollWhileSnapping={ true }
+				// autoplay={ true }
+				// autoplayInterval={ 5000 }
+				sliderWidth={ vw(100) }
+				itemWidth={ vw(80) }
+				contentContainerCustomStyle={ styles.carousel }/>
 			{ $container }
 		</View>
 	);
@@ -103,9 +124,15 @@ const styles = StyleSheet.create({
 		flex: 1,
 	},
 
+	carousel: {
+		alignItems: 'flex-start',
+		marginTop: vw(15),
+	},
+
 		actionBtn: {
 			margin: vw(3),
-			marginBottom: 0,
+			// marginBottom: 0,
+			marginTop: vw(10),
 
 			shadowColor: "#000",
 			shadowOffset: {
@@ -119,7 +146,7 @@ const styles = StyleSheet.create({
 
 			actionBtnText: {
 				color: 'white',
-				fontSize: 25,
+				fontSize: vw(10),
 				fontWeight: '900',
 				margin: vw(15),
 				textShadowColor: 'black',
@@ -128,12 +155,14 @@ const styles = StyleSheet.create({
 					height: 1,
 				},
 				textShadowRadius: 5,
+				width: '100%',
+				textAlign: 'center',
 			},
 
 			actionBtnImage: {
-				resizeMode: 'cover',
-				height: '100%',
-				width: '100%',
+				// resizeMode: 'cover',
+				height: vw(80),
+				width: vw(80),
 				position: 'absolute',
 				borderRadius: vw(),
 			},
@@ -143,7 +172,7 @@ const styles = StyleSheet.create({
 			padding: '3%',
 			borderRadius: borderRadius,
 			marginBottom: vw(),
-			position: 'absolute',
+			// position: 'absolute',
 			bottom: 0,
 		},
 

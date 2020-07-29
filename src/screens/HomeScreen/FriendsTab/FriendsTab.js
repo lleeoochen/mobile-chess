@@ -101,7 +101,6 @@ function FriendItem(props) {
 
 	// Change state when prop changes
 	React.useEffect(() => {
-		console.log("Friend Status: ", friendStatus);
 		setFriendState(friendStatus);
 	},
 	[friendStatus, enemy]);
