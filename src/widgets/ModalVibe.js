@@ -56,14 +56,13 @@ export default function ModalVibe(props) {
 		);
 	}
 
-	// Want to open modal
-	if (wantVisible) {
+	// Animate when visible
+	if (modalVisible) {
 
-		// Start animation when modal is getting visible
-		if (modalVisible) {
+		if (wantVisible) {
+			// Start animation when modal is getting visible
 			Animated.timing(top, {
 			    toValue: 0,
-			    bounciness: 0,
 			    duration,
 			    useNativeDriver: true,
 			})
@@ -76,36 +75,24 @@ export default function ModalVibe(props) {
 			})
 			.start();
 		}
-
-		// Set Modal to getting visible
 		else {
-			setModalVisible(true);
-		}
-	}
-
-	// Want to close modal and is visible
-	else if (modalVisible) {
-
-		Animated.timing(top, {
-		    toValue: vh(100),
-		    bounciness: 0,
-		    duration,
-		    useNativeDriver: true,
-		})
-		.start(() => {
-
-			// Set modal to invisible after animation is done
-			if (modalVisible) {
+			Animated.timing(top, {
+			    toValue: vh(100),
+			    duration,
+			    useNativeDriver: true,
+			})
+			.start(() => {
+				// Set modal to invisible after animation is done
 				setModalVisible(false);
-			}
-		});
+			});
 
-		Animated.timing(shadowIndex, {
-			toValue: 0,
-		    duration,
-			useNativeDriver: true,
-		})
-		.start();
+			Animated.timing(shadowIndex, {
+				toValue: 0,
+			    duration,
+				useNativeDriver: true,
+			})
+			.start();
+		}
 	}
 
 	return (

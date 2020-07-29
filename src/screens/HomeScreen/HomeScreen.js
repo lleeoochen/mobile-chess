@@ -16,6 +16,7 @@ import Storage from 'chessvibe/src/Storage';
 
 import HomeUserMenu from './HomeUserMenu';
 import HomeCreateMenu from './HomeCreateMenu';
+import NotificationMenu from './NotificationMenu';
 import PlayTab from './PlayTab';
 import HistoryTab from './HistoryTab';
 import FriendsTab from './FriendsTab';
@@ -53,6 +54,8 @@ export default function HomeScreen(props) {
 	const [ matches, setMatches ] = React.useState({ new: [], old: [] });
 	const [ createMenuVisible, showCreateMenu ] = React.useState({ show: false });
 	const [ refreshing, setRefreshing ] = React.useState(false);
+	const [ notificationsVisible, showNotifications ] = React.useState(false);
+
 	const onRefresh = React.useCallback(() => refresh(), []);
 	const user = React.useRef({});
 
@@ -88,11 +91,13 @@ export default function HomeScreen(props) {
 				props.screenProps.openDrawer(true);
 			},
 			openCreate: () => {
-				Store.dispatch(setIsDarkTheme( !isDarkTheme ));
-				Storage.set(STORAGE_IS_DARK_THEME, !isDarkTheme + '');
+				// Store.dispatch(setIsDarkTheme( !isDarkTheme ));
+				// Storage.set(STORAGE_IS_DARK_THEME, !isDarkTheme + '');
+				showNotifications(!notificationsVisible);
 			},
 		});
-	}, [tab, isDarkTheme]);
+	}, [tab, isDarkTheme, notificationsVisible]);
+
 
 	// Render function
 	function render() {
@@ -136,6 +141,11 @@ export default function HomeScreen(props) {
 						createMatch(theme, time, createMenuVisible.modeAI);
 						showCreateMenu({ show: false });
 					}}/>
+
+				<NotificationMenu
+					isDarkTheme={ isDarkTheme }
+					visible={ notificationsVisible }
+					setVisible={ showNotifications }/>
 			</SafeAreaView>
 		);
 	}
