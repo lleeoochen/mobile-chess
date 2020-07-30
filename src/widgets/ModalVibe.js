@@ -5,6 +5,7 @@ import { vw, vh } from '../Util';
 import { APP_THEME } from '../Const';
 import Store from 'chessvibe/src/redux/Store';
 import { useSelector } from 'react-redux';
+import { TouchableWithoutFeedback as RNGHTouchableWithoutFeedback } from "react-native-gesture-handler";
 
 export default function ModalVibe(props) {
 	const { isVisible=false, style={}, coverAll=false } = props;
@@ -30,6 +31,7 @@ export default function ModalVibe(props) {
 	},
 	[wantVisible]);
 
+
 	// Render default modal if requested
 	if (coverAll) {
 		return (
@@ -37,10 +39,10 @@ export default function ModalVibe(props) {
 				isVisible={ props.isVisible || false }
 				// animationIn={'fadeIn'}
 				// animationOut={'fadeOut'}
-				animationInTiming={100}
-				animationOutTiming={100}
-				backdropTransitionInTiming={100}
-				backdropTransitionOutTiming={100}
+				animationInTiming={ duration }
+				animationOutTiming={ duration }
+				backdropTransitionInTiming={ duration }
+				backdropTransitionOutTiming={ duration }
 				activeOpacity={ 0 }
 				hideModalContentWhileAnimating={ true }
 				backdropTransitionOutTiming={ 0 }
@@ -95,14 +97,15 @@ export default function ModalVibe(props) {
 		}
 	}
 
+	let ButtonClass = Platform.OS === 'android' ? RNGHTouchableWithoutFeedback : TouchableWithoutFeedback;
 	return (
 		<SafeAreaView style={ [styles.full, { display: wantVisible || modalVisible ? 'flex' : 'none' }] }>
 			<Animated.View style={ [styles.full, style, { backgroundColor: 'black', opacity: shadowIndex }] }/>
 			<Animated.View style={ [styles.full, style, { transform: [{ translateY: top }] }] }>
 				<View style={ styles.menuWrap }>
-					<TouchableWithoutFeedback onPress={ props.onDismiss }>
+					<ButtonClass onPress={ props.onDismiss }>
 						<View style={ styles.menuOutside }></View>
-					</TouchableWithoutFeedback>
+					</ButtonClass>
 					<View style={ menuStyle }>
 						{ props.children }
 					</View>
@@ -134,12 +137,12 @@ const styles = StyleSheet.create({
 
 		menuOutside: {
 			flex: 1,
-			position: 'absolute',
-			width: '100%',
-			height: '100%',
+			width: vw(100),
+			height: vh(100),
 		},
 
 		menu: {
+			position: 'absolute',
 			padding: '3%',
 			backgroundColor: '#1a283a',
 			borderStyle: 'solid',

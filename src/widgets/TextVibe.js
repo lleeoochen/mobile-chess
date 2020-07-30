@@ -5,13 +5,16 @@ export default function TextVibe(props) {
 	let { style={}, children, ...attributes } = props;
 	if (!Array.isArray(style)) style = [style];
 
+	let customStyle = {...Object.assign({}, ...style)};
+
 	const textStyle = {
 		fontFamily: 'Spectral',
-		lineHeight: Platform.OS === 'android' && style.fontSize ? style.fontSize * 1.5 : null,
+		lineHeight: Platform.OS === 'android' && customStyle.fontSize ? customStyle.fontSize * 1.5 : null,
 	};
 
+	customStyle = {...textStyle, ...customStyle};
 	return (
-		<Text style={ {...textStyle, ...Object.assign({}, ...style)} } {...attributes}>
+		<Text style={ customStyle } {...attributes}>
 			{ children }
 		</Text>
 	);

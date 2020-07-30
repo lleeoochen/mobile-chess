@@ -10,7 +10,7 @@ import { useSelector } from 'react-redux';
 export default function NotificationMenu(props) {
 	const { visible, setVisible, isDarkTheme } = props;
 	const appTheme = isDarkTheme ? APP_THEME.DARK : APP_THEME.LIGHT;
-	const shiftX = new Animated.Value(visible ? vw(80) : 0);
+	const [ shiftX ] = React.useState(new Animated.Value(vw(80)));
 	const [ actualVisible, setActualVisible ]  = React.useState(visible);
 
 	// Set state to prop visible

@@ -184,7 +184,7 @@ const styles = StyleSheet.create({
 				backgroundColor: 'darkslategrey',
 				marginBottom: vw(),
 				padding: vw(2),
-				maxWidth: '90%',
+				maxWidth: vw(70),
 				borderRadius: vw(),
 			},
 

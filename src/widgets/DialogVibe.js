@@ -41,7 +41,7 @@ export default function DialogVibe(props) {
 
 	if (showCancelBtn) {
 		cancelBtn = (
-			<ButtonVibe style={ styles.cancelBtn } onPress={ () => onDismiss() }>
+			<ButtonVibe style={ styles.cancelBtn } useGestureButton={ Platform.OS == 'android' } onPress={ () => onDismiss() }>
 				<TextVibe style={ [styles.btnText, styles.black] }>{ cancelBtnText }</TextVibe>
 			</ButtonVibe>
 		);
@@ -49,7 +49,7 @@ export default function DialogVibe(props) {
 
 	if (showConfirmBtn) {
 		confirmBtn = (
-			<ButtonVibe style={ confirmBtnStyle } onPress={ () => onSuccess() }>
+			<ButtonVibe style={ confirmBtnStyle } useGestureButton={ Platform.OS == 'android' } onPress={ () => onSuccess() }>
 				<TextVibe style={ [styles.btnText, styles.black] }>{ confirmBtnText }</TextVibe>
 			</ButtonVibe>
 		);
