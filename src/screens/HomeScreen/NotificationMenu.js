@@ -10,45 +10,27 @@ import { useSelector } from 'react-redux';
 export default function NotificationMenu(props) {
 	const { visible, setVisible, isDarkTheme } = props;
 	const appTheme = isDarkTheme ? APP_THEME.DARK : APP_THEME.LIGHT;
-	const [ shiftX ] = React.useState(new Animated.Value(vw(80)));
-	const [ actualVisible, setActualVisible ]  = React.useState(visible);
 
-	// Set state to prop visible
-	React.useEffect(() => {
-		if (visible && !actualVisible) {
-			setActualVisible(true);
-		}
-	},
-	[visible]);
-		console.log(visible, actualVisible);
+	const fullShift = vw(100);
+	const [ shiftX ] = React.useState(new Animated.Value(fullShift));
 
 	// Shift animation
-	if (actualVisible) {
-		if (visible) {
-			Animated.spring(shiftX, {
-				toValue: 0,
-				speed: 20,
-				useNativeDriver: true,
-			})
-			.start();
-		}
-		else if (actualVisible) {
-			Animated.spring(shiftX, {
-				toValue: vw(80),
-				speed: 20,
-				useNativeDriver: true,
-			})
-			.start(() => {
-				setActualVisible(false);
-			});
-		}
+	if (visible) {
+		Animated.spring(shiftX, {
+			toValue: 0,
+			speed: 20,
+			useNativeDriver: true,
+		})
+		.start();
 	}
-
-	// Opacity animation
-	let opacity = shiftX.interpolate({
-		inputRange: [0, vw(80)],
-		outputRange: [1, 0],
-	});
+	else {
+		Animated.spring(shiftX, {
+			toValue: fullShift,
+			speed: 20,
+			useNativeDriver: true,
+		})
+		.start();
+	}
 
 	// Custom theme stylings
 	let backgroundColor = {
@@ -64,8 +46,6 @@ export default function NotificationMenu(props) {
 	};
 
 	let visibleStyle = {
-		display: actualVisible ? 'flex' : 'none',
-		opacity,
 		transform: [{ translateX: shiftX }],
 	};
 
