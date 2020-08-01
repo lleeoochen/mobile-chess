@@ -20,15 +20,20 @@ export default function PlayTab(props) {
 	const { newMatches, navigateGame, showCreateMenu, isDarkTheme } = props;
 	const fadein = new Animated.Value(0);
 	const appTheme = isDarkTheme ? APP_THEME.DARK : APP_THEME.LIGHT;
+	const firstLoad = React.useRef(true);
 
 	React.useEffect(() => {
-		Animated.timing(fadein, {
-			toValue: 1,
-			duration: 0,
-			useNativeDriver: true,
-		})
-		.start();
-	}, [newMatches]);
+		if (firstLoad.current && newMatches.length > 0) {
+			Animated.timing(fadein, {
+				toValue: 1,
+				duration: 200,
+				useNativeDriver: true,
+			})
+			.start();
+			firstLoad.current = false;
+		}
+	},
+	[newMatches]);
 
 	// Custom theme styles
 	let viewStyle = [styles.view, props.style, {

@@ -4,29 +4,32 @@ import Slider from "react-native-slider";
 import { TextVibe, ModalVibe, ButtonVibe } from 'chessvibe/src/widgets';
 import AutoHeightImage from 'react-native-auto-height-image';
 import { vw, vh } from 'chessvibe/src/Util';
-import { THEME_ID, TIME, IMAGE, APP_THEME } from 'chessvibe/src/Const';
+import { THEME_ID, TIME, IMAGE, APP_THEME, NOTIFICATION_TYPE } from 'chessvibe/src/Const';
 import { useSelector } from 'react-redux';
+import Backend from 'chessvibe/src/GameBackend';
 
 export default function NotificationMenu(props) {
 	const { visible, setVisible, isDarkTheme } = props;
 	const appTheme = isDarkTheme ? APP_THEME.DARK : APP_THEME.LIGHT;
 
-	const fullShift = vw(100);
-	const [ shiftX ] = React.useState(new Animated.Value(fullShift));
+	const fullShift = vh(-100);
+	const [ shiftY ] = React.useState(new Animated.Value(fullShift));
 
 	// Shift animation
 	if (visible) {
-		Animated.spring(shiftX, {
+		Animated.spring(shiftY, {
 			toValue: 0,
 			speed: 20,
+			bounciness: 5,
 			useNativeDriver: true,
 		})
 		.start();
 	}
 	else {
-		Animated.spring(shiftX, {
+		Animated.spring(shiftY, {
 			toValue: fullShift,
 			speed: 20,
+			bounciness: 5,
 			useNativeDriver: true,
 		})
 		.start();
@@ -37,64 +40,164 @@ export default function NotificationMenu(props) {
 		backgroundColor: appTheme.APP_BACKGROUND
 	};
 
-	let notifBackgroundColor = {
-		backgroundColor: appTheme.CONTENT_BACKGROUND
-	};
-
 	let textColor = {
 		color: appTheme.COLOR
 	};
 
-	let visibleStyle = {
-		transform: [{ translateX: shiftX }],
+	let shiftStyle = {
+		transform: [{ translateY: shiftY }],
 	};
 
 
-	return (
-		<Animated.View style={ [styles.outerView, visibleStyle] }>
-			<TouchableWithoutFeedback onPress={ () => setVisible(false) }>
-				<View style={ styles.backView }/>
-			</TouchableWithoutFeedback>
+	let notificationsData = [
+		{
+			type: NOTIFICATION_TYPE.INFO,
+			payload: 'Welcome to ChessVibe!',
+		},
+		{
+			type: NOTIFICATION_TYPE.FRIEND_REQUEST,
+			uid: 'ST2EgnAwBvTvLZioae06PcLCxxR2',
+		},
+		{
+			type: NOTIFICATION_TYPE.FRIEND_ACCEPTED,
+			uid: 'Uf2U0TIsvBSxlHKDomhwXowqJq22',
+		},
+		{
+			type: NOTIFICATION_TYPE.CHALLENGE,
+			uid: 'AI',
+		},
+	];
 
-			<View style={ [styles.view, backgroundColor] }>
-				<TextVibe style={ [styles.title, textColor] }>Notifications</TextVibe>
-				<ScrollView>
-					<ButtonVibe style={ [styles.notif, notifBackgroundColor] }>
-						<TextVibe style={ [styles.notifText, textColor] }>Wei Tung sent you a friend request.</TextVibe>
-					</ButtonVibe>
-					<ButtonVibe style={ [styles.notif, notifBackgroundColor] }>
-						<TextVibe style={ [styles.notifText, textColor] }>Jose has challenged you!</TextVibe>
-					</ButtonVibe>
-				</ScrollView>
-			</View>
+	let notifications = notificationsData.map((data, key) => {
+		return (
+			<Notification
+				key={ key }
+				data={ data }
+				isDarkTheme={ isDarkTheme }/>
+		);
+	});
+
+	return (
+		<Animated.View style={ [styles.view, backgroundColor, shiftStyle] }>
+			<TextVibe style={ [styles.title, textColor] }>Notifications</TextVibe>
+			<ScrollView>
+				{ notifications }
+			</ScrollView>
 		</Animated.View>
 	);
 }
 
+function Notification(props) {
+	const {
+		data={},
+		isDarkTheme=false,
+	} = props;
+	const appTheme = isDarkTheme ? APP_THEME.DARK : APP_THEME.LIGHT;
+
+	const { type=NOTIFICATION_TYPE.INFO, payload='', uid='' } = data;
+	const [ user, setUser ] = React.useState({});
+	let message, icon, confirmIcon, confirmText;
+
+
+	// Update whenver uid changes
+	React.useEffect(() => {
+		if (uid == '') return;
+
+		Backend.getUser(uid).then(result => {
+			setUser(result.data);
+		});
+	},
+	[uid]);
+
+
+	// Custom styles
+	let backgroundStyle = {
+		backgroundColor: appTheme.CONTENT_BACKGROUND
+	};
+
+	let textStyle = {
+		color: appTheme.COLOR
+	};
+
+	let confirmBtnStyle = {
+		backgroundColor: appTheme.COLOR,
+	};
+
+	let confirmBtnTextStyle = {
+		color: appTheme.CONTENT_BACKGROUND,
+	};
+
+
+	// Notification content based on type
+	switch(type) {
+		case NOTIFICATION_TYPE.INFO:
+			icon = isDarkTheme ? IMAGE.HISTORY : IMAGE.HISTORY_DARK;
+			message = payload;
+			break;
+
+		case NOTIFICATION_TYPE.FRIEND_REQUEST:
+			icon = user.photo ? { uri: user.photo + '=c' } : isDarkTheme ? IMAGE.FRIENDS : IMAGE.FRIENDS_DARK;
+			message = (user.name || uid) + ' sent you a friend request.';
+			confirmText = 'Accept';
+			confirmIcon = isDarkTheme ? IMAGE.FRIENDS_DARK : IMAGE.FRIENDS;
+			break;
+
+		case NOTIFICATION_TYPE.FRIEND_ACCEPTED:
+			icon = user.photo ? { uri: user.photo + '=c' } : isDarkTheme ? IMAGE.FRIENDS : IMAGE.FRIENDS_DARK;
+			message = (user.name || uid) + ' accepted your friend request.';
+			break;
+
+		case NOTIFICATION_TYPE.CHALLENGE:
+			icon = user.photo ? { uri: user.photo + '=c' } : isDarkTheme ? IMAGE.DRAW : IMAGE.DRAW_DARK;
+			message = (user.name || uid) + ' challenged you to a chess match.';
+			confirmText = 'Accept';
+			confirmIcon = isDarkTheme ? IMAGE.DRAW_DARK : IMAGE.DRAW;
+			break;
+
+		default:
+			return <View/>;
+	}
+
+
+	// Action buttons
+	let confirmBtn = confirmText ?
+		(
+			<View style={ styles.notifActionBox }>
+				<ButtonVibe style={ [styles.notifActionBtn, confirmBtnStyle] }>
+					<TextVibe style={ [styles.notifActionBtnText, confirmBtnTextStyle] }>{ confirmText }</TextVibe>
+					<Image style={ styles.notifActionBtnIcon } source={ confirmIcon }/>
+				</ButtonVibe>
+			</View>
+		)
+		: null;
+
+	return (
+		<ButtonVibe style={ [styles.notif, backgroundStyle] }>
+			<Image style={ styles.notifIcon } source={ icon }/>
+			<View style={ styles.notifContent }>
+				<TextVibe style={ [styles.notifText, textStyle] }>
+					{ message }
+				</TextVibe>
+
+				{ confirmBtn }
+			</View>
+		</ButtonVibe>
+	);
+}
+
 const styles = StyleSheet.create({
-	outerView: {
-		flex: 1,
-		width: vw(100),
-		height: vh(100),
-		position: 'absolute',
-		zIndex: 100,
-	},
-
-	backView: {
-		...StyleSheet.absoluteFillObject,
-	},
-
 	view: {
 		position: 'absolute',
-		backgroundColor: 'black',
 		width: '90%',
+		maxHeight: vh(60),
+
 		alignSelf: 'flex-end',
 		top: vw(1),
 		right: vw(0.5),
-		borderRadius: vw(),
 		padding: vw(2),
+		borderRadius: vw(),
 
-		height: vh(60),
+		backgroundColor: 'black',
 
 		shadowColor: "#000",
 		shadowOffset: {
@@ -116,9 +219,47 @@ const styles = StyleSheet.create({
 			marginBottom: vw(),
 			padding: vw(2),
 			alignItems: 'flex-start',
+			flexDirection: 'row',
 		},
 
-		notifText: {
-			fontSize: vw(5),
-		},
+			notifIcon: {
+				width: vw(16),
+				height: vw(16),
+				marginRight: vw(4),
+				borderRadius: vw(),
+			},
+
+			notifContent: {
+				flex: 1,
+			},
+
+				notifText: {
+					flex: 1,
+					fontSize: vw(5),
+
+				},
+
+				notifActionBox: {
+					flexDirection: 'row',
+					justifyContent: 'flex-end',
+					marginTop: vw(4),
+				},
+
+					notifActionBtn: {
+						backgroundColor: 'orange',
+						paddingVertical: vw(0.5),
+						paddingHorizontal: vw(2),
+						marginLeft: vw(),
+						flexDirection: 'row',
+					},
+
+						notifActionBtnText: {
+							fontSize: vw(5),
+						},
+
+						notifActionBtnIcon: {
+							width: vw(7),
+							height: vw(7),
+							marginLeft: vw(),
+						},
 });

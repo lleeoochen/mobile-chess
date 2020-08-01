@@ -186,6 +186,13 @@ export const FRIEND = Object.freeze({
 	FRIENDED: 3,
 });
 
+export const NOTIFICATION_TYPE = Object.freeze({
+	INFO: 1,
+	FRIEND_REQUEST: 2,
+	FRIEND_ACCEPTED: 3,
+	CHALLENGE: 4,
+});
+
 export const COLOR_ORIGINAL = 0;
 export const COLOR_HIGHLIGHT = 1;
 export const COLOR_LAST_MOVE = 2;

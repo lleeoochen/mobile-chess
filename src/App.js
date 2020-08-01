@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Animated, View, SafeAreaView } from 'react-native';
+import { LogBox, Animated, View, SafeAreaView } from 'react-native';
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 import { Provider, useSelector } from 'react-redux';
@@ -14,6 +14,8 @@ import SideMenu from 'react-native-side-menu'
 import HomeUserMenu from './screens/HomeScreen/HomeUserMenu';
 import { showDrawer } from 'chessvibe/src/redux/Reducer';
 import Store from 'chessvibe/src/redux/Store';
+
+LogBox.ignoreLogs(['Task orphaned']);
 
 // Navigation
 const Navigator = createStackNavigator(

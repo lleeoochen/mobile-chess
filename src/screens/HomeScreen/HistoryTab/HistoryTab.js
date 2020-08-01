@@ -27,7 +27,7 @@ export default function HistoryTab(props) {
 	React.useEffect(() => {
 		Animated.timing(fadein, {
 			toValue: 1,
-			duration: 500,
+			duration: 0,
 			useNativeDriver: true,
 		})
 		.start();

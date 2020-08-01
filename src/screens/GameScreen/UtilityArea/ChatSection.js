@@ -132,6 +132,7 @@ function ChatBubble(props) {
 	// Render
 	let chatBubble = (
 		<ButtonVibe
+			key={ 'chatBubble' }
 			style={ viewStyle }
 			useGestureButton={ Platform.OS === "android" }
 			onPress={ () => {
@@ -146,7 +147,7 @@ function ChatBubble(props) {
 	);
 
 	let chatCopiedMessage = (
-		<Animated.View>
+		<Animated.View key={ 'chatCopiedMessage' }>
 			<TextVibe style={ [...textStyle, styles.chatCopiedMessage] }>
 				Copied!
 			</TextVibe>
