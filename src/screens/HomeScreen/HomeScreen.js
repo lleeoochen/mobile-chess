@@ -73,8 +73,10 @@ export default function HomeScreen(props) {
 		// Call when switching nav stack
 		props.navigation.addListener('didFocus', () => {
 			Backend.init();
-			Backend.listenProfile(res => {
+			Backend.listenProfile(async res => {
 				user.current = res.data;
+				// console.log(Object.keys(user.current.test));
+				// console.log(await user.current.test.get());
 
 				Store.dispatch(updateUser( user.current ));
 				fetchMatches();
@@ -143,6 +145,8 @@ export default function HomeScreen(props) {
 					}}/>
 
 				<NotificationMenu
+					notificationIDs={ user.current.notifications }
+					friends={ user.current.friends }
 					isDarkTheme={ isDarkTheme }
 					visible={ notificationsVisible }
 					setVisible={ showNotifications }/>

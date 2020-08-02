@@ -74,16 +74,18 @@ export default class Backend {
 	}
 
 	static requestFriend(friend_id) {
-		console.log("requestFriend");
 		return Util.request('POST', URL.BACKEND + '/chess/request_friend', {
 			user_id: friend_id,
 		});
 	}
 
 	static acceptFriend(friend_id) {
-		console.log("acceptFriend");
 		return Util.request('POST', URL.BACKEND + '/chess/accept_friend', {
 			user_id: friend_id,
 		});
+	}
+
+	static getNotificationList(ids) {
+		return Util.request('GET', URL.BACKEND + '/chess/get_notification_list?ids=' + JSON.stringify(ids));
 	}
 }
