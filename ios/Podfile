@@ -32,3 +32,16 @@ target 'ChessVibe-tvOS' do
 end
 
 pod 'RNCAsyncStorage', :path => '../node_modules/@react-native-community/async-storage'
+
+# Multiple commands produce '/Users/lleeoochen/Library/Developer/Xcode/DerivedData/ChessVibe-gmgkvnuxxbzcaleplxbcdubwwvoa/Build/Intermediates.noindex/ArchiveIntermediates/ChessVibe/IntermediateBuildFilesPath/UninstalledProducts/iphoneos/AccessibilityResources.bundle':
+# 1) Target 'React-Core.common-AccessibilityResources' has create directory command with output '/Users/lleeoochen/Library/Developer/Xcode/DerivedData/ChessVibe-gmgkvnuxxbzcaleplxbcdubwwvoa/Build/Intermediates.noindex/ArchiveIntermediates/ChessVibe/IntermediateBuildFilesPath/UninstalledProducts/iphoneos/AccessibilityResources.bundle'
+# 2) Target 'React-Core.common-CoreModulesHeaders-AccessibilityResources' has create directory command with output '/Users/lleeoochen/Library/Developer/Xcode/DerivedData/ChessVibe-gmgkvnuxxbzcaleplxbcdubwwvoa/Build/Intermediates.noindex/ArchiveIntermediates/ChessVibe/IntermediateBuildFilesPath/UninstalledProducts/iphoneos/AccessibilityResources.bundle'
+
+# post_install do |installer|
+#   installer.pods_project.targets.each do |target|
+#     # if target.name == "React"
+#     if target == 'React-Core.common-AccessibilityResources'
+#       target.remove_from_project
+#     end
+#   end
+# end
