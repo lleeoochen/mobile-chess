@@ -4,7 +4,7 @@ import { ActionBar, WebVibe, TextVibe, ModalVibe, ButtonVibe, DialogVibe } from 
 import AutoHeightImage from 'react-native-auto-height-image';
 import Carousel from 'react-native-snap-carousel';
 
-import { URL, TEAM, IMAGE, APP_THEME } from 'chessvibe/src/Const';
+import { URL, TEAM, IMAGE, APP_THEME, MATCH_MODE } from 'chessvibe/src/Const';
 import Util, { formatDate, vw, wh, winType } from 'chessvibe/src/Util';
 import Cache from 'chessvibe/src/Cache';
 import Backend from 'chessvibe/src/Backend';
@@ -89,7 +89,7 @@ export default function PlayTab(props) {
 	// Render carousel action buttons
 	let actionItem = ({ item, index }) => {
 		return (
-			<ButtonVibe style={ styles.actionBtn } onPress={() => showCreateMenu({ show: true })}>
+			<ButtonVibe style={ styles.actionBtn } onPress={ item.onPress }>
 				<Image source={ item.image } style={ styles.actionBtnImage } blurRadius={vw(0)}/>
 				<TextVibe style={ styles.actionBtnText }>{ item.text }</TextVibe>
 			</ButtonVibe>
@@ -97,9 +97,21 @@ export default function PlayTab(props) {
 	}
 
 	let actionData = [
-		{ text: 'Friend', image: IMAGE.NATURE },
-		{ text: 'Computer', image: IMAGE.METAL },
-		{ text: 'Sandbox', image: IMAGE.WINTER },
+		{
+			text: 'Friend',
+			image: IMAGE.NATURE,
+			onPress: () => showCreateMenu({ show: true, mode: MATCH_MODE.FRIEND }),
+		},
+		{
+			text: 'Computer',
+			image: IMAGE.METAL,
+			onPress: () => showCreateMenu({ show: true, mode: MATCH_MODE.COMPUTER }),
+		},
+		{
+			text: 'Sandbox',
+			image: IMAGE.WINTER,
+			onPress: () => showCreateMenu({ show: true, mode: MATCH_MODE.FRIEND }),
+		},
 	];
 
 	// Render

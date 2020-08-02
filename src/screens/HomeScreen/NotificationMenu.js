@@ -112,9 +112,14 @@ export default function NotificationMenu(props) {
 	}
 
 	return (
-		<Animated.View style={ [styles.view, backgroundColor, shiftStyle] }>
-			<TextVibe style={ [styles.title, textColor] }>Notifications</TextVibe>
-			{ content }
+		<Animated.View style={ [styles.outerView, shiftStyle] }>
+			<TouchableWithoutFeedback onPress={ () => setVisible(false) }>
+				<View style={ styles.backView }/>
+			</TouchableWithoutFeedback>
+			<View style={ [styles.view, backgroundColor] }>
+				<TextVibe style={ [styles.title, textColor] }>Notifications</TextVibe>
+				{ content }
+			</View>
 		</Animated.View>
 	);
 }
@@ -238,6 +243,18 @@ function Notification(props) {
 }
 
 const styles = StyleSheet.create({
+	outerView: {
+		flex: 1,
+		width: vw(100),
+		height: vh(100),
+		position: 'absolute',
+		zIndex: 100,
+	},
+
+	backView: {
+		...StyleSheet.absoluteFillObject,
+	},
+
 	view: {
 		position: 'absolute',
 		width: '90%',

@@ -8,7 +8,7 @@ import Store from 'chessvibe/src/redux/Store';
 import { useSelector } from 'react-redux';
 import { showDrawer, updateUser, updateTheme, setIsDarkTheme } from 'chessvibe/src/redux/Reducer';
 
-import { URL, TEAM, IMAGE, STORAGE_IS_DARK_THEME } from 'chessvibe/src/Const';
+import { URL, TEAM, IMAGE, STORAGE_IS_DARK_THEME, MATCH_MODE } from 'chessvibe/src/Const';
 import Util, { formatDate, vw, wh, winType, strict_equal } from 'chessvibe/src/Util';
 import Cache from 'chessvibe/src/Cache';
 import Backend from 'chessvibe/src/Backend';
@@ -138,9 +138,10 @@ export default function HomeScreen(props) {
 
 				<HomeCreateMenu
 					visible={ createMenuVisible.show }
-					onDismiss={ () => showCreateMenu({ show: false }) }
+					mode={ createMenuVisible.mode }
+					onDismiss={ () => showCreateMenu({ show: false, mode: createMenuVisible.mode }) }
 					onSubmit={(theme, time) => {
-						createMatch(theme, time, createMenuVisible.modeAI);
+						createMatch(theme, time, createMenuVisible.mode);
 						showCreateMenu({ show: false });
 					}}/>
 
@@ -165,8 +166,9 @@ export default function HomeScreen(props) {
 	}
 
 	// Create new match
-	function createMatch(theme, time, AI) {
-		Backend.createMatch(theme, time, AI).then(match_id => {
+	function createMatch(theme, time, mode) {
+		let isAI = mode == MATCH_MODE.COMPUTER;
+		Backend.createMatch(theme, time, isAI).then(match_id => {
 			Cache.theme[match_id] = theme;
 			navigateGame(match_id);
 		});

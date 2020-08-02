@@ -193,6 +193,11 @@ export const NOTIFICATION_TYPE = Object.freeze({
 	CHALLENGE: 4,
 });
 
+export const MATCH_MODE = Object.freeze({
+	COMPUTER: 1,
+	FRIEND: 2,
+});
+
 export const COLOR_ORIGINAL = 0;
 export const COLOR_HIGHLIGHT = 1;
 export const COLOR_LAST_MOVE = 2;

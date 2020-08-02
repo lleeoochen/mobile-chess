@@ -20,6 +20,7 @@ const TIME_INDEX = {
 };
 
 const INDEX_THEME = [THEME_ID.CLASSIC, THEME_ID.WINTER, THEME_ID.METAL, THEME_ID.NATURE];
+const MODE_NAMES = ['', 'Computer', 'Friend'];
 
 export default function HomeCreateMenu(props) {
 	const isDarkTheme = useSelector(state => state.isDarkTheme);
@@ -27,7 +28,7 @@ export default function HomeCreateMenu(props) {
 
 	let [ theme, setTheme ] = React.useState(THEME_ID.CLASSIC);
 	let [ time, setTime ] = React.useState(TIME.FIFTEEN);
-	let { visible, onDismiss, onSubmit } = props;
+	let { mode, visible, onDismiss, onSubmit } = props;
 
 	let styleClassic = { ...styles.menuBtn, ...styles.classic, ...(theme == THEME_ID.CLASSIC ? styles.selected : {}) };
 	let styleWinter  = { ...styles.menuBtn, ...styles.winter, ...(theme == THEME_ID.WINTER ? styles.selected : {}) };
@@ -68,7 +69,7 @@ export default function HomeCreateMenu(props) {
 			isVisible={ visible }
 			onDismiss={ onDismiss }>
 
-			<TextVibe style={ [styles.menuText, textColor] }> Theme </TextVibe>
+			<TextVibe style={ [styles.menuText, textColor] }> { MODE_NAMES[mode] } Mode </TextVibe>
 
 			<View style={ styles.themeContainer }>
 				<ButtonVibe style={ themeBtnStyle } onPress={() => changeTheme(-1)}>
