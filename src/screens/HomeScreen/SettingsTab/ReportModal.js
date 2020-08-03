@@ -48,7 +48,7 @@ export default function ReportModal(props) {
 
 	return (
 		<ModalVibe isVisible={ isVisible } coverAll={ true } onDismiss={ onDismiss }>
-			<TouchableWithoutFeedback onPress={Keyboard.dismiss} style={{ flex: 1 }}>
+			<TouchableWithoutFeedback onPress={ Keyboard.dismiss } style={{ flex: 1 }}>
 				<View>
 					<TextVibe style={ [styles.title, textColor] }>Report Issues</TextVibe>
 					<InputVibe

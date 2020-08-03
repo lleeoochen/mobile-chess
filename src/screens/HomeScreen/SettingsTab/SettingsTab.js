@@ -65,7 +65,7 @@ export default function SettingsTab(props) {
 					<MoreSetting
 						title={ 'Report Issues' }
 						type={ 'more' }
-						appTheme={ appTheme }
+						isDarkTheme={ isDarkTheme }
 						onPress={ () => showReportModal(true) }/>
 
 					<View style={ borderStyle }/>
@@ -73,7 +73,7 @@ export default function SettingsTab(props) {
 					<MoreSetting
 						title={ 'About' }
 						type={ 'more' }
-						appTheme={ appTheme }
+						isDarkTheme={ isDarkTheme }
 						onPress={ () => showAboutModal(true) }/>
 
 				<View style={ borderStyle }/>
@@ -134,7 +134,8 @@ function SwitchSetting(props) {
 
 
 function MoreSetting(props) {
-	const { title, appTheme, onPress=() => {} } = props;
+	const { title, isDarkTheme, onPress=() => {} } = props;
+	const appTheme = isDarkTheme ? APP_THEME.DARK : APP_THEME.LIGHT;
 
 	let settingStyle = [styles.setting, {
 		backgroundColor: appTheme.SETTING_BACKGROUND,
@@ -148,7 +149,7 @@ function MoreSetting(props) {
 	return (
 		<ButtonVibe style={ settingStyle } onPress={ onPress }>
 			<TextVibe style={ textStyle }>{ title }</TextVibe>
-			<Image source={ IMAGE.BACK } style={ [styles.settingsIcon,  {transform: [{ scaleX: -1 }]}] }/>
+			<Image source={ IMAGE[isDarkTheme ? 'BACK' : 'BACK_DARK'] } style={ [styles.settingsIcon,  {transform: [{ scaleX: -1 }]}] }/>
 		</ButtonVibe>
 	);
 }
