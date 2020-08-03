@@ -8,7 +8,7 @@ import { useSelector } from 'react-redux';
 import { TouchableWithoutFeedback as RNGHTouchableWithoutFeedback } from "react-native-gesture-handler";
 
 export default function ModalVibe(props) {
-	const { isVisible=false, style={}, coverAll=false } = props;
+	const { isVisible=false, style={}, coverAll=false, onDismiss=() => {} } = props;
 	const wantVisible = isVisible;
 	const duration = 200;
 
@@ -48,7 +48,7 @@ export default function ModalVibe(props) {
 				backdropTransitionOutTiming={ 0 }
 				onModalHide={ props.onModalHide }
 				style={ styles.modal }>
-				<TouchableWithoutFeedback onPress={ props.onDismiss }>
+				<TouchableWithoutFeedback onPress={ onDismiss }>
 					<View style={ styles.menuOutside }></View>
 				</TouchableWithoutFeedback>
 				<View style={ menuStyle }>
@@ -103,7 +103,7 @@ export default function ModalVibe(props) {
 			<Animated.View style={ [styles.full, style, { backgroundColor: 'black', opacity: shadowIndex }] }/>
 			<Animated.View style={ [styles.full, style, { transform: [{ translateY: top }] }] }>
 				<View style={ styles.menuWrap }>
-					<ButtonClass onPress={ props.onDismiss }>
+					<ButtonClass onPress={ onDismiss }>
 						<View style={ styles.menuOutside }></View>
 					</ButtonClass>
 					<View style={ menuStyle }>

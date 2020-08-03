@@ -13,13 +13,18 @@ import { setIsDarkTheme } from 'chessvibe/src/redux/Reducer';
 import Store from 'chessvibe/src/redux/Store';
 import { useSelector } from 'react-redux';
 
+import ReportModal from './ReportModal';
+import AboutModal from './AboutModal';
+
 const matchSize = vw((100 - 2 - 6 - 4) / 4);
 const borderRadius = vw();
 
 // Home Screen
 export default function SettingsTab(props) {
 	const { isDarkTheme } = props;
-	let appTheme = isDarkTheme ? APP_THEME.DARK : APP_THEME.LIGHT;
+	const appTheme = isDarkTheme ? APP_THEME.DARK : APP_THEME.LIGHT;
+	const [ repotModalShown, showReportModal ] = React.useState(false);
+	const [ aboutModalShown, showAboutModal ] = React.useState(false);
 
 	let viewStyle = [styles.view, props.style, {
 		backgroundColor: appTheme.CONTENT_BACKGROUND
@@ -37,16 +42,19 @@ export default function SettingsTab(props) {
 
 				<View style={ borderStyle }/>
 
-					<Setting
+					<SwitchSetting
 						title={ 'Dark Theme' }
-						enabled={ isDarkTheme }
+						initEnabled={ isDarkTheme }
 						appTheme={ appTheme }
 						onChange={ (enabled) => {
 							Store.dispatch(setIsDarkTheme( enabled ));
 							Storage.set(STORAGE_IS_DARK_THEME, enabled + '');
 						} }/>
 					<View style={ borderStyle }/>
-					<Setting title={ 'Push Notification' } enabled={ true } appTheme={ appTheme }/>
+					<SwitchSetting
+						title={ 'Push Notification' }
+						enabled={ true }
+						appTheme={ appTheme }/>
 
 				<View style={ borderStyle }/>
 
@@ -54,23 +62,53 @@ export default function SettingsTab(props) {
 
 				<View style={ borderStyle }/>
 
-					<Setting title={ 'Report Issue' } type={ 'more' } appTheme={ appTheme }/>
+					<MoreSetting
+						title={ 'Report Issues' }
+						type={ 'more' }
+						appTheme={ appTheme }
+						onPress={ () => showReportModal(true) }/>
+
 					<View style={ borderStyle }/>
-					<Setting title={ 'About' } type={ 'more' } appTheme={ appTheme }/>
+
+					<MoreSetting
+						title={ 'About' }
+						type={ 'more' }
+						appTheme={ appTheme }
+						onPress={ () => showAboutModal(true) }/>
 
 				<View style={ borderStyle }/>
 			</ScrollView>
+
+			<ReportModal
+				isDarkTheme={ isDarkTheme }
+				isVisible={ repotModalShown }
+				onDismiss={ () => showReportModal(false) }/>
+
+			<AboutModal
+				isDarkTheme={ isDarkTheme }
+				isVisible={ aboutModalShown }
+				onDismiss={ () => showAboutModal(false) }/>
 		</View>
 	);
 }
 
-function Setting(props) {
-	const { title, appTheme, enabled=false, type='switch', onChange=()=>{} } = props;
+function SwitchSetting(props) {
+	const { title, appTheme, initEnabled=false, type='switch', onChange=()=>{} } = props;
+	const [ enabled, setEnabled ] = React.useState(initEnabled);
 
+	// Update enable state
+	React.useEffect(() => {
+		setEnabled(initEnabled);
+	},
+	[initEnabled]);
+
+	// Toggle switch enable
 	const toggleSwitch = () => {
+		setEnabled(!enabled);
 		onChange(!enabled);
 	};
 
+	// Render
 	let settingStyle = [styles.setting, {
 		backgroundColor: appTheme.SETTING_BACKGROUND,
 		borderColor: appTheme.SETTING_BORDER,
@@ -92,14 +130,27 @@ function Setting(props) {
 			</View>
 		);
 	}
-	else if (type == 'more') {
-		return (
-			<ButtonVibe style={ settingStyle }>
-				<TextVibe style={ textStyle }>{ title }</TextVibe>
-				<Image source={ IMAGE.BACK } style={ [styles.settingsIcon,  {transform: [{ scaleX: -1 }]}] }/>
-			</ButtonVibe>
-		);
-	}
+}
+
+
+function MoreSetting(props) {
+	const { title, appTheme, onPress=() => {} } = props;
+
+	let settingStyle = [styles.setting, {
+		backgroundColor: appTheme.SETTING_BACKGROUND,
+		borderColor: appTheme.SETTING_BORDER,
+	}];
+
+	let textStyle = [styles.settingText, {
+		color: appTheme.COLOR,
+	}];
+
+	return (
+		<ButtonVibe style={ settingStyle } onPress={ onPress }>
+			<TextVibe style={ textStyle }>{ title }</TextVibe>
+			<Image source={ IMAGE.BACK } style={ [styles.settingsIcon,  {transform: [{ scaleX: -1 }]}] }/>
+		</ButtonVibe>
+	);
 }
 
 

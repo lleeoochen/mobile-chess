@@ -88,4 +88,11 @@ export default class Backend {
 	static getNotificationList(ids) {
 		return Util.request('GET', URL.BACKEND + '/chess/get_notification_list?ids=' + JSON.stringify(ids));
 	}
+
+	static sendInbox(email, message) {
+		return Util.request('POST', URL.BACKEND + '/chess/send_inbox', {
+			email,
+			message,
+		});
+	}
 }

@@ -4,17 +4,26 @@ import { vw, vh } from 'chessvibe/src/Util';
 
 
 export default function InputVibe(props) {
-	let { style, placeholder, onSubmitText, hidden=false } = props;
-	let { fontSize } = style;
+	let {
+		style={},
+		initValue,
+		placeholder,
+		onSubmitText=() => {},
+		onChangeText=() => {},
+		hidden=false,
+		multiline=false,
+		blurOnSubmit=false,
+	} = props;
+	let { fontSize=20 } = style;
 
-	const [ value, changeText ] = React.useState(placeholder);
+	const [ value, changeText ] = React.useState(initValue || placeholder);
 	const contentRef = React.useRef();
 
 	let inputStyle = {
 		fontSize,
 		fontFamily: 'Spectral',
 		flex: 1,
-		color: 'white',
+		color: value == placeholder ? '#7b7b7b' : style.color || 'white',
 	};
 
 	let wrapStyle = {...{
@@ -30,12 +39,15 @@ export default function InputVibe(props) {
 		<View style={ wrapStyle }>
 			<TextInput
 				style={ inputStyle }
-				onChangeText={ text => changeText(text) }
+				onChangeText={ text => {
+					changeText(text);
+					onChangeText(text);
+				}}
 				onSubmitEditing={ () => {
+					changeText('');
 					if (value != '') {
 						onSubmitText(value);
 					}
-					changeText('');
 				}}
 				onFocus={ () => {
 					if (value == placeholder)
@@ -45,11 +57,13 @@ export default function InputVibe(props) {
 					if (value == '')
 						changeText(placeholder);
 				}}
+				enablesReturnKeyAutomatically={ true }
 				keyboardAppearance={ 'dark' }
 				placeholderTextColor={ 'white' }
 				returnKeyType={ 'send' }
 				scrollEnabled={ true }
-				blurOnSubmit={ false }
+				blurOnSubmit={ blurOnSubmit }
+				multiline={ multiline }
 				value={ value }/>
 		</View>
 	);

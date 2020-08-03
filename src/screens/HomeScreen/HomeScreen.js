@@ -60,7 +60,7 @@ export default function HomeScreen(props) {
 	const user = React.useRef({});
 
 	const { params = {} } = props.navigation.state;
-	const { tab='play' } = params;
+	const { tab='settings' } = params;
 	const hidden = { display: 'none' };
 
 	function refresh() {
