@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { LogBox, Animated, View, SafeAreaView } from 'react-native';
+import { AppState, LogBox, Animated, View, SafeAreaView } from 'react-native';
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 import { Provider, useSelector } from 'react-redux';
@@ -8,7 +8,11 @@ import Entry from './screens/EntryScreen';
 import Home from './screens/HomeScreen';
 import Game from './screens/GameScreen';
 import { vw } from './Util';
+import { STORAGE_APP_CACHE } from './Const';
+
 import store from './redux/Store';
+import Storage from './Storage';
+import Cache from './Cache';
 
 import SideMenu from 'react-native-side-menu'
 import HomeUserMenu from './screens/HomeScreen/HomeUserMenu';
@@ -52,6 +56,7 @@ const userMenu = (navRef, drawerOpen, openDrawer) => {
 };
 
 function AppContent() {
+	const appState = React.useRef(AppState.currentState);
 	const [ drawerOpen, openDrawer ] = React.useState(false);
 	const navRef = React.useRef(null);
 
@@ -59,6 +64,30 @@ function AppContent() {
 		if (drawerOpen)
 			openDrawer(false);
 	}
+
+	// Clean up when app closes
+	async function onAppStateChanged(state) {
+		if (appState.current === 'active' && state.match(/inactive|background/)) {
+			// Save cache to local storage
+			await Storage.set(STORAGE_APP_CACHE, JSON.stringify(Cache));
+		}
+		else if (state === 'active' && !appState.current.match(/inactive|background/)) {
+			// Save cache to local storage
+			Object.assign(Cache, JSON.parse(await Storage.get(STORAGE_APP_CACHE)));
+		}
+
+		// console.log(Cache);
+	    appState.current = state;
+	}
+
+	// Listener for app state
+	React.useEffect(() => {
+		AppState.addEventListener("change", state => onAppStateChanged(state));
+
+		return () => {
+			AppState.removeEventListener("change", state => onAppStateChanged(state));
+		};
+	}, []);
 
 	return (
 		<SafeAreaView style={{ flex: 1, backgroundColor: '#0d151f' }}>

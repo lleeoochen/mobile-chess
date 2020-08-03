@@ -50,8 +50,8 @@ HomeScreen.navigationOptions = ({navigation}) => {
 export default function HomeScreen(props) {
 	const isDarkTheme = useSelector(state => state.isDarkTheme);
 
-	const [ opponents, setOpponents ] = React.useState([]);
-	const [ matches, setMatches ] = React.useState({ new: [], old: [] });
+	const [ opponents, setOpponents ] = React.useState(Cache.home.opponents);
+	const [ matches, setMatches ] = React.useState(Cache.home.matches);
 	const [ createMenuVisible, showCreateMenu ] = React.useState({ show: false });
 	const [ refreshing, setRefreshing ] = React.useState(false);
 	const [ notificationsVisible, showNotifications ] = React.useState(false);
@@ -75,6 +75,7 @@ export default function HomeScreen(props) {
 			Backend.init();
 			Backend.listenProfile(async res => {
 				user.current = res.data;
+				Cache.user = user.current;
 				// console.log(Object.keys(user.current.test));
 				// console.log(await user.current.test.get());
 
@@ -280,15 +281,20 @@ export default function HomeScreen(props) {
 				}
 			});
 
-			setOpponents([...opponentsSet].sort((a, b) => {
-
+			let resultOpponents = [...opponentsSet].sort((a, b) => {
 				if (a[0].name < b[0].name)
 					return -1;
 				if (a[0].name > b[0].name)
 					return 1;
 				return 0;
-			}));
+			});
+
+			setOpponents(resultOpponents);
 			setMatches(resultMatches);
+
+			Cache.home.opponents = resultOpponents;
+			Cache.home.matches = resultMatches;
+
 			setRefreshing(false);
 		});
 	}

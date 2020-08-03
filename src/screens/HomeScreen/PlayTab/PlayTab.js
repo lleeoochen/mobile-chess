@@ -18,15 +18,16 @@ const borderRadius = vw();
 // Home Screen
 export default function PlayTab(props) {
 	const { newMatches, navigateGame, showCreateMenu, isDarkTheme } = props;
-	const fadein = new Animated.Value(0);
+	const [ fadein ] = React.useState(new Animated.Value(0));
 	const appTheme = isDarkTheme ? APP_THEME.DARK : APP_THEME.LIGHT;
 	const firstLoad = React.useRef(true);
 
 	React.useEffect(() => {
-		if (firstLoad.current && newMatches.length > 0) {
+		if (firstLoad.current) {
 			Animated.timing(fadein, {
 				toValue: 1,
 				duration: 200,
+				delay: 100,
 				useNativeDriver: true,
 			})
 			.start();

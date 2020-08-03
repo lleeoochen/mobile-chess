@@ -235,6 +235,7 @@ export const LAST_VISITED_KEY = 'last_visited';
 export const SESSION_TOKEN = 'session_token';
 
 export const STORAGE_IS_DARK_THEME = 'STORAGE_IS_DARK_THEME';
+export const STORAGE_APP_CACHE = 'STORAGE_APP_CACHE';
 
 export const THEME_ID = {
 	CLASSIC: 0,

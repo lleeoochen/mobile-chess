@@ -20,17 +20,21 @@ export default function HistoryTab(props) {
 	const appTheme = isDarkTheme ? APP_THEME.DARK : APP_THEME.LIGHT;
 	// const [ selectedMatch, selectMatch ] = React.useState(null);
 	const user = React.useRef({});
-	const fadein = new Animated.Value(0);
+	const [ fadein ] = React.useState(new Animated.Value(0));
 	const onRefresh = React.useCallback(() => refresh(), []);
+	const firstLoad = React.useRef(true);
 
 
 	React.useEffect(() => {
-		Animated.timing(fadein, {
-			toValue: 1,
-			duration: 0,
-			useNativeDriver: true,
-		})
-		.start();
+		if (firstLoad.current) {
+			Animated.timing(fadein, {
+				toValue: 1,
+				duration: 200,
+				useNativeDriver: true,
+			})
+			.start();
+			firstLoad.current = false;
+		}
 	}, [oldMatches]);
 
 
