@@ -5,7 +5,7 @@ import { GoogleSignin, GoogleSigninButton, statusCodes } from '@react-native-com
 import auth from '@react-native-firebase/auth';
 import { URL, STORAGE_IS_DARK_THEME } from '../Const';
 import Util, { vw, vh } from '../Util';
-import Cache from '../Cache';
+import Cache, { CACHE_DEFAULT } from '../Cache';
 
 import Storage from 'chessvibe/src/Storage';
 import Store from 'chessvibe/src/redux/Store';
@@ -25,6 +25,7 @@ export default function EntryScreen(props) {
 	const [initializing, setInitializing] = React.useState(true);
 	const [signingin, setSigningin] = React.useState(false);
 	const [user, setUser] = React.useState();
+
 
 	// Signin configs
 	GoogleSignin.configure({
@@ -75,7 +76,8 @@ export default function EntryScreen(props) {
 		try {
 			await GoogleSignin.signOut();
 			await auth().signOut();
-			Cache.sessionToken = '';
+			Object.assign(Cache, JSON.parse(JSON.stringify(CACHE_DEFAULT)));
+			Storage.clear();
 		}
 		catch (error) {
 			console.log(error);

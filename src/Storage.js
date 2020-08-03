@@ -19,4 +19,8 @@ export default class Storage {
 			return null;
 		}
 	}
+
+	static clear() {
+		AsyncStorage.clear();
+	}
 }

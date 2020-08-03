@@ -12,7 +12,7 @@ import { STORAGE_APP_CACHE } from './Const';
 
 import store from './redux/Store';
 import Storage from './Storage';
-import Cache from './Cache';
+import Cache, { CACHE_DEFAULT } from './Cache';
 
 import SideMenu from 'react-native-side-menu'
 import HomeUserMenu from './screens/HomeScreen/HomeUserMenu';
@@ -73,7 +73,12 @@ function AppContent() {
 		}
 		else if (state === 'active' && !appState.current.match(/inactive|background/)) {
 			// Save cache to local storage
-			Object.assign(Cache, JSON.parse(await Storage.get(STORAGE_APP_CACHE)));
+			let raw_cache = await Storage.get(STORAGE_APP_CACHE);
+
+			if (raw_cache)
+				Object.assign(Cache, JSON.parse(raw_cache));
+			else
+				Object.assign(Cache, JSON.parse(JSON.stringify(CACHE_DEFAULT)));
 		}
 
 		// console.log(Cache);
