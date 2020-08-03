@@ -15,7 +15,7 @@ const borderRadius = vw();
 export default function HomeUserMenu(props) {
 	const isDarkTheme = useSelector(state => state.isDarkTheme);
 	const user = useSelector(state => state.user) || {};
-	const zoomIn = new Animated.Value(props.drawerOpen ? 0.8 : 1);
+	const [ zoomIn ] = React.useState(new Animated.Value(props.drawerOpen ? 0.8 : 1));
 	const [ selected, setSelected ] = React.useState(0);
 	const appTheme = isDarkTheme ? APP_THEME.DARK : APP_THEME.LIGHT;
 
@@ -45,12 +45,13 @@ export default function HomeUserMenu(props) {
 		}
 	} = props;
 
-
-	Animated.timing(zoomIn, {
-		toValue: props.drawerOpen ? 1 : 0.8,
-		duration: 200,
-		useNativeDriver: true,
-	}).start();
+	React.useEffect(() => {
+		Animated.timing(zoomIn, {
+			toValue: props.drawerOpen ? 1 : 0.8,
+			duration: 200,
+			useNativeDriver: true,
+		}).start();
+	}, [props.drawerOpen]);
 
 	function navigateHome(tab) {
 		if (props.navRef && props.navRef.current && props.navRef.current._navigation) {
