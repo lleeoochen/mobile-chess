@@ -7,7 +7,7 @@ import { Provider, useSelector } from 'react-redux';
 import Entry from './screens/EntryScreen';
 import Home from './screens/HomeScreen';
 import Game from './screens/GameScreen';
-import { vw } from './Util';
+import { vw, vh } from './Util';
 import { STORAGE_APP_CACHE } from './Const';
 
 import store from './redux/Store';

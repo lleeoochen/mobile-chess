@@ -12,7 +12,7 @@ export default function NotificationMenu(props) {
 	const { visible, setVisible, isDarkTheme, notificationIDs=[], friends } = props;
 	const appTheme = isDarkTheme ? APP_THEME.DARK : APP_THEME.LIGHT;
 
-	const fullShift = vh(-100);
+	const fullShift = vh(-120);
 	const [ shiftY ] = React.useState(new Animated.Value(fullShift));
 	const [ notificationData, setNotificationData ] = React.useState([]);
 

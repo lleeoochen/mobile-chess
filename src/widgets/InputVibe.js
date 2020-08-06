@@ -24,6 +24,7 @@ export default function InputVibe(props) {
 		fontFamily: 'Spectral',
 		flex: 1,
 		color: value == placeholder ? '#7b7b7b' : style.color || 'white',
+		textAlignVertical: 'top',
 	};
 
 	let wrapStyle = {...{

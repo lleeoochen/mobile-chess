@@ -176,6 +176,7 @@ function FriendModal(props) {
 
 	return(
 		<ModalVibe
+			coverAll={ true }
 			isVisible={ visible }
 			onDismiss={ onDismiss }>
 			<TextVibe style={ [styles.modalTitle, color] }>{ enemy.name }</TextVibe>
