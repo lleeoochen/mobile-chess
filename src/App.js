@@ -3,6 +3,7 @@ import { AppState, LogBox, Animated, View, SafeAreaView } from 'react-native';
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 import { Provider, useSelector } from 'react-redux';
+import SplashScreen from 'react-native-splash-screen';
 
 import Entry from './screens/EntryScreen';
 import Home from './screens/HomeScreen';
@@ -87,6 +88,8 @@ function AppContent() {
 
 	// Listener for app state
 	React.useEffect(() => {
+		SplashScreen.hide();
+
 		AppState.addEventListener("change", state => onAppStateChanged(state));
 
 		return () => {

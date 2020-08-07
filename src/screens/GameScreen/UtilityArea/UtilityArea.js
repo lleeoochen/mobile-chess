@@ -145,14 +145,25 @@ export default function UtilityArea(props) {
 	}
 
 	// Chat flashing notification
-	if (gameRef && match && !gameRef.firstLoad && match.chat.length > chatApplied.current) {
-		for (;chatApplied.current < match.chat.length; chatApplied.current++) {
-			if (Util.unpackMessage(match.chat[chatApplied.current]).team != gameRef.team) {
-				chatApplied.current = match.chat.length;
-				setFlashing(!drawerOpen);
-				break;
+	if (gameRef && match && match.chat.length > chatApplied.current) {
+		if (gameRef.firstLoad) {
+			chatApplied.current = match.chat.length;
+		}
+		else {
+			for (;chatApplied.current < match.chat.length; chatApplied.current++) {
+				if (Util.unpackMessage(match.chat[chatApplied.current]).team != gameRef.team) {
+					chatApplied.current = match.chat.length;
+					setFlashing(!drawerOpen);
+					break;
+				}
 			}
 		}
+	}
+
+	if (match) {
+		console.log(match.chat.length);
+		console.log(chatApplied.current);
+		console.log("=====");
 	}
 
 	return (
