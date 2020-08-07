@@ -51,7 +51,10 @@ export default function EntryScreen(props) {
 		}
 
 		if (user) {
-			navigateHome(user);
+			setTimeout(() => {
+				navigateHome(user);
+			},
+			500);
 		}
 	}
 
@@ -87,7 +90,8 @@ export default function EntryScreen(props) {
 
 	// Navigate to home
 	async function navigateHome(user) {
-		Store.dispatch(setIsDarkTheme( await Storage.get(STORAGE_IS_DARK_THEME) == 'true' ));
+		let isDarkTheme = await Storage.get(STORAGE_IS_DARK_THEME) || 'true';
+		Store.dispatch(setIsDarkTheme(  isDarkTheme == 'true' ));
 
 		let auth_token = await auth().currentUser.getIdToken(true);
 
@@ -118,7 +122,9 @@ export default function EntryScreen(props) {
 			<SafeAreaView style={ styles.screen }>
 				<StatusBar hidden={ true }/>
 
-				<TextVibe style={ styles.title }>Chess Vibe</TextVibe>
+				<FadeInView style={ styles.titleWrap }>
+					<TextVibe style={ styles.title }>Chess Vibe</TextVibe>
+				</FadeInView>
 				<Image style={ styles.logo } source={ logoImg }/>
 
 				<FadeInView style={ styles.googleBtnWrap }>
@@ -137,13 +143,15 @@ export default function EntryScreen(props) {
 		<SafeAreaView style={ styles.screen }>
 			<StatusBar hidden={ true }/>
 
-			<TextVibe style={ styles.title }>Chess Vibe</TextVibe>
+			<FadeInView style={ styles.titleWrap }>
+				<TextVibe style={ styles.title }>Chess Vibe</TextVibe>
+			</FadeInView>
 			<Image style={ styles.logo } source={ logoImg }/>
 		</SafeAreaView>
 	);
 }
 
-const logoSize = vw(50);
+const logoSize = 200;
 const styles = StyleSheet.create({
 	screen: {
 		flex: 1,
@@ -152,11 +160,13 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		backgroundColor: 'black',
 	},
+	titleWrap: {
+		position: 'absolute',
+		top: 50,
+	},
 	title: {
 		color: 'white',
 		fontSize: 50,
-		position: 'absolute',
-		top: 50,
 	},
 	logo: {
 		width: logoSize,

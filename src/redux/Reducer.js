@@ -21,7 +21,7 @@ const initState = {
 	whitePlayer: null,
 
 	user: null,
-	isDarkTheme: true,
+	isDarkTheme: false,
 };
 
 
