@@ -8,8 +8,7 @@ import Util, { vw, vh } from '../Util';
 import Cache, { CACHE_DEFAULT } from '../Cache';
 
 import Storage from 'chessvibe/src/Storage';
-import Store from 'chessvibe/src/redux/Store';
-import { setIsDarkTheme } from 'chessvibe/src/redux/Reducer';
+import { HomeStore } from 'chessvibe/src/redux/Store';
 
 let logoImg = require('chessvibe/assets/logo.jpg');
 
@@ -91,7 +90,8 @@ export default function EntryScreen(props) {
 	// Navigate to home
 	async function navigateHome(user) {
 		let isDarkTheme = await Storage.get(STORAGE_IS_DARK_THEME) || 'true';
-		Store.dispatch(setIsDarkTheme(  isDarkTheme == 'true' ));
+
+		HomeStore.setIsDarkTheme(isDarkTheme == 'true');
 
 		let auth_token = await auth().currentUser.getIdToken(true);
 

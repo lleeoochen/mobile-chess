@@ -160,12 +160,6 @@ export default function UtilityArea(props) {
 		}
 	}
 
-	if (match) {
-		console.log(match.chat.length);
-		console.log(chatApplied.current);
-		console.log("=====");
-	}
-
 	return (
 		<View style={ props.style }>
 			<BottomSheet

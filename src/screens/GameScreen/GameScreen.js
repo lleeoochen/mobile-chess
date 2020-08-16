@@ -5,8 +5,7 @@ import Animated from 'react-native-reanimated'
 import { isIphoneX, getStatusBarHeight, getBottomSpace } from 'react-native-iphone-x-helper';
 import { ActionBar } from 'chessvibe/src/widgets';
 
-import { initGame, updateTheme, updatePlayer, reset } from 'chessvibe/src/redux/Reducer';
-import Store from 'chessvibe/src/redux/Store';
+import Store, { GameStore } from 'chessvibe/src/redux/Store';
 import { useSelector } from 'react-redux';
 
 import { THEME, TEAM, IMAGE, MAX_TIME } from 'chessvibe/src/Const';
@@ -42,7 +41,7 @@ export default function GameScreen(props) {
 	React.useEffect(() => {
 		isMountedRef.current = true;
 
-		Store.dispatch(updateTheme( Util.unpackTheme(Cache.theme[match_id]) ));
+		GameStore.updateTheme(Util.unpackTheme(Cache.theme[match_id]));
 
 		Backend.init();
 
@@ -51,7 +50,7 @@ export default function GameScreen(props) {
 			goBack: () => {
 				if (game)
 					game.ends();
-				Store.dispatch(reset());
+				GameStore.reset();
 				Backend.socket.disconnect();
 
 				props.navigation.dispatch(StackActions.pop());
@@ -65,7 +64,7 @@ export default function GameScreen(props) {
 
 				Backend.changeTheme( theme );
 				Cache.theme[match_id] = Util.packTheme(theme);
-				Store.dispatch(updateTheme( theme ));
+				GameStore.updateTheme(theme);
 			},
 		});
 
@@ -81,11 +80,11 @@ export default function GameScreen(props) {
 				setGame(game);
 
 				if (isMountedRef.current) {
-					Store.dispatch(updatePlayer({
+					GameStore.updatePlayer({
 						blackPlayer: Cache.users[match.black],
 						whitePlayer: Cache.users[match.white],
-					}));
-					Store.dispatch(initGame(game));
+					});
+					GameStore.initGame(game);
 				}
 
 				await new Promise((resolve, reject) => {
@@ -99,8 +98,8 @@ export default function GameScreen(props) {
 			game.match = match;
 
 			if (isMountedRef.current) {
-				Store.dispatch(initGame( game ));
-				Store.dispatch(updateTheme( Util.unpackTheme(match.theme) ));
+				GameStore.initGame(game);
+				GameStore.updateTheme(Util.unpackTheme(match.theme));
 			}
 
 			await game.updatePlayerData(match);
@@ -119,7 +118,7 @@ export default function GameScreen(props) {
 
 				game.ends();
 				if (isMountedRef.current) {
-					Store.dispatch(initGame( game ));
+					GameStore.initGame(game);
 				}
 				return false;
 			}

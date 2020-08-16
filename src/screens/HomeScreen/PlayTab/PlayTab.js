@@ -9,8 +9,6 @@ import Util, { formatDate, vw, wh, winType } from 'chessvibe/src/Util';
 import Cache from 'chessvibe/src/Cache';
 import Backend from 'chessvibe/src/Backend';
 import SideMenu from 'react-native-side-menu'
-import { showDrawer, updateUser, updateTheme } from 'chessvibe/src/redux/Reducer';
-import Store from 'chessvibe/src/redux/Store';
 
 const matchSize = vw((100 - 2 - 6 - 4) / 4);
 const borderRadius = vw();

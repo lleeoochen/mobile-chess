@@ -10,7 +10,6 @@ import Storage from 'chessvibe/src/Storage';
 import Cache from 'chessvibe/src/Cache';
 import Backend from 'chessvibe/src/Backend';
 import SideMenu from 'react-native-side-menu'
-import { setIsDarkTheme } from 'chessvibe/src/redux/Reducer';
 import Store from 'chessvibe/src/redux/Store';
 import { useSelector } from 'react-redux';
 

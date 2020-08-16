@@ -4,13 +4,9 @@ import { ActionBar, WebVibe, TextVibe, ModalVibe, ButtonVibe, DialogVibe } from 
 import AutoHeightImage from 'react-native-auto-height-image';
 import SearchBar from 'react-native-search-bar';
 
-import { URL, TEAM, IMAGE, APP_THEME, FRIEND } from 'chessvibe/src/Const';
-import Util, { formatDate, vw, wh, winType } from 'chessvibe/src/Util';
-import Cache from 'chessvibe/src/Cache';
+import { IMAGE, APP_THEME, FRIEND } from 'chessvibe/src/Const';
+import { vw } from 'chessvibe/src/Util';
 import Backend from 'chessvibe/src/Backend';
-import SideMenu from 'react-native-side-menu'
-import { showDrawer, updateUser, updateTheme } from 'chessvibe/src/redux/Reducer';
-import Store from 'chessvibe/src/redux/Store';
 
 const matchSize = vw(20);
 const borderRadius = vw();

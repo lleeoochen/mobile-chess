@@ -1,4 +1,4 @@
-import Store        from 'chessvibe/src/redux/Store';
+import Store, { GameStore } from 'chessvibe/src/redux/Store';
 import * as Reducer from 'chessvibe/src/redux/Reducer';
 import * as Const   from 'chessvibe/src/Const';
 import Util         from 'chessvibe/src/Util';
@@ -304,7 +304,7 @@ export default class Game {
 		Cache.users[match.white] = whitePlayer;
 
 		if (this.isMountedRef.current)
-			Store.dispatch(Reducer.updatePlayer( { blackPlayer, whitePlayer } ));
+			GameStore.updatePlayer({ blackPlayer, whitePlayer });
 	}
 
 	isValidMove(oldGrid, newGrid) {
@@ -727,7 +727,7 @@ export default class Game {
 
 	updateGame() {
 		if (this.isMountedRef.current) {
-			Store.dispatch(Reducer.initGame(this));
+			GameStore.initGame(this);
 		}
 		else {
 			clearInterval(this.interval);
