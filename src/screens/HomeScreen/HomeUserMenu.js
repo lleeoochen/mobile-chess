@@ -6,15 +6,14 @@ import { vw } from 'chessvibe/src/Util';
 import Cache from 'chessvibe/src/Cache';
 import { useSelector } from 'react-redux';
 import { IMAGE, APP_THEME } from 'chessvibe/src/Const';
-import { showDrawer } from 'chessvibe/src/redux/Reducer';
-import Store from 'chessvibe/src/redux/Store';
+import Store, { HomeStore } from 'chessvibe/src/redux/Store';
 
 const new_match_img = require('chessvibe/assets/new_match.png');
 const borderRadius = vw();
 
 export default function HomeUserMenu(props) {
-	const isDarkTheme = useSelector(state => state.isDarkTheme);
-	const user = useSelector(state => state.user) || {};
+	const isDarkTheme = useSelector(state => state.home.isDarkTheme);
+	const user = useSelector(state => state.home.user) || {};
 	const [ zoomIn ] = React.useState(new Animated.Value(props.drawerOpen ? 0.8 : 1));
 	const [ selected, setSelected ] = React.useState(0);
 	const appTheme = isDarkTheme ? APP_THEME.DARK : APP_THEME.LIGHT;
@@ -23,17 +22,9 @@ export default function HomeUserMenu(props) {
 		visible=false,
 		onDismiss=() => {},
 		onLogout=() => {
-			if (props.navRef && props.navRef.current && props.navRef.current._navigation) {
-				props.openDrawer(false);
 
-				setTimeout(() => {
-					props.navRef.current._navigation.navigate('Entry', {
-						signout: true
-					});
-
-					setSelected(0);
-				}, 500);
-			}
+			HomeStore.toLogout(true);
+			setSelected(0);
 		},
 		stats={
 			draw: 0,

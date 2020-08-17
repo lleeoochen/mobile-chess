@@ -23,7 +23,7 @@ const INDEX_THEME = [THEME_ID.CLASSIC, THEME_ID.WINTER, THEME_ID.METAL, THEME_ID
 const MODE_NAMES = ['', 'Computer', 'Friend'];
 
 export default function HomeCreateMenu(props) {
-	const isDarkTheme = useSelector(state => state.isDarkTheme);
+	const isDarkTheme = useSelector(state => state.home.isDarkTheme);
 	const appTheme = isDarkTheme ? APP_THEME.DARK : APP_THEME.LIGHT;
 
 	let [ theme, setTheme ] = React.useState(THEME_ID.CLASSIC);

@@ -30,7 +30,7 @@ GameScreen.navigationOptions = ({ navigation }) => {
 
 // Game Screen
 export default function GameScreen(props) {
-	const isDarkTheme = useSelector(state => state.isDarkTheme);
+	const isDarkTheme = useSelector(state => state.home.isDarkTheme);
 
 	let [game, setGame] = React.useState(null);
 	let match_id = props.navigation.getParam('match');

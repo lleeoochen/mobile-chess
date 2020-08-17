@@ -47,7 +47,7 @@ HomeScreen.navigationOptions = ({navigation}) => {
 
 // Home Screen
 export default function HomeScreen(props) {
-	const isDarkTheme = useSelector(state => state.isDarkTheme);
+	const isDarkTheme = useSelector(state => state.home.isDarkTheme);
 
 	const [ opponents, setOpponents ] = React.useState(Cache.home.opponents);
 	const [ matches, setMatches ] = React.useState(Cache.home.matches);

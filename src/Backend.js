@@ -2,6 +2,7 @@ import Util from './Util';
 import Cache from './Cache';
 import { URL } from './Const';
 import io from 'socket.io-client';
+import { HomeStore } from 'chessvibe/src/redux/Store';
 
 export default class Backend {
 
@@ -19,6 +20,10 @@ export default class Backend {
 
 		this.socket.on('error', (error) => {
 			console.log("SOCKET ERROR: ", error);
+
+			if (error == 'Authentication error') {
+				HomeStore.toLogout(true);
+			}
 		});
 	}
 

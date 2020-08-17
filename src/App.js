@@ -18,7 +18,7 @@ import Cache, { CACHE_DEFAULT } from './Cache';
 import SideMenu from 'react-native-side-menu'
 import HomeUserMenu from './screens/HomeScreen/HomeUserMenu';
 import { showDrawer } from 'chessvibe/src/redux/Reducer';
-import Store from 'chessvibe/src/redux/Store';
+import Store, { HomeStore } from 'chessvibe/src/redux/Store';
 
 LogBox.ignoreLogs(['Task orphaned']);
 
@@ -52,8 +52,30 @@ const Navigator = createStackNavigator(
 const Container = createAppContainer(Navigator);
 
 
-const userMenu = (navRef, drawerOpen, openDrawer) => {
+const UserMenu = (navRef, drawerOpen, openDrawer) => {
 	return (<HomeUserMenu visible={ true } navRef={ navRef } drawerOpen={ drawerOpen } openDrawer={ openDrawer }/>);
+};
+
+const LogoutControl = ({ navRef, openDrawer }) => {
+	let toLogout = useSelector(state => state.home.toLogout);
+
+	async function navgiateLogout() {
+		openDrawer(false);
+
+		setTimeout(() => {
+			navRef.current._navigation.navigate('Entry', {
+				signout: true
+			});
+		}, 500);
+
+		HomeStore.toLogout(false);
+	}
+
+	if (toLogout) {
+		navgiateLogout();
+	}
+
+	return <View/>;
 };
 
 function AppContent() {
@@ -100,7 +122,7 @@ function AppContent() {
 	return (
 		<SafeAreaView style={{ flex: 1, backgroundColor: '#0d151f' }}>
 			<SideMenu
-				menu={ userMenu(navRef, drawerOpen, openDrawer) }
+				menu={ UserMenu(navRef, drawerOpen, openDrawer) }
 				openMenuOffset={ vw(70) }
 				onChange={() => onDrawerChange()}
 				disableGestures={ true }
@@ -111,8 +133,9 @@ function AppContent() {
 					useNativeDriver: true,
 				})}
 				isOpen={ drawerOpen }>
-				<Container ref={navRef} screenProps={{ openDrawer }}/>
+				<Container ref={ navRef } screenProps={{ openDrawer }}/>
 			</SideMenu>
+			<LogoutControl navRef={ navRef } openDrawer={ openDrawer }/>
 		</SafeAreaView>
 	);
 }

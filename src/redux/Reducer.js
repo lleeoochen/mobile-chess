@@ -7,6 +7,7 @@ const initState = {
 	home: {
 		user: null,
 		isDarkTheme: false,
+		toLogout: false,
 	},
 	game: {
 		chessboard: [[], [], [], [], [], [], [], []],
@@ -22,10 +23,16 @@ const initState = {
 // Home Action Reducers
 export const HomeReducer = {
 	updateUser: createReducer((state, data) => {
-		return {...state, ...{ user: data }};
+		let home = { ...state.home, ...{ user: data } };
+		return { ...state, ...{ home } };
 	}),
 	setIsDarkTheme: createReducer((state, data) => {
-		return {...state, ...{ isDarkTheme: data }};
+		let home = { ...state.home, ...{ isDarkTheme: data } };
+		return { ...state, ...{ home } };
+	}),
+	toLogout: createReducer((state, data) => {
+		let home = { ...state.home, ...{ toLogout: data } };
+		return { ...state, ...{ home } };
 	}),
 };
 
