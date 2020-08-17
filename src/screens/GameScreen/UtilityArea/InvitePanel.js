@@ -12,7 +12,7 @@ const cell_size = (vw(100) - 4 * margin_size) / 8;
 const borderRadius = vw();
 
 export default function InvitePanel(props) {
-	const theme = useSelector(state => state.theme);
+	const theme = useSelector(state => state.game.theme);
 	const { gameRef, setInviteState, minimizeDrawer=() => {} } = props;
 
 	let btnStyle = {...styles.btn, ...{

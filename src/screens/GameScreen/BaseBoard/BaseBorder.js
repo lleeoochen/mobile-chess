@@ -16,7 +16,7 @@ export default function BaseBorder(props) {
 			enemy: state.game.enemy,
 			downward: state.game.downward,
 		};
-	}, strict_equal);
+	});
 
 	// Render
 	let ratio = 0.5;

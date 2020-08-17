@@ -5,7 +5,7 @@ import AutoHeightImage from 'react-native-auto-height-image';
 import { vw } from 'chessvibe/src/Util';
 
 export default function BackImage(props) {
-	const theme = useSelector(state => state.theme);
+	const theme = useSelector(state => state.game.theme);
 
 	return (
 		<ImageBackground

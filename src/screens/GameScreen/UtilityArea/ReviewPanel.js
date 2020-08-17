@@ -11,7 +11,7 @@ const cell_size = (vw(100) - 4 * margin_size) / 8;
 const borderRadius = vw();
 
 export default function ActionPanel(props) {
-	const theme = useSelector(state => state.theme);
+	const theme = useSelector(state => state.game.theme);
 	const game = useSelector(state => state.game); // for updating purpose
 	const { gameRef, minimizeDrawer=() => {} } = props;
 	const [ updated, update ] = React.useState(false);

@@ -36,6 +36,7 @@ export default function GameScreen(props) {
 	let match_id = props.navigation.getParam('match');
 	let fall = new Animated.Value(1);
 	const isMountedRef = React.useRef(null);
+	const goingBack = React.useRef(false);
 
 	// Mount
 	React.useEffect(() => {
@@ -53,7 +54,13 @@ export default function GameScreen(props) {
 				GameStore.reset();
 				Backend.socket.disconnect();
 
-				props.navigation.dispatch(StackActions.pop());
+				props.navigation.dispatch((() => {
+					if (goingBack.current)
+						return {};
+
+					goingBack.current = true;
+					return StackActions.pop()
+				})());
 			},
 			changeTheme: () => {
 				let theme = Store.getState().theme;

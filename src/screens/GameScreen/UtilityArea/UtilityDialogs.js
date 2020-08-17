@@ -27,10 +27,10 @@ export default function UtilityDialogs(props) {
 	const dialogHooks = Object.values(props);
 
 	// Game variables
-	const theme = useSelector(state => state.theme);
+	const theme = useSelector(state => state.game.theme);
 	const game = useSelector(state => state.game);
-	const blackPlayer = useSelector(state => state.blackPlayer) || {};
-	const whitePlayer = useSelector(state => state.whitePlayer) || {};
+	const blackPlayer = useSelector(state => state.game.blackPlayer) || {};
+	const whitePlayer = useSelector(state => state.game.whitePlayer) || {};
 	const enemy = game.enemy == TEAM.W ? whitePlayer : blackPlayer;
 	const winMessage = getWinMessage(game.match);
 

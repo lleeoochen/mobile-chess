@@ -30,14 +30,14 @@ export default function UtilityArea(props) {
 	const [ flashing, setFlashing ] = React.useState(false);
 	const [ drawerOpen, setDrawerOpen ] = React.useState(false);
 
-	const theme = useSelector(state => state.theme);
-	const match = useSelector(state => state.game.match, strict_equal);
+	const theme = useSelector(state => state.game.theme);
+	const match = useSelector(state => state.game.match);
 	const drawerRef = React.useRef(null);
 	const triggerEnding = React.useRef(true);
 	const chatApplied = React.useRef(0);
 
-	const blackPlayer = useSelector(state => state.blackPlayer) || {};
-	const whitePlayer = useSelector(state => state.whitePlayer) || {};
+	const blackPlayer = useSelector(state => state.game.blackPlayer) || {};
+	const whitePlayer = useSelector(state => state.game.whitePlayer) || {};
 
 	// React states for popup dialogs
 	const resignHook = React.useState(DIALOG.HIDE);

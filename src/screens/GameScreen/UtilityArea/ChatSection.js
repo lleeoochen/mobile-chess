@@ -20,7 +20,7 @@ const panel_height = header_height - handle_height;
 const copied_width = 50;
 
 export default function ChatSection(props) {
-	const theme = useSelector(state => state.theme);
+	const theme = useSelector(state => state.game.theme);
 	const chat = useSelector(state => state.game.match ? state.game.match.chat : [], strict_equal);
 	const contentRef = React.useRef();
 	const [ messageCache, setMessageCache ] = React.useState(null);
@@ -97,7 +97,7 @@ export default function ChatSection(props) {
 }
 
 function ChatBubble(props) {
-	const theme = useSelector(state => state.theme);
+	const theme = useSelector(state => state.game.theme);
 	const [ showCopiedMessage, setShowCopiedMessage ] = React.useState(false);
 	const [ shift ] = React.useState(new Animated.Value(1));
 	let { right=false, onPress=() => {} } = props;

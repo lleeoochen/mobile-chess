@@ -1,18 +1,20 @@
+import { shallowEqual } from 'react-redux';
 import { THEME, TEAM, STORAGE_IS_DARK_THEME } from 'chessvibe/src/Const';
 import Storage from 'chessvibe/src/Storage';
 
 // Initial store state
 const initState = {
+	home: {
+		user: null,
+		isDarkTheme: false,
+	},
 	game: {
 		chessboard: [[], [], [], [], [], [], [], []],
 		baseboard: [[], [], [], [], [], [], [], []],
+		theme: THEME.METAL,
+		blackPlayer: null,
+		whitePlayer: null,
 	},
-	theme: THEME.METAL,
-	blackPlayer: null,
-	whitePlayer: null,
-
-	user: null,
-	isDarkTheme: false,
 };
 
 
@@ -31,20 +33,19 @@ export const HomeReducer = {
 export const GameReducer = {
 	initGame: createReducer((state, data) => {
 		let game = { ...state.game, ...data };
-		return { ...state, game: game };
+		return { ...state, ...{ game } };
 	}),
 	reset: createReducer((state, data) => {
 		state.game = initState.game;
-		state.theme = initState.theme;
-		state.blackPlayer = initState.blackPlayer;
-		state.whitePlayer = initState.whitePlayer;
 		return { ...state };
 	}),
 	updateTheme: createReducer((state, data) => {
-		return {...state, ...{ theme: data }};
+		let game = { ...state.game, ...{ theme: data } };
+		return { ...state, ...{ game } };
 	}),
 	updatePlayer: createReducer((state, data) => {
-		return {...state, ...data};
+		let game = { ...state.game, ...data };
+		return { ...state, ...{ game } };
 	}),
 };
 
