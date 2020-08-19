@@ -63,7 +63,7 @@ export default function GameScreen(props) {
 				})());
 			},
 			changeTheme: () => {
-				let theme = Store.getState().theme;
+				let theme = Store.getState().game.theme;
 				if (theme == THEME.CLASSIC) theme = THEME.WINTER;
 				else if (theme == THEME.WINTER) theme = THEME.METAL;
 				else if (theme == THEME.METAL) theme = THEME.NATURE;

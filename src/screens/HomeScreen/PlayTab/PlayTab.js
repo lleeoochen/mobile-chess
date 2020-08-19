@@ -97,6 +97,11 @@ export default function PlayTab(props) {
 
 	let actionData = [
 		{
+			text: 'Sandbox',
+			image: IMAGE.WINTER,
+			onPress: () => showCreateMenu({ show: true, mode: MATCH_MODE.FRIEND }),
+		},
+		{
 			text: 'Friend',
 			image: IMAGE.NATURE,
 			onPress: () => showCreateMenu({ show: true, mode: MATCH_MODE.FRIEND }),
@@ -105,11 +110,6 @@ export default function PlayTab(props) {
 			text: 'Computer',
 			image: IMAGE.METAL,
 			onPress: () => showCreateMenu({ show: true, mode: MATCH_MODE.COMPUTER }),
-		},
-		{
-			text: 'Sandbox',
-			image: IMAGE.WINTER,
-			onPress: () => showCreateMenu({ show: true, mode: MATCH_MODE.FRIEND }),
 		},
 	];
 
@@ -121,9 +121,10 @@ export default function PlayTab(props) {
 				layout={ 'default' }
 				data={ actionData }
 				renderItem={ actionItem }
-				loop={ true }
-				loopClonesPerSide={ 5 }
-				useScrollView={ true }
+				firstItem={ 1 }
+				// loop={ true }
+				// loopClonesPerSide={ 5 }
+				// useScrollView={ true }
 				// autoplay={ true }
 				// autoplayInterval={ 5000 }
 				sliderWidth={ vw(100) }

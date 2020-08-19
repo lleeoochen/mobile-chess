@@ -288,8 +288,7 @@ export default class Game {
 	}
 
 	async updatePlayerData(match) {
-		let blackPlayer = Store.getState().blackPlayer;
-		let whitePlayer = Store.getState().whitePlayer;
+		let { blackPlayer, whitePlayer } = Store.getState().game;
 
 		if (blackPlayer && whitePlayer) return;
 

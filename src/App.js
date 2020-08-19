@@ -4,6 +4,7 @@ import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 import { Provider, useSelector } from 'react-redux';
 import SplashScreen from 'react-native-splash-screen';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 import Entry from './screens/EntryScreen';
 import Home from './screens/HomeScreen';
@@ -58,6 +59,7 @@ const UserMenu = (navRef, drawerOpen, openDrawer) => {
 
 const LogoutControl = ({ navRef, openDrawer }) => {
 	let toLogout = useSelector(state => state.home.toLogout);
+	const [ spinnerShown, showSpinner ] = React.useState(false);
 
 	async function navgiateLogout() {
 		openDrawer(false);
@@ -66,16 +68,22 @@ const LogoutControl = ({ navRef, openDrawer }) => {
 			navRef.current._navigation.navigate('Entry', {
 				signout: true
 			});
+			showSpinner(false);
 		}, 500);
 
 		HomeStore.toLogout(false);
 	}
 
-	if (toLogout) {
+	if (toLogout && !spinnerShown) {
+		showSpinner(true);
 		navgiateLogout();
 	}
 
-	return <View/>;
+	return (
+		<Spinner
+			visible={ spinnerShown }
+			overlayColor={ 'rgba(0, 0, 0, 0.5)' }/>
+	);
 };
 
 function AppContent() {

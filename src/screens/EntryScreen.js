@@ -3,6 +3,7 @@ import { View, SafeAreaView, Text, Button, StyleSheet, StatusBar, Image, Dimensi
 import { FadeInView, TextVibe } from 'chessvibe/src/widgets';
 import { GoogleSignin, GoogleSigninButton, statusCodes } from '@react-native-community/google-signin';
 import auth from '@react-native-firebase/auth';
+import Spinner from 'react-native-loading-spinner-overlay';
 import { URL, STORAGE_IS_DARK_THEME } from '../Const';
 import Util, { vw, vh } from '../Util';
 import Cache, { CACHE_DEFAULT } from '../Cache';
@@ -21,9 +22,10 @@ EntryScreen.navigationOptions = ({navigation}) => {
 
 // Entry Screen
 export default function EntryScreen(props) {
-	const [initializing, setInitializing] = React.useState(true);
-	const [signingin, setSigningin] = React.useState(false);
-	const [user, setUser] = React.useState();
+	const [ initializing, setInitializing ] = React.useState(true);
+	const [ signingin, setSigningin ] = React.useState(false);
+	const [ user, setUser ] = React.useState();
+	const [ spinnerShown, showSpinner ] = React.useState(false);
 
 
 	// Signin configs
@@ -50,6 +52,7 @@ export default function EntryScreen(props) {
 		}
 
 		if (user) {
+			showSpinner(true);
 			setTimeout(() => {
 				navigateHome(user);
 			},
@@ -106,6 +109,7 @@ export default function EntryScreen(props) {
 		else {
 			signOut();
 		}
+		showSpinner(false);
 	}
 
 
@@ -147,6 +151,10 @@ export default function EntryScreen(props) {
 				<TextVibe style={ styles.title }>Chess Vibe</TextVibe>
 			</FadeInView>
 			<Image style={ styles.logo } source={ logoImg }/>
+
+			<Spinner
+				visible={ spinnerShown }
+				overlayColor={ 'rgba(0, 0, 0, 0.5)' }/>
 		</SafeAreaView>
 	);
 }
