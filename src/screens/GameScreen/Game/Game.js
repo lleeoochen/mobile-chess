@@ -9,7 +9,7 @@ import Cache        from 'chessvibe/src/Cache';
 
 export default class Game {
 
-	constructor(team, match_id, match, isMountedRef) {
+	constructor(team, match_id, match, isMountedRef, modeAI=false) {
 		// White's side of chessboard
 		this.chessboard = [[],[],[],[],[],[],[],[]];
 		this.baseboard = [[],[],[],[],[],[],[],[]];
@@ -79,6 +79,8 @@ export default class Game {
 			B: [],
 			W: []
 		};
+
+		this.modeAI = modeAI;
 
 		this.initBoard();
 		this.initPieces();

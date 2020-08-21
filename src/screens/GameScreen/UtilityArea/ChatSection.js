@@ -84,7 +84,7 @@ export default function ChatSection(props) {
 			<View style={ styles.chatDivider }/>
 			<View style={ [styles.chatBottom, colorBlack] }>
 				<InputVibe
-					hidden={ Util.gameFinished(gameRef.match) }
+					hidden={ Util.gameFinished(gameRef.match) || gameRef.modeAI }
 					style={ styles.chatInput }
 					placeholder={ 'Type here...' }
 					onSubmitText={(value)=> {

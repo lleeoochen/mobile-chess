@@ -4,7 +4,7 @@ import Slider from "react-native-slider";
 import { TextVibe, ModalVibe, ButtonVibe } from 'chessvibe/src/widgets';
 import AutoHeightImage from 'react-native-auto-height-image';
 import { vw } from 'chessvibe/src/Util';
-import { THEME_ID, TIME, IMAGE, APP_THEME } from 'chessvibe/src/Const';
+import { THEME_ID, TIME, IMAGE, APP_THEME, MATCH_MODE } from 'chessvibe/src/Const';
 import { useSelector } from 'react-redux';
 
 const new_match_img = require('chessvibe/assets/new_match.png');
@@ -23,22 +23,13 @@ const INDEX_THEME = [THEME_ID.CLASSIC, THEME_ID.WINTER, THEME_ID.METAL, THEME_ID
 const MODE_NAMES = ['', 'Computer', 'Friend'];
 
 export default function HomeCreateMenu(props) {
+	let { mode, visible, onDismiss, onSubmit } = props;
+
 	const isDarkTheme = useSelector(state => state.home.isDarkTheme);
 	const appTheme = isDarkTheme ? APP_THEME.DARK : APP_THEME.LIGHT;
 
 	let [ theme, setTheme ] = React.useState(THEME_ID.CLASSIC);
 	let [ time, setTime ] = React.useState(TIME.FIFTEEN);
-	let { mode, visible, onDismiss, onSubmit } = props;
-
-	let styleClassic = { ...styles.menuBtn, ...styles.classic, ...(theme == THEME_ID.CLASSIC ? styles.selected : {}) };
-	let styleWinter  = { ...styles.menuBtn, ...styles.winter, ...(theme == THEME_ID.WINTER ? styles.selected : {}) };
-	let styleMetal   = { ...styles.menuBtn, ...styles.metal, ...(theme == THEME_ID.METAL ? styles.selected : {}) };
-	let styleNature  = { ...styles.menuBtn, ...styles.nature, ...(theme == THEME_ID.NATURE ? styles.selected : {}) };
-
-	let styleFive     = { ...styles.menuBtn, ...(time == TIME.FIVE ? styles.selected : {}) };
-	let styleFifteen  = { ...styles.menuBtn, ...(time == TIME.FIFTEEN ? styles.selected : {}) };
-	let styleThirty   = { ...styles.menuBtn, ...(time == TIME.THIRTY ? styles.selected : {}) };
-	let styleInfinite = { ...styles.menuBtn, ...(time == TIME.INFINITE ? styles.selected : {}) };
 
 	function changeTheme(direction) {
 		let next = (theme + direction + INDEX_THEME.length) % INDEX_THEME.length;
@@ -63,6 +54,33 @@ export default function HomeCreateMenu(props) {
 		backgroundColor: isDarkTheme ? '#ffffff2e' : appTheme.APP_BACKGROUND
 	};
 
+	let slider = (mode == MATCH_MODE.FRIEND) ?
+		[
+			<TextVibe style={ [styles.menuText, textColor] }> { 'Time' } </TextVibe>,
+			<Slider
+				value={ TIME_INDEX[time] }
+				step={ 1 }
+				maximumValue={ 4 }
+				thumbTintColor={ 'white' }
+				minimumTrackTintColor={ 'darkslateblue' }
+				maximumTrackTintColor={ 'grey' }
+				style={ styles.timeSlider }
+				onValueChange={(val) => {
+					setTime(INDEX_TIME[val]);
+				}}/>,
+			<TextVibe style={ [styles.timeText, textColor] }>
+				{
+					time == TIME.FIVE     ? '5 min' :
+					time == TIME.TEN      ? '10 min' :
+					time == TIME.FIFTEEN  ? '15 min' :
+					time == TIME.THIRTY   ? '30 min' :
+					time == TIME.INFINITE ? '∞ min' :
+					''
+				}
+			</TextVibe>
+		]
+		: null;
+
 	return (
 		<ModalVibe
 			coverAll={ true }
@@ -81,30 +99,9 @@ export default function HomeCreateMenu(props) {
 				</ButtonVibe>
 			</View>
 
-			<TextVibe style={ [styles.menuText, textColor] }> Time </TextVibe>
-			<Slider
-				value={ TIME_INDEX[time] }
-				step={ 1 }
-				maximumValue={ 4 }
-				thumbTintColor={ 'white' }
-				minimumTrackTintColor={ 'darkslateblue' }
-				maximumTrackTintColor={ 'grey' }
-				style={ styles.timeSlider }
-				onValueChange={(val) => {
-					setTime(INDEX_TIME[val]);
-				}}/>
-			<TextVibe style={ [styles.timeText, textColor] }>
-				{
-					time == TIME.FIVE     ? '5 min' :
-					time == TIME.TEN      ? '10 min' :
-					time == TIME.FIFTEEN  ? '15 min' :
-					time == TIME.THIRTY   ? '30 min' :
-					time == TIME.INFINITE ? '∞ min' :
-					''
-				}
-			</TextVibe>
+			{ slider }
 
-			<ButtonVibe style={ [styles.menuSubmitBtn, submitBtnStyle] } onPress={ () => onSubmit(theme, time) }>
+			<ButtonVibe style={ [styles.menuSubmitBtn, submitBtnStyle] } onPress={ () => onSubmit(theme, mode == MATCH_MODE.COMPUTER ? TIME.INFINITE : time) }>
 				<TextVibe style={ [styles.menuSubmitBtnText, textColor] }>Create Match</TextVibe>
 			</ButtonVibe>
 		</ModalVibe>

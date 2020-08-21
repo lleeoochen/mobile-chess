@@ -11,7 +11,7 @@ import Game         from './Game';
 export default class GameAI extends Game {
 
 	constructor(team, match_id, match, isMountedRef) {
-		super(team, match_id, match, isMountedRef);
+		super(team, match_id, match, isMountedRef, true);
 	}
 
 
