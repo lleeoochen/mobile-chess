@@ -128,7 +128,7 @@ function AppContent() {
 	}, []);
 
 	return (
-		<SafeAreaView style={{ flex: 1, backgroundColor: '#0d151f' }}>
+		<SafeAreaView style={{ flex: 1 }}>
 			<SideMenu
 				menu={ UserMenu(navRef, drawerOpen, openDrawer) }
 				openMenuOffset={ vw(70) }
@@ -150,7 +150,7 @@ function AppContent() {
 
 export default function App() {
 	return (
-		<Provider store={store} style={ {backgroundColor: 'black'} }>
+		<Provider store={ store }>
 			<AppContent/>
 		</Provider>
 	);

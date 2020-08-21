@@ -85,7 +85,7 @@ export const IMAGE = {
 
 export const APP_THEME = Object.freeze({
 	LIGHT: {
-		APP_BACKGROUND:     '#3679cc', // Top bar, app background color
+		APP_BACKGROUND:     '#559df7', // Top bar, app background color
 		CONTENT_BACKGROUND: '#b7ceea', // Main container background color
 		MENU_BACKGROUND:    '#90b7e6', // Side menu background color
 		COLOR:              'black', // Text color
@@ -100,7 +100,7 @@ export const APP_THEME = Object.freeze({
 		CONTENT_BACKGROUND: '#1A283A', // Main container background color
 		MENU_BACKGROUND:    '#0D151F', // Side menu background color
 		COLOR:              'white', // Text color
-		SUB_COLOR:          'grey', // Subtext color
+		SUB_COLOR:          '#949494', // Subtext color
 		SETTING_BACKGROUND: '#2a4261', // Setting item color
 		SETTING_BORDER:     '#1a283a', // Setting item border
 		ACTION_BUTTON:      '#437149', // Action button background color

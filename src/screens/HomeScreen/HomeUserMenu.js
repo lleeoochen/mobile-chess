@@ -117,11 +117,13 @@ export default function HomeUserMenu(props) {
 
 	return (
 		<Animated.View style={ menuStyle }>
-			<AutoHeightImage
-				style={ styles.menuImage }
-				width={ vw(25) }
-				source={ user.photo ? { uri: user.photo + '=c' } : new_match_img }/>
-			<TextVibe style={ [styles.menuText, textColor] }>{ user.name || '' }</TextVibe>
+			<ButtonVibe style={ styles.profile }>
+				<AutoHeightImage
+					style={ styles.menuImage }
+					width={ vw(25) }
+					source={ user.photo ? { uri: user.photo + '=c' } : new_match_img }/>
+				<TextVibe style={ [styles.menuText, textColor] }>{ user.name || '' }</TextVibe>
+			</ButtonVibe>
 
 			<ScrollView contentContainerStyle={ styles.pageList }>
 				{ buttons }
@@ -139,6 +141,7 @@ const styles = StyleSheet.create({
 	menu: {
 		flex: 1,
 	},
+
 	menuText: {
 		fontSize: vw(7),
 		marginLeft: vw(5),
@@ -154,6 +157,10 @@ const styles = StyleSheet.create({
 	menuStat: {
 		color: 'white',
 		fontSize: vw(5),
+	},
+
+	profile: {
+		alignItems: 'flex-start'
 	},
 
 	pageList: {
