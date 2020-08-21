@@ -72,7 +72,6 @@ export default function PlayTab(props) {
 
 	function onSnapToMode(modeData) {
 		setDescription(modeData.description);
-		console.log("hi");
 	}
 
 

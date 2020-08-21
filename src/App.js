@@ -9,6 +9,7 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import Entry from './screens/EntryScreen';
 import Home from './screens/HomeScreen';
 import Game from './screens/GameScreen';
+import ProfilePopup from './screens/Popups/ProfilePopup';
 import { vw, vh } from './Util';
 import { STORAGE_APP_CACHE } from './Const';
 
@@ -144,6 +145,7 @@ function AppContent() {
 				<Container ref={ navRef } screenProps={{ openDrawer }}/>
 			</SideMenu>
 			<LogoutControl navRef={ navRef } openDrawer={ openDrawer }/>
+			<ProfilePopup/>
 		</SafeAreaView>
 	);
 }

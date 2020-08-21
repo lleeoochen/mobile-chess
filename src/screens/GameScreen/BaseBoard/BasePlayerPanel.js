@@ -2,12 +2,12 @@ import * as React from 'react';
 import { StatusBar, View, SafeAreaView, Text, Image, StyleSheet, ScrollView } from 'react-native';
 import { useSelector, shallowEqual } from 'react-redux';
 import AutoHeightImage from 'react-native-auto-height-image';
-import Store from 'chessvibe/src/redux/Store';
+import Store, { PopupStore } from 'chessvibe/src/redux/Store';
 
 import * as Reducer from 'chessvibe/src/redux/Reducer';
 import { vw, vh, formatTimer } from 'chessvibe/src/Util';
 import * as Const from 'chessvibe/src/Const';
-import { ActionBar, WebVibe, TextVibe, ModalVibe } from 'chessvibe/src/widgets';
+import { ActionBar, WebVibe, TextVibe, ModalVibe, ButtonVibe } from 'chessvibe/src/widgets';
 
 import BaseBoardGrid from './BaseBoardGrid';
 
@@ -72,11 +72,11 @@ export default function BasePlayerPanel(props) {
 				{ backgroundColor: theme.COLOR_UTILITY.MOBILE },
 				{ borderColor: color }
 			]}>
-			<View style={ imageStyle }>
+			<ButtonVibe style={ imageStyle } onPress={ () => PopupStore.openProfile(player) }>
 				<AutoHeightImage
 					width={ pictureSize }
 					source={ player && player.photo ? { uri: player.photo + '=c' } : new_match_img }/>
-			</View>
+			</ButtonVibe>
 
 			<View style={ styles.middleContainer }>
 				<View style={ styles.middleTopContainer }>

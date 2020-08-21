@@ -7,6 +7,7 @@ import { vw, vh } from 'chessvibe/src/Util';
 import { THEME_ID, TIME, IMAGE, APP_THEME, NOTIFICATION_TYPE, FRIEND } from 'chessvibe/src/Const';
 import { useSelector } from 'react-redux';
 import Backend from 'chessvibe/src/GameBackend';
+import { PopupStore } from 'chessvibe/src/redux/Store';
 
 export default function NotificationMenu(props) {
 	const { visible, setVisible, isDarkTheme, notificationIDs=[], friends } = props;
@@ -229,7 +230,7 @@ function Notification(props) {
 		: null;
 
 	return (
-		<ButtonVibe style={ [styles.notif, backgroundStyle] }>
+		<ButtonVibe style={ [styles.notif, backgroundStyle] } onPress={ () => PopupStore.openProfile(user) }>
 			<Image style={ styles.notifIcon } source={ icon }/>
 			<View style={ styles.notifContent }>
 				<TextVibe style={ [styles.notifText, textStyle] }>
@@ -305,7 +306,7 @@ const styles = StyleSheet.create({
 			notifIcon: {
 				width: vw(16),
 				height: vw(16),
-				marginRight: vw(4),
+				marginRight: vw(2),
 				borderRadius: vw(),
 			},
 
@@ -315,7 +316,7 @@ const styles = StyleSheet.create({
 
 				notifText: {
 					flex: 1,
-					fontSize: vw(5),
+					fontSize: vw(4),
 				},
 
 				notifActionBox: {

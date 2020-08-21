@@ -16,6 +16,9 @@ const initState = {
 		blackPlayer: null,
 		whitePlayer: null,
 	},
+	popup: {
+		profile: null,
+	},
 };
 
 
@@ -56,6 +59,18 @@ export const GameReducer = {
 	}),
 };
 
+// Game Popup Reducers
+export const PopupReducer = {
+	openProfile: createReducer((state, data) => {
+		let popup = { ...state.popup, ...{ profile: data } };
+		return { ...state, ...{ popup } };
+	}),
+	closeProfile: createReducer((state) => {
+		let popup = { ...state.popup, ...{ profile: null } };
+		return { ...state, ...{ popup } };
+	}),
+};
+
 
 
 // App Reducer
@@ -63,6 +78,7 @@ export default function Reducer(state = initState, action) {
 	const AppReducer = {
 		home: HomeReducer,
 		game: GameReducer,
+		popup: PopupReducer,
 	};
 
 	if (action.reduce) {

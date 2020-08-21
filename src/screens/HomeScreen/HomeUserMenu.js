@@ -6,7 +6,7 @@ import { vw } from 'chessvibe/src/Util';
 import Cache from 'chessvibe/src/Cache';
 import { useSelector } from 'react-redux';
 import { IMAGE, APP_THEME } from 'chessvibe/src/Const';
-import Store, { HomeStore } from 'chessvibe/src/redux/Store';
+import Store, { HomeStore, PopupStore } from 'chessvibe/src/redux/Store';
 
 const new_match_img = require('chessvibe/assets/new_match.png');
 const borderRadius = vw();
@@ -117,7 +117,7 @@ export default function HomeUserMenu(props) {
 
 	return (
 		<Animated.View style={ menuStyle }>
-			<ButtonVibe style={ styles.profile }>
+			<ButtonVibe style={ styles.profile } onPress={ () => PopupStore.openProfile(user) }>
 				<AutoHeightImage
 					style={ styles.menuImage }
 					width={ vw(25) }
