@@ -5,7 +5,7 @@ import AutoHeightImage from 'react-native-auto-height-image';
 import Carousel from 'react-native-snap-carousel';
 
 import { URL, TEAM, IMAGE, APP_THEME, MATCH_MODE } from 'chessvibe/src/Const';
-import Util, { formatDate, vw, wh, winType } from 'chessvibe/src/Util';
+import Util, { formatDate, vw, vh, winType } from 'chessvibe/src/Util';
 import Cache from 'chessvibe/src/Cache';
 import Backend from 'chessvibe/src/Backend';
 import SideMenu from 'react-native-side-menu'
@@ -143,7 +143,6 @@ export default function PlayTab(props) {
 				// autoplayInterval={ 5000 }
 				sliderWidth={ vw(100) }
 				itemWidth={ vw(80) }
-				sliderHeight={ vw(20) }
 				contentContainerCustomStyle={ styles.carousel }
 				onScrollIndexChanged={ index => onSnapToMode(ACTION_DATA[index]) }/>
 			<TextVibe style={ [styles.description, { color: appTheme.SUB_COLOR }] }>{ description }</TextVibe>
@@ -161,7 +160,8 @@ const styles = StyleSheet.create({
 
 	carousel: {
 		alignItems: 'flex-start',
-		marginTop: vw(15),
+		marginTop: vw(5),
+		paddingTop: vw(10),
 	},
 
 		actionBtn: {
