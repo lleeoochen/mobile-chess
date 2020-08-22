@@ -12,7 +12,7 @@ export default function ModalVibe(props) {
 	const wantVisible = isVisible;
 	const duration = 200;
 
-	const isDarkTheme = useSelector(state => state.isDarkTheme);
+	const isDarkTheme = useSelector(state => state.home.isDarkTheme);
 	const appTheme = isDarkTheme ? APP_THEME.DARK : APP_THEME.LIGHT;
 	const [ top ] = React.useState(new Animated.Value(vh(100)));
 	const [ shadowIndex ] = React.useState(new Animated.Value(0));
@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
 // import { useSelector } from 'react-redux';
 
 // export default function ModalVibe(props) {
-// 	const isDarkTheme = useSelector(state => state.isDarkTheme);
+// 	const isDarkTheme = useSelector(state => state.home.isDarkTheme);
 // 	const appTheme = isDarkTheme ? APP_THEME.DARK : APP_THEME.LIGHT;
 
 // 	// Theme configuration

@@ -5,8 +5,7 @@ import Animated from 'react-native-reanimated'
 import { isIphoneX, getStatusBarHeight, getBottomSpace } from 'react-native-iphone-x-helper';
 import { ActionBar } from 'chessvibe/src/widgets';
 
-import { initGame, updateTheme, updatePlayer, reset } from 'chessvibe/src/redux/Reducer';
-import Store from 'chessvibe/src/redux/Store';
+import Store, { GameStore } from 'chessvibe/src/redux/Store';
 import { useSelector } from 'react-redux';
 
 import { THEME, TEAM, IMAGE, MAX_TIME } from 'chessvibe/src/Const';
@@ -31,18 +30,19 @@ GameScreen.navigationOptions = ({ navigation }) => {
 
 // Game Screen
 export default function GameScreen(props) {
-	const isDarkTheme = useSelector(state => state.isDarkTheme);
+	const isDarkTheme = useSelector(state => state.home.isDarkTheme);
 
 	let [game, setGame] = React.useState(null);
 	let match_id = props.navigation.getParam('match');
 	let fall = new Animated.Value(1);
 	const isMountedRef = React.useRef(null);
+	const goingBack = React.useRef(false);
 
 	// Mount
 	React.useEffect(() => {
 		isMountedRef.current = true;
 
-		Store.dispatch(updateTheme( Util.unpackTheme(Cache.theme[match_id]) ));
+		GameStore.updateTheme(Util.unpackTheme(Cache.theme[match_id]));
 
 		Backend.init();
 
@@ -51,13 +51,19 @@ export default function GameScreen(props) {
 			goBack: () => {
 				if (game)
 					game.ends();
-				Store.dispatch(reset());
+				GameStore.reset();
 				Backend.socket.disconnect();
 
-				props.navigation.dispatch(StackActions.pop());
+				props.navigation.dispatch((() => {
+					if (goingBack.current)
+						return {};
+
+					goingBack.current = true;
+					return StackActions.pop()
+				})());
 			},
 			changeTheme: () => {
-				let theme = Store.getState().theme;
+				let theme = Store.getState().game.theme;
 				if (theme == THEME.CLASSIC) theme = THEME.WINTER;
 				else if (theme == THEME.WINTER) theme = THEME.METAL;
 				else if (theme == THEME.METAL) theme = THEME.NATURE;
@@ -65,7 +71,7 @@ export default function GameScreen(props) {
 
 				Backend.changeTheme( theme );
 				Cache.theme[match_id] = Util.packTheme(theme);
-				Store.dispatch(updateTheme( theme ));
+				GameStore.updateTheme(theme);
 			},
 		});
 
@@ -81,11 +87,11 @@ export default function GameScreen(props) {
 				setGame(game);
 
 				if (isMountedRef.current) {
-					Store.dispatch(updatePlayer({
+					GameStore.updatePlayer({
 						blackPlayer: Cache.users[match.black],
 						whitePlayer: Cache.users[match.white],
-					}));
-					Store.dispatch(initGame(game));
+					});
+					GameStore.initGame(game);
 				}
 
 				await new Promise((resolve, reject) => {
@@ -99,8 +105,8 @@ export default function GameScreen(props) {
 			game.match = match;
 
 			if (isMountedRef.current) {
-				Store.dispatch(initGame( game ));
-				Store.dispatch(updateTheme( Util.unpackTheme(match.theme) ));
+				GameStore.initGame(game);
+				GameStore.updateTheme(Util.unpackTheme(match.theme));
 			}
 
 			await game.updatePlayerData(match);
@@ -119,7 +125,7 @@ export default function GameScreen(props) {
 
 				game.ends();
 				if (isMountedRef.current) {
-					Store.dispatch(initGame( game ));
+					GameStore.initGame(game);
 				}
 				return false;
 			}

@@ -9,15 +9,38 @@ import Util, { formatDate, vw, wh, winType } from 'chessvibe/src/Util';
 import Cache from 'chessvibe/src/Cache';
 import Backend from 'chessvibe/src/Backend';
 import SideMenu from 'react-native-side-menu'
-import { showDrawer, updateUser, updateTheme } from 'chessvibe/src/redux/Reducer';
-import Store from 'chessvibe/src/redux/Store';
 
 const matchSize = vw((100 - 2 - 6 - 4) / 4);
 const borderRadius = vw();
 
+
 // Home Screen
 export default function PlayTab(props) {
+	const ACTION_DATA = [
+		{
+			text: 'Sandbox',
+			description: 'To be announced...',
+			image: IMAGE.WINTER,
+			onPress: () => {},
+		},
+		{
+			text: 'Friend',
+			description: 'Challenge a friend',
+			image: IMAGE.NATURE,
+			onPress: () => showCreateMenu({ show: true, mode: MATCH_MODE.FRIEND }),
+		},
+		{
+			text: 'Computer',
+			description: 'Practice with computer',
+			image: IMAGE.METAL,
+			onPress: () => showCreateMenu({ show: true, mode: MATCH_MODE.COMPUTER }),
+		},
+	];
+
 	const { newMatches, navigateGame, showCreateMenu, isDarkTheme } = props;
+
+	const startingMode = 1;
+	const [ description, setDescription ] = React.useState(ACTION_DATA[startingMode].description);
 	const [ fadein ] = React.useState(new Animated.Value(0));
 	const appTheme = isDarkTheme ? APP_THEME.DARK : APP_THEME.LIGHT;
 	const firstLoad = React.useRef(true);
@@ -36,6 +59,7 @@ export default function PlayTab(props) {
 	},
 	[newMatches]);
 
+
 	// Custom theme styles
 	let viewStyle = [styles.view, props.style, {
 		backgroundColor: appTheme.CONTENT_BACKGROUND
@@ -44,6 +68,12 @@ export default function PlayTab(props) {
 	let titleStyle = [styles.matchesTitle, {
 		color: appTheme.COLOR
 	}];
+
+
+	function onSnapToMode(modeData) {
+		setDescription(modeData.description);
+	}
+
 
 	// Render recent matches
 	function renderMatches() {
@@ -97,40 +127,26 @@ export default function PlayTab(props) {
 		);
 	}
 
-	let actionData = [
-		{
-			text: 'Friend',
-			image: IMAGE.NATURE,
-			onPress: () => showCreateMenu({ show: true, mode: MATCH_MODE.FRIEND }),
-		},
-		{
-			text: 'Computer',
-			image: IMAGE.METAL,
-			onPress: () => showCreateMenu({ show: true, mode: MATCH_MODE.COMPUTER }),
-		},
-		{
-			text: 'Sandbox',
-			image: IMAGE.WINTER,
-			onPress: () => showCreateMenu({ show: true, mode: MATCH_MODE.FRIEND }),
-		},
-	];
-
 	// Render
 	let $container = renderMatches();
 	return (
 		<View style={ viewStyle }>
 			<Carousel
 				layout={ 'default' }
-				data={ actionData }
+				data={ ACTION_DATA }
 				renderItem={ actionItem }
-				loop={ true }
-				loopClonesPerSide={ 5 }
-				useScrollView={ true }
+				firstItem={ startingMode }
+				// loop={ true }
+				// loopClonesPerSide={ 5 }
+				// useScrollView={ true }
 				// autoplay={ true }
 				// autoplayInterval={ 5000 }
 				sliderWidth={ vw(100) }
 				itemWidth={ vw(80) }
-				contentContainerCustomStyle={ styles.carousel }/>
+				sliderHeight={ vw(20) }
+				contentContainerCustomStyle={ styles.carousel }
+				onScrollIndexChanged={ index => onSnapToMode(ACTION_DATA[index]) }/>
+			<TextVibe style={ [styles.description, { color: appTheme.SUB_COLOR }] }>{ description }</TextVibe>
 			{ $container }
 		</View>
 	);
@@ -186,50 +202,58 @@ const styles = StyleSheet.create({
 				borderRadius: vw(),
 			},
 
-		playerBox: {
-			width: '100%',
-			padding: '3%',
-			borderRadius: borderRadius,
-			marginBottom: vw(),
-			// position: 'absolute',
-			bottom: 0,
+	description: {
+		// width: vw(70),
+		fontSize: vw(4.5),
+		textAlign: 'center',
+		color: 'grey',
+		flex: 1,
+	},
+
+	playerBox: {
+		width: '100%',
+		padding: '3%',
+		borderRadius: borderRadius,
+		marginBottom: vw(),
+		// position: 'absolute',
+		bottom: 0,
+	},
+
+		matchesTitle: {
+			fontSize: 20,
+			paddingBottom: vw(2),
 		},
 
-			matchesTitle: {
-				fontSize: 20,
-				paddingBottom: vw(2),
+		matchView: {
+			width: matchSize,
+			marginRight: vw(2),
+			borderRadius: borderRadius,
+
+			shadowColor: "#000",
+			shadowOffset: {
+				width: 0,
+				height: 1,
+			},
+			shadowOpacity: 0.22,
+			shadowRadius: 2.22,
+			elevation: 3,
+		},
+
+			blackBorder: { borderColor: 'black' },
+			whiteBorder: { borderColor: 'white' },
+
+			matchImg: {
+				borderTopLeftRadius: vw(1),
+				borderTopRightRadius: vw(1),
 			},
 
-			matchView: {
-				width: matchSize,
-				marginRight: vw(2),
-				borderRadius: borderRadius,
-
-				shadowColor: "#000",
-				shadowOffset: {
-					width: 0,
-					height: 1,
-				},
-				shadowOpacity: 0.22,
-				shadowRadius: 2.22,
-				elevation: 3,
+			matchDate: {
+				alignItems: 'center',
+				width: '100%',
+				borderBottomLeftRadius: vw(1),
+				borderBottomRightRadius: vw(1),
 			},
 
-				blackBorder: { borderColor: 'black' },
-				whiteBorder: { borderColor: 'white' },
-
-				matchImg: {
-					borderTopLeftRadius: vw(1),
-					borderTopRightRadius: vw(1),
-				},
-
-				matchDate: {
-					alignItems: 'center',
-					width: '100%',
-					borderBottomLeftRadius: vw(1),
-					borderBottomRightRadius: vw(1),
-				},
-
-					greenColor: { backgroundColor: '#56be68' },
-					greyColor: { backgroundColor: '#7f7f7f' },
+				greenColor: { backgroundColor: '#56be68' },
+				greyColor: { backgroundColor: '#7f7f7f' },
 });

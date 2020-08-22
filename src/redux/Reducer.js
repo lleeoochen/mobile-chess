@@ -1,97 +1,97 @@
+import { shallowEqual } from 'react-redux';
 import { THEME, TEAM, STORAGE_IS_DARK_THEME } from 'chessvibe/src/Const';
 import Storage from 'chessvibe/src/Storage';
-// import Game from 'chessvibe/src/screens/GameScreen/Game';
 
-// Action types
-export const ACTION_USER = 'updateUser';
-export const ACTION_DRAWER = 'updateDrawer';
-export const ACTION_INIT_GAME = 'initGame';
-export const ACTION_THEME = 'theme';
-export const ACTION_IS_DARK_THEME = 'isDarkTheme';
-export const ACTION_RESET = 'reset';
-export const ACTION_PLAYER = 'player';
-
+// Initial store state
 const initState = {
+	home: {
+		user: null,
+		isDarkTheme: false,
+		toLogout: false,
+	},
 	game: {
 		chessboard: [[], [], [], [], [], [], [], []],
 		baseboard: [[], [], [], [], [], [], [], []],
+		theme: THEME.METAL,
+		blackPlayer: null,
+		whitePlayer: null,
 	},
-	theme: THEME.METAL,
-	blackPlayer: null,
-	whitePlayer: null,
-
-	user: null,
-	isDarkTheme: false,
+	popup: {
+		profile: null,
+	},
 };
 
 
-// Actions
-export const updateUser = createAction(ACTION_USER);
-function reduceUser(state, action) {
-	let data = action.data;
-	return {...state, ...{ user: data }};
-}
 
-export const reset = createAction(ACTION_RESET);
-function reduceReset(state, action) {
-	state.game = initState.game;
-	state.theme = initState.theme;
-	state.blackPlayer = initState.blackPlayer;
-	state.whitePlayer = initState.whitePlayer;
+// Home Action Reducers
+export const HomeReducer = {
+	updateUser: createReducer((state, data) => {
+		let home = { ...state.home, ...{ user: data } };
+		return { ...state, ...{ home } };
+	}),
+	setIsDarkTheme: createReducer((state, data) => {
+		let home = { ...state.home, ...{ isDarkTheme: data } };
+		return { ...state, ...{ home } };
+	}),
+	toLogout: createReducer((state, data) => {
+		let home = { ...state.home, ...{ toLogout: data } };
+		return { ...state, ...{ home } };
+	}),
+};
 
-	return { ...state };
-}
+// Game Action Reducers
+export const GameReducer = {
+	initGame: createReducer((state, data) => {
+		let game = { ...state.game, ...data };
+		return { ...state, ...{ game } };
+	}),
+	reset: createReducer((state, data) => {
+		state.game = initState.game;
+		return { ...state };
+	}),
+	updateTheme: createReducer((state, data) => {
+		let game = { ...state.game, ...{ theme: data } };
+		return { ...state, ...{ game } };
+	}),
+	updatePlayer: createReducer((state, data) => {
+		let game = { ...state.game, ...data };
+		return { ...state, ...{ game } };
+	}),
+};
 
-export const initGame = createAction(ACTION_INIT_GAME);
-function reduceInitGame(state, action) {
-	let oldGame = state.game;
-	let changes = action.data;
-
-	let game = JSON.parse(JSON.stringify({ ...state.game, ...changes }));
-	return { ...state, game: game };
-}
-
-export const updateTheme = createAction(ACTION_THEME);
-function reduceTheme(state, action) {
-	let data = action.data;
-	return {...state, ...{ theme: data }};
-}
-
-export const setIsDarkTheme = createAction(ACTION_IS_DARK_THEME);
-function reduceIsDarkTheme(state, action) {
-	let data = action.data;
-	return {...state, ...{ isDarkTheme: data }};
-}
-
-export const updatePlayer = createAction(ACTION_PLAYER);
-function reducePlayer(state, action) {
-	let data = action.data;
-	return {...state, ...data};
-}
+// Game Popup Reducers
+export const PopupReducer = {
+	openProfile: createReducer((state, data) => {
+		let popup = { ...state.popup, ...{ profile: data } };
+		return { ...state, ...{ popup } };
+	}),
+	closeProfile: createReducer((state) => {
+		let popup = { ...state.popup, ...{ profile: null } };
+		return { ...state, ...{ popup } };
+	}),
+};
 
 
-// Reducer
+
+// App Reducer
 export default function Reducer(state = initState, action) {
-	// console.log('Action Reducer', action.data);
-	switch (action.type) {
-		case ACTION_INIT_GAME:     return reduceInitGame(state, action);
-		case ACTION_THEME:         return reduceTheme(state, action);
-		case ACTION_RESET:         return reduceReset(state, action);
-		case ACTION_PLAYER:        return reducePlayer(state, action);
-		case ACTION_DRAWER:        return reduceDrawer(state, action);
-		case ACTION_USER:          return reduceUser(state, action);
-		case ACTION_IS_DARK_THEME: return reduceIsDarkTheme(state, action);
-		default: return state;
+	const AppReducer = {
+		home: HomeReducer,
+		game: GameReducer,
+		popup: PopupReducer,
+	};
+
+	if (action.reduce) {
+		return action.reduce(state, action.data);
 	}
+	return state;
 }
 
 
-// Action generator
-function createAction(type) {
-	return function (...args) {
-		const action = { type };
-		action.data = args[0];
-		return action;
-	}
-}
 
+// Action helper
+function createReducer(reduce) {
+	return function (data) {
+		return { type: '', data, reduce };
+	};
+}

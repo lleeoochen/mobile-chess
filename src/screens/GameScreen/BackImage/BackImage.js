@@ -3,9 +3,10 @@ import { StatusBar, View, SafeAreaView, Text, ImageBackground, StyleSheet } from
 import { useSelector, shallowEqual } from 'react-redux';
 import AutoHeightImage from 'react-native-auto-height-image';
 import { vw } from 'chessvibe/src/Util';
+import Store from 'chessvibe/src/redux/Store';
 
 export default function BackImage(props) {
-	const theme = useSelector(state => state.theme);
+	const theme = useSelector(state => state.game.theme);
 
 	return (
 		<ImageBackground

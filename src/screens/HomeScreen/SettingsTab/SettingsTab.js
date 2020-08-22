@@ -9,8 +9,7 @@ import Storage from 'chessvibe/src/Storage';
 import Cache from 'chessvibe/src/Cache';
 import Backend from 'chessvibe/src/Backend';
 import SideMenu from 'react-native-side-menu'
-import { setIsDarkTheme } from 'chessvibe/src/redux/Reducer';
-import Store from 'chessvibe/src/redux/Store';
+import { HomeStore } from 'chessvibe/src/redux/Store';
 import { useSelector } from 'react-redux';
 
 import ReportModal from './ReportModal';
@@ -47,7 +46,7 @@ export default function SettingsTab(props) {
 						initEnabled={ isDarkTheme }
 						appTheme={ appTheme }
 						onChange={ (enabled) => {
-							Store.dispatch(setIsDarkTheme( enabled ));
+							HomeStore.setIsDarkTheme(enabled);
 							Storage.set(STORAGE_IS_DARK_THEME, enabled + '');
 						} }/>
 					<View style={ borderStyle }/>

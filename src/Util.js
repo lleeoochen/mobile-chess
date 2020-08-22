@@ -1,5 +1,5 @@
 import { Dimensions } from 'react-native';
-import store from 'chessvibe/src/redux/Store';
+import Store, { HomeStore } from 'chessvibe/src/redux/Store';
 import Cache from './Cache';
 import {
 	DB_CHECKMATE_WHITE,
@@ -37,8 +37,18 @@ export default class Util {
 				body: JSON.stringify(body)
 			});
 
+			let short_url = url.split('?')[0];
 			let result = await response.json();
-			resolve(result);
+
+			if (response.status >= 400) {
+				console.error('Network Error ' + short_url + ': ' + result);
+				if (response.status == 401) {
+					// Store.dispatch()
+					HomeStore.toLogout(true);
+				}
+			}
+
+			resolve(result, response.status);
 		});
 	}
 
@@ -222,7 +232,7 @@ export function getWinMessage(match) {
 
 export function piece(grid) {
 	if (grid != null && grid.piece != null)
-		return store.getState().game.pieces[grid.piece];
+		return Store.getState().game.pieces[grid.piece];
 	return null;
 }
 

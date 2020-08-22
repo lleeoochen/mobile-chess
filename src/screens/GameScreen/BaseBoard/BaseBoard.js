@@ -11,7 +11,7 @@ import BasePlayerPanel from './BasePlayerPanel';
 
 
 export default function BaseBoard(props) {
-	const theme = useSelector(state => state.theme);
+	const theme = useSelector(state => state.game.theme);
 	const downward = useSelector(state => state.game.downward);
 	const team = useSelector(state => state.game.team);
 

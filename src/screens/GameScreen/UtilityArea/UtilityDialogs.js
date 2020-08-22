@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { View } from 'react-native';
 import { useSelector } from 'react-redux';
+import Spinner from 'react-native-loading-spinner-overlay';
+
 import { getWinMessage } from 'chessvibe/src/Util';
 import { TEAM, DB_REQUEST_ASK, DIALOG } from 'chessvibe/src/Const';
 import { DialogVibe } from 'chessvibe/src/widgets';
@@ -27,12 +29,14 @@ export default function UtilityDialogs(props) {
 	const dialogHooks = Object.values(props);
 
 	// Game variables
-	const theme = useSelector(state => state.theme);
+	const theme = useSelector(state => state.game.theme);
 	const game = useSelector(state => state.game);
-	const blackPlayer = useSelector(state => state.blackPlayer) || {};
-	const whitePlayer = useSelector(state => state.whitePlayer) || {};
+	const blackPlayer = useSelector(state => state.game.blackPlayer) || {};
+	const whitePlayer = useSelector(state => state.game.whitePlayer) || {};
 	const enemy = game.enemy == TEAM.W ? whitePlayer : blackPlayer;
 	const winMessage = getWinMessage(game.match);
+
+	const [ spinnerShown, showSpinner ] = React.useState(false);
 
 
 
@@ -41,27 +45,37 @@ export default function UtilityDialogs(props) {
 		setResignState(DIALOG.HIDE);
 	}
 
+	function acceptDraw() {
+		showSpinner(true);
+		Backend.draw().then(() => {
+			setTimeout(() => {
+				setDrawState(DIALOG.HIDE);
+			}, 1000);
+			showSpinner(false);
+		});
+	}
+
 	function cancelDraw() {
+		showSpinner(true);
 		Backend.cancelDraw().then(() => {
 			setDrawState(DIALOG.HIDE);
-		});
-	}
-
-	function cancelMercy() {
-		Backend.cancelUndo().then(() => {
-			setUndoState(DIALOG.HIDE);
-		});
-	}
-
-	function acceptDraw() {
-		Backend.draw().then(() => {
-			setDrawState(DIALOG.HIDE);
+			showSpinner(false);
 		});
 	}
 
 	function acceptMercy() {
+		showSpinner(true);
 		Backend.undoMove().then(() => {
 			setUndoState(DIALOG.HIDE);
+			showSpinner(false);
+		});
+	}
+
+	function cancelMercy() {
+		showSpinner(true);
+		Backend.cancelUndo().then(() => {
+			setUndoState(DIALOG.HIDE);
+			showSpinner(false);
 		});
 	}
 
@@ -119,6 +133,10 @@ export default function UtilityDialogs(props) {
 				visible={ endingState == DIALOG.REQUEST_SHOW }
 				onDismiss={ () => setEndingState(DIALOG.HIDE) }
 				onSuccess={ () => setEndingState(DIALOG.HIDE) }/>
+
+			<Spinner
+				visible={ spinnerShown }
+				overlayColor={ 'rgba(0, 0, 0, 0.5)' }/>
 		</View>
 	);
 }

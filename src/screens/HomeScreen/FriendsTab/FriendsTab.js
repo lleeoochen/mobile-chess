@@ -4,13 +4,10 @@ import { ActionBar, WebVibe, TextVibe, ModalVibe, ButtonVibe, DialogVibe } from 
 import AutoHeightImage from 'react-native-auto-height-image';
 import SearchBar from 'react-native-search-bar';
 
-import { URL, TEAM, IMAGE, APP_THEME, FRIEND } from 'chessvibe/src/Const';
-import Util, { formatDate, vw, wh, winType } from 'chessvibe/src/Util';
-import Cache from 'chessvibe/src/Cache';
+import { IMAGE, APP_THEME, FRIEND } from 'chessvibe/src/Const';
+import { vw } from 'chessvibe/src/Util';
 import Backend from 'chessvibe/src/Backend';
-import SideMenu from 'react-native-side-menu'
-import { showDrawer, updateUser, updateTheme } from 'chessvibe/src/redux/Reducer';
-import Store from 'chessvibe/src/redux/Store';
+import { PopupStore } from 'chessvibe/src/redux/Store';
 
 const matchSize = vw(20);
 const borderRadius = vw();
@@ -20,7 +17,6 @@ export default function FriendsTab(props) {
 	const { isDarkTheme, opponents, friends={} } = props;
 	const appTheme = isDarkTheme ? APP_THEME.DARK : APP_THEME.LIGHT;
 	let [ searchText, setSearchText ] = React.useState('');
-	let [ userModalData, showUserModal ] = React.useState(null);
 
 	let viewStyle = [styles.view, props.style, {
 		backgroundColor: appTheme.CONTENT_BACKGROUND
@@ -46,7 +42,7 @@ export default function FriendsTab(props) {
 				friendStatus={ friends[data[0].user_id] }
 				addFriend={ (id) => Backend.requestFriend(id) }
 				acceptFriend={ (id) => Backend.acceptFriend(id) }
-				onPress={ () => showUserModal(data) }/>
+				onPress={ () => PopupStore.openProfile(data[0]) }/>
 		);
 	});
 
@@ -60,8 +56,6 @@ export default function FriendsTab(props) {
 			<ScrollView>
 				{ people }
 			</ScrollView>
-
-			<FriendModal appTheme={ appTheme } data={ userModalData } onDismiss={ () => showUserModal(null) }/>
 		</SafeAreaView>
 	);
 }
@@ -163,28 +157,6 @@ function FriendItem(props) {
 	);
 }
 
-function FriendModal(props) {
-	let visible = props.data != null;
-	let enemy = {};
-	let stats = {};
-	let onDismiss = props.onDismiss;
-	let color = { color: props.appTheme.COLOR };
-
-	if (visible) {
-		[ enemy={}, stats={} ] = props.data;
-	}
-
-	return(
-		<ModalVibe
-			coverAll={ true }
-			isVisible={ visible }
-			onDismiss={ onDismiss }>
-			<TextVibe style={ [styles.modalTitle, color] }>{ enemy.name }</TextVibe>
-			<AutoHeightImage width={ vw(25) } source={ enemy.photo ? { uri: enemy.photo + '=c' } : IMAGE.NEW_MATCH }/>
-		</ModalVibe>
-	)
-}
-
 
 const styles = StyleSheet.create({
 	view: {
@@ -230,8 +202,4 @@ const styles = StyleSheet.create({
 				fontSize: vw(5),
 				color: 'grey',
 			},
-
-	modalTitle: {
-		fontSize: vw(5),
-	}
 });

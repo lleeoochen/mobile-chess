@@ -14,6 +14,7 @@ export default function ActionPanel(props) {
 	const { theme, whitePlayer, blackPlayer, setResignState } = props;
 	const game = useSelector(state => state.game);
 	const { minimizeDrawer=() => {} } = props;
+	const modeAI = game != null && game.modeAI;
 
 	function askDraw() {
 		Backend.askDraw();
@@ -73,21 +74,21 @@ export default function ActionPanel(props) {
 		},
 		{
 			text: 'Draw',
-			disabled: drawDisabled,
+			disabled: drawDisabled || modeAI,
 			onPress: () => {
 				askDraw();
 			},
 		},
 		{
 			text: 'Mercy',
-			disabled: undoDisabled,
+			disabled: undoDisabled || modeAI,
 			onPress: () => {
 				askMercy();
 			},
 		},
 		{
 			text: '+15 sec',
-			disabled: game == null || game.black_timer >= MAX_TIME || game.white_timer >= MAX_TIME,
+			disabled: game == null || modeAI || game.black_timer >= MAX_TIME || game.white_timer >= MAX_TIME,
 			onPress: () => {
 				addTime();
 			},

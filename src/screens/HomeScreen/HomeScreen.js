@@ -4,9 +4,8 @@ import { ActionBar, WebVibe, TextVibe, ModalVibe, ButtonVibe, DialogVibe } from 
 import AutoHeightImage from 'react-native-auto-height-image';
 import SideMenu from 'react-native-side-menu';
 
-import Store from 'chessvibe/src/redux/Store';
+import { HomeStore } from 'chessvibe/src/redux/Store';
 import { useSelector } from 'react-redux';
-import { showDrawer, updateUser, updateTheme, setIsDarkTheme } from 'chessvibe/src/redux/Reducer';
 
 import { URL, TEAM, IMAGE, STORAGE_IS_DARK_THEME, MATCH_MODE } from 'chessvibe/src/Const';
 import Util, { formatDate, vw, wh, winType, strict_equal } from 'chessvibe/src/Util';
@@ -48,7 +47,7 @@ HomeScreen.navigationOptions = ({navigation}) => {
 
 // Home Screen
 export default function HomeScreen(props) {
-	const isDarkTheme = useSelector(state => state.isDarkTheme);
+	const isDarkTheme = useSelector(state => state.home.isDarkTheme);
 
 	const [ opponents, setOpponents ] = React.useState(Cache.home.opponents);
 	const [ matches, setMatches ] = React.useState(Cache.home.matches);
@@ -76,10 +75,8 @@ export default function HomeScreen(props) {
 			Backend.listenProfile(async res => {
 				user.current = res.data;
 				Cache.user = user.current;
-				// console.log(Object.keys(user.current.test));
-				// console.log(await user.current.test.get());
 
-				Store.dispatch(updateUser( user.current ));
+				HomeStore.updateUser(user.current);
 				fetchMatches();
 			});
 		});
@@ -94,8 +91,6 @@ export default function HomeScreen(props) {
 				props.screenProps.openDrawer(true);
 			},
 			openCreate: () => {
-				// Store.dispatch(setIsDarkTheme( !isDarkTheme ));
-				// Storage.set(STORAGE_IS_DARK_THEME, !isDarkTheme + '');
 				showNotifications(!notificationsVisible);
 			},
 		});

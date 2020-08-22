@@ -6,15 +6,14 @@ import { vw } from 'chessvibe/src/Util';
 import Cache from 'chessvibe/src/Cache';
 import { useSelector } from 'react-redux';
 import { IMAGE, APP_THEME } from 'chessvibe/src/Const';
-import { showDrawer } from 'chessvibe/src/redux/Reducer';
-import Store from 'chessvibe/src/redux/Store';
+import Store, { HomeStore, PopupStore } from 'chessvibe/src/redux/Store';
 
 const new_match_img = require('chessvibe/assets/new_match.png');
 const borderRadius = vw();
 
 export default function HomeUserMenu(props) {
-	const isDarkTheme = useSelector(state => state.isDarkTheme);
-	const user = useSelector(state => state.user) || {};
+	const isDarkTheme = useSelector(state => state.home.isDarkTheme);
+	const user = useSelector(state => state.home.user) || {};
 	const [ zoomIn ] = React.useState(new Animated.Value(props.drawerOpen ? 0.8 : 1));
 	const [ selected, setSelected ] = React.useState(0);
 	const appTheme = isDarkTheme ? APP_THEME.DARK : APP_THEME.LIGHT;
@@ -23,17 +22,9 @@ export default function HomeUserMenu(props) {
 		visible=false,
 		onDismiss=() => {},
 		onLogout=() => {
-			if (props.navRef && props.navRef.current && props.navRef.current._navigation) {
-				props.openDrawer(false);
 
-				setTimeout(() => {
-					props.navRef.current._navigation.navigate('Entry', {
-						signout: true
-					});
-
-					setSelected(0);
-				}, 500);
-			}
+			HomeStore.toLogout(true);
+			setSelected(0);
 		},
 		stats={
 			draw: 0,
@@ -126,11 +117,13 @@ export default function HomeUserMenu(props) {
 
 	return (
 		<Animated.View style={ menuStyle }>
-			<AutoHeightImage
-				style={ styles.menuImage }
-				width={ vw(25) }
-				source={ user.photo ? { uri: user.photo + '=c' } : new_match_img }/>
-			<TextVibe style={ [styles.menuText, textColor] }>{ user.name || '' }</TextVibe>
+			<ButtonVibe style={ styles.profile } onPress={ () => PopupStore.openProfile(user) }>
+				<AutoHeightImage
+					style={ styles.menuImage }
+					width={ vw(25) }
+					source={ user.photo ? { uri: user.photo + '=c' } : new_match_img }/>
+				<TextVibe style={ [styles.menuText, textColor] }>{ user.name || '' }</TextVibe>
+			</ButtonVibe>
 
 			<ScrollView contentContainerStyle={ styles.pageList }>
 				{ buttons }
@@ -148,6 +141,7 @@ const styles = StyleSheet.create({
 	menu: {
 		flex: 1,
 	},
+
 	menuText: {
 		fontSize: vw(7),
 		marginLeft: vw(5),
@@ -163,6 +157,10 @@ const styles = StyleSheet.create({
 	menuStat: {
 		color: 'white',
 		fontSize: vw(5),
+	},
+
+	profile: {
+		alignItems: 'flex-start'
 	},
 
 	pageList: {

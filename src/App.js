@@ -4,10 +4,12 @@ import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 import { Provider, useSelector } from 'react-redux';
 import SplashScreen from 'react-native-splash-screen';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 import Entry from './screens/EntryScreen';
 import Home from './screens/HomeScreen';
 import Game from './screens/GameScreen';
+import ProfilePopup from './screens/Popups/ProfilePopup';
 import { vw, vh } from './Util';
 import { STORAGE_APP_CACHE } from './Const';
 
@@ -18,7 +20,7 @@ import Cache, { CACHE_DEFAULT } from './Cache';
 import SideMenu from 'react-native-side-menu'
 import HomeUserMenu from './screens/HomeScreen/HomeUserMenu';
 import { showDrawer } from 'chessvibe/src/redux/Reducer';
-import Store from 'chessvibe/src/redux/Store';
+import Store, { HomeStore } from 'chessvibe/src/redux/Store';
 
 LogBox.ignoreLogs(['Task orphaned']);
 
@@ -52,8 +54,37 @@ const Navigator = createStackNavigator(
 const Container = createAppContainer(Navigator);
 
 
-const userMenu = (navRef, drawerOpen, openDrawer) => {
+const UserMenu = (navRef, drawerOpen, openDrawer) => {
 	return (<HomeUserMenu visible={ true } navRef={ navRef } drawerOpen={ drawerOpen } openDrawer={ openDrawer }/>);
+};
+
+const LogoutControl = ({ navRef, openDrawer }) => {
+	let toLogout = useSelector(state => state.home.toLogout);
+	const [ spinnerShown, showSpinner ] = React.useState(false);
+
+	async function navgiateLogout() {
+		openDrawer(false);
+
+		setTimeout(() => {
+			navRef.current._navigation.navigate('Entry', {
+				signout: true
+			});
+			showSpinner(false);
+		}, 500);
+
+		HomeStore.toLogout(false);
+	}
+
+	if (toLogout && !spinnerShown) {
+		showSpinner(true);
+		navgiateLogout();
+	}
+
+	return (
+		<Spinner
+			visible={ spinnerShown }
+			overlayColor={ 'rgba(0, 0, 0, 0.5)' }/>
+	);
 };
 
 function AppContent() {
@@ -98,9 +129,9 @@ function AppContent() {
 	}, []);
 
 	return (
-		<SafeAreaView style={{ flex: 1, backgroundColor: '#0d151f' }}>
+		<SafeAreaView style={{ flex: 1 }}>
 			<SideMenu
-				menu={ userMenu(navRef, drawerOpen, openDrawer) }
+				menu={ UserMenu(navRef, drawerOpen, openDrawer) }
 				openMenuOffset={ vw(70) }
 				onChange={() => onDrawerChange()}
 				disableGestures={ true }
@@ -111,15 +142,17 @@ function AppContent() {
 					useNativeDriver: true,
 				})}
 				isOpen={ drawerOpen }>
-				<Container ref={navRef} screenProps={{ openDrawer }}/>
+				<Container ref={ navRef } screenProps={{ openDrawer }}/>
 			</SideMenu>
+			<LogoutControl navRef={ navRef } openDrawer={ openDrawer }/>
+			<ProfilePopup/>
 		</SafeAreaView>
 	);
 }
 
 export default function App() {
 	return (
-		<Provider store={store} style={ {backgroundColor: 'black'} }>
+		<Provider store={ store }>
 			<AppContent/>
 		</Provider>
 	);

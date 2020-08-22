@@ -3,13 +3,13 @@ import { View, SafeAreaView, Text, Button, StyleSheet, StatusBar, Image, Dimensi
 import { FadeInView, TextVibe } from 'chessvibe/src/widgets';
 import { GoogleSignin, GoogleSigninButton, statusCodes } from '@react-native-community/google-signin';
 import auth from '@react-native-firebase/auth';
+import Spinner from 'react-native-loading-spinner-overlay';
 import { URL, STORAGE_IS_DARK_THEME } from '../Const';
 import Util, { vw, vh } from '../Util';
 import Cache, { CACHE_DEFAULT } from '../Cache';
 
 import Storage from 'chessvibe/src/Storage';
-import Store from 'chessvibe/src/redux/Store';
-import { setIsDarkTheme } from 'chessvibe/src/redux/Reducer';
+import { HomeStore } from 'chessvibe/src/redux/Store';
 
 let logoImg = require('chessvibe/assets/logo.jpg');
 
@@ -22,9 +22,10 @@ EntryScreen.navigationOptions = ({navigation}) => {
 
 // Entry Screen
 export default function EntryScreen(props) {
-	const [initializing, setInitializing] = React.useState(true);
-	const [signingin, setSigningin] = React.useState(false);
-	const [user, setUser] = React.useState();
+	const [ initializing, setInitializing ] = React.useState(true);
+	const [ signingin, setSigningin ] = React.useState(false);
+	const [ user, setUser ] = React.useState();
+	const [ spinnerShown, showSpinner ] = React.useState(false);
 
 
 	// Signin configs
@@ -51,6 +52,7 @@ export default function EntryScreen(props) {
 		}
 
 		if (user) {
+			showSpinner(true);
 			setTimeout(() => {
 				navigateHome(user);
 			},
@@ -91,7 +93,8 @@ export default function EntryScreen(props) {
 	// Navigate to home
 	async function navigateHome(user) {
 		let isDarkTheme = await Storage.get(STORAGE_IS_DARK_THEME) || 'true';
-		Store.dispatch(setIsDarkTheme(  isDarkTheme == 'true' ));
+
+		HomeStore.setIsDarkTheme(isDarkTheme == 'true');
 
 		let auth_token = await auth().currentUser.getIdToken(true);
 
@@ -106,6 +109,7 @@ export default function EntryScreen(props) {
 		else {
 			signOut();
 		}
+		showSpinner(false);
 	}
 
 
@@ -147,6 +151,10 @@ export default function EntryScreen(props) {
 				<TextVibe style={ styles.title }>Chess Vibe</TextVibe>
 			</FadeInView>
 			<Image style={ styles.logo } source={ logoImg }/>
+
+			<Spinner
+				visible={ spinnerShown }
+				overlayColor={ 'rgba(0, 0, 0, 0.5)' }/>
 		</SafeAreaView>
 	);
 }

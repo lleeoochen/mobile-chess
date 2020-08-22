@@ -2,12 +2,12 @@ import * as React from 'react';
 import { StatusBar, View, SafeAreaView, Text, Image, StyleSheet, ScrollView } from 'react-native';
 import { useSelector, shallowEqual } from 'react-redux';
 import AutoHeightImage from 'react-native-auto-height-image';
-import Store from 'chessvibe/src/redux/Store';
+import Store, { PopupStore } from 'chessvibe/src/redux/Store';
 
 import * as Reducer from 'chessvibe/src/redux/Reducer';
 import { vw, vh, formatTimer } from 'chessvibe/src/Util';
 import * as Const from 'chessvibe/src/Const';
-import { ActionBar, WebVibe, TextVibe, ModalVibe } from 'chessvibe/src/widgets';
+import { ActionBar, WebVibe, TextVibe, ModalVibe, ButtonVibe } from 'chessvibe/src/widgets';
 
 import BaseBoardGrid from './BaseBoardGrid';
 
@@ -20,7 +20,7 @@ const canvas_size = margin_size * 2 + cell_size * 8;
 
 export default function BasePlayerPanel(props) {
 	const { color, pos } = props;
-	const theme = useSelector(state => state.theme);
+	const theme = useSelector(state => state.game.theme);
 	const match = useSelector(state => state.game.match) || {};
 	const turn = useSelector(state => state.game.turn);
 
@@ -32,12 +32,12 @@ export default function BasePlayerPanel(props) {
 	let timer = 0;
 
 	if (color == 'white') {
-		player = useSelector(state => state.whitePlayer);
+		player = useSelector(state => state.game.whitePlayer);
 		eaten = (eaten && eaten[Const.TEAM.W]) ? eaten[Const.TEAM.W] : [];
 		timer = useSelector(state => state.game.white_timer);
 	}
 	else {
-		player = useSelector(state => state.blackPlayer);
+		player = useSelector(state => state.game.blackPlayer);
 		eaten = (eaten && eaten[Const.TEAM.B]) ? eaten[Const.TEAM.B] : [];
 		timer = useSelector(state => state.game.black_timer);
 	}
@@ -72,11 +72,11 @@ export default function BasePlayerPanel(props) {
 				{ backgroundColor: theme.COLOR_UTILITY.MOBILE },
 				{ borderColor: color }
 			]}>
-			<View style={ imageStyle }>
+			<ButtonVibe style={ imageStyle } onPress={ () => PopupStore.openProfile(player) }>
 				<AutoHeightImage
 					width={ pictureSize }
 					source={ player && player.photo ? { uri: player.photo + '=c' } : new_match_img }/>
-			</View>
+			</ButtonVibe>
 
 			<View style={ styles.middleContainer }>
 				<View style={ styles.middleTopContainer }>
