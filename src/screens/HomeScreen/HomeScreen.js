@@ -135,11 +135,10 @@ export default function HomeScreen(props) {
 				<HomeCreateMenu
 					visible={ createMenuVisible.show }
 					mode={ createMenuVisible.mode }
+					opponents={ opponents }
+					friends={ user.current.friends }
 					onDismiss={ () => showCreateMenu({ show: false, mode: createMenuVisible.mode }) }
-					onSubmit={(theme, time) => {
-						createMatch(theme, time, createMenuVisible.mode);
-						showCreateMenu({ show: false });
-					}}/>
+					onSubmit={() => showCreateMenu({ show: false }) }/>
 
 				<NotificationMenu
 					notificationIDs={ user.current.notifications }
@@ -158,15 +157,6 @@ export default function HomeScreen(props) {
 		props.navigation.navigate('Game', {
 			match: match,
 			refresh: () => fetchMatches()
-		});
-	}
-
-	// Create new match
-	function createMatch(theme, time, mode) {
-		let isAI = mode == MATCH_MODE.COMPUTER;
-		Backend.createMatch(theme, time, isAI).then(match_id => {
-			Cache.theme[match_id] = theme;
-			navigateGame(match_id);
 		});
 	}
 

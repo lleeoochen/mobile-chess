@@ -1,14 +1,15 @@
 import * as React from 'react';
-import { StyleSheet, TouchableOpacity, View, Image } from 'react-native';
+import { StyleSheet, TouchableOpacity, View, Image, ScrollView } from 'react-native';
 import Slider from "react-native-slider";
 import { TextVibe, ModalVibe, ButtonVibe } from 'chessvibe/src/widgets';
 import AutoHeightImage from 'react-native-auto-height-image';
 import { vw } from 'chessvibe/src/Util';
-import { THEME_ID, TIME, IMAGE, APP_THEME, MATCH_MODE } from 'chessvibe/src/Const';
+import { THEME_ID, TIME, IMAGE, APP_THEME, MATCH_MODE, FRIEND } from 'chessvibe/src/Const';
 import { useSelector } from 'react-redux';
 
 const new_match_img = require('chessvibe/assets/new_match.png');
-const borderRadius = vw();
+const BORDER_RADIUS = vw();
+const MATCH_SIZE = vw((90 - 8 - 4) / 5);
 
 const INDEX_TIME = [TIME.FIVE, TIME.TEN, TIME.FIFTEEN, TIME.THIRTY, TIME.INFINITE];
 const TIME_INDEX = {
@@ -22,41 +23,176 @@ const TIME_INDEX = {
 const INDEX_THEME = [THEME_ID.CLASSIC, THEME_ID.WINTER, THEME_ID.METAL, THEME_ID.NATURE];
 const MODE_NAMES = ['', 'Computer', 'Friend'];
 
+
 export default function HomeCreateMenu(props) {
-	let { mode, visible, onDismiss, onSubmit } = props;
+	let { mode, visible, opponents, friends, onDismiss, onSubmit } = props;
 
 	const isDarkTheme = useSelector(state => state.home.isDarkTheme);
 	const appTheme = isDarkTheme ? APP_THEME.DARK : APP_THEME.LIGHT;
+	const modeAI = mode == MATCH_MODE.COMPUTER;
 
-	let [ theme, setTheme ] = React.useState(THEME_ID.CLASSIC);
-	let [ time, setTime ] = React.useState(TIME.FIFTEEN);
+	const formData = {
+		theme: THEME_ID.CLASSIC,
+		time: modeAI ? TIME.INFINITE : TIME.FIFTEEN,
+		friend: '',
+	};
 
-	function changeTheme(direction) {
-		let next = (theme + direction + INDEX_THEME.length) % INDEX_THEME.length;
-		setTheme(INDEX_THEME[next]);
+	const textColor = {
+		color: appTheme.COLOR
+	};
+
+	function createMatch() {
+		// let isAI = mode == MATCH_MODE.COMPUTER;
+		// Backend.createMatch(theme, time, isAI).then(match_id => {
+		// 	Cache.theme[match_id] = theme;
+		// 	navigateGame(match_id);
+		// });
+		// onSubmit();
+		console.log(formData)
 	}
 
-	let themeImage =
+	return (
+		<ModalVibe
+			coverAll={ true }
+			isVisible={ visible }
+			onDismiss={ onDismiss }>
+
+			<TextVibe style={ [styles.menuText, textColor] }>
+				{ MODE_NAMES[mode] } Mode
+			</TextVibe>
+
+			<ThemeSelector
+				isDarkTheme={ isDarkTheme }
+				formData={ formData }/>
+
+			<TimeSelector
+				isDarkTheme={ isDarkTheme }
+				formData={ formData }
+				visible={ !modeAI }/>
+
+			<FriendSelector
+				isDarkTheme={ isDarkTheme }
+				formData={ formData }
+				opponents={ opponents }
+				friends={ friends }
+				visible={ !modeAI }/>
+
+			<SubmitButton
+				isDarkTheme={ isDarkTheme }
+				onPress={ () => createMatch() }/>
+		</ModalVibe>
+	);
+}
+
+function FriendSelector({ isDarkTheme, formData, opponents, friends, visible }) {
+	if (!visible) return <View/>;
+
+	const appTheme = isDarkTheme ? APP_THEME.DARK : APP_THEME.LIGHT;
+	const [ people, setPeople ] = React.useState([]);
+	const [ selected, setSelected ] = React.useState(0);
+
+	React.useEffect(() => {
+		let people = opponents
+						.map(opponent => {
+							return opponent[0];
+						})
+						.sort((p1, p2) => {
+							return friends[p1.user_id] == FRIEND.FRIENDED ? -1 : 1;
+						});
+
+		people.unshift({});
+		setPeople(people);
+	},
+	[opponents, friends]);
+
+	function selectFriend(index) {
+		formData.friend = people[index].user_id;
+		setSelected(index);
+	}
+
+	const peopleViews = people.map((person, index) => {
+		const borderStyle = index == selected ?
+			{
+				borderWidth: vw(),
+				borderColor: isDarkTheme ? 'white' : appTheme.APP_BACKGROUND,
+			}
+			: null;
+
+		return (
+			<ButtonVibe
+				key={ index }
+				style={ styles.profileBtn }
+				onPress={() => selectFriend(index)}>
+
+				<AutoHeightImage
+					width={ MATCH_SIZE }
+					source={ person.photo ? { uri: person.photo + '=c' } : IMAGE.NEW_MATCH }
+					style={ [styles.profileImg, borderStyle] }/>
+
+			</ButtonVibe>
+		);
+	});
+
+	return (
+		<ScrollView horizontal={ true } contentContainerStyle={{ right: vw(-0.5) }}>
+			{ peopleViews }
+		</ScrollView>
+	);
+}
+
+function ThemeSelector({ isDarkTheme, formData }) {
+	const appTheme = isDarkTheme ? APP_THEME.DARK : APP_THEME.LIGHT;
+	const [ theme, setTheme ] = React.useState(THEME_ID.CLASSIC);
+
+	const themeBtnStyle = {... styles.themeBtn, ...{
+		backgroundColor: isDarkTheme ? '#ffffff2e' : appTheme.APP_BACKGROUND
+	}};
+
+	const themeImage =
 		theme == THEME_ID.WINTER ? IMAGE.PREVIEW_WINTER :
 		theme == THEME_ID.METAL ? IMAGE.PREVIEW_METAL :
 		theme == THEME_ID.NATURE ? IMAGE.PREVIEW_NATURE :
 		IMAGE.PREVIEW_CLASSIC;
 
-	let textColor = {
+	function changeTheme(direction) {
+		const next = (theme + direction + INDEX_THEME.length) % INDEX_THEME.length;
+		setTheme(INDEX_THEME[next]);
+		formData.theme = INDEX_THEME[next];
+	}
+
+	return (
+		<View style={ styles.themeContainer }>
+			<ButtonVibe style={ [themeBtnStyle, styles.themeBtnLeft] } onPress={() => changeTheme(-1)}>
+				<Image source={ IMAGE['BACK' + (isDarkTheme ? '' : '_DARK')] } style={ styles.themeBtnImage }/>
+			</ButtonVibe>
+			<View style={ styles.themeImageWrap }>
+				<Image source={ themeImage } style={ styles.themeImage }/>
+			</View>
+			<ButtonVibe style={ [themeBtnStyle, styles.themeBtnRight] } onPress={() => changeTheme(1)}>
+				<Image source={ IMAGE['BACK' + (isDarkTheme ? '' : '_DARK')] } style={ [styles.themeBtnImage,  {transform: [{ scaleX: -1 }]}] }/>
+			</ButtonVibe>
+		</View>
+	);
+}
+
+function TimeSelector({ isDarkTheme, formData, visible }) {
+	if (!visible) return <View/>;
+
+	const appTheme = isDarkTheme ? APP_THEME.DARK : APP_THEME.LIGHT;
+
+	const textColor = {
 		color: appTheme.COLOR
 	};
 
-	let themeBtnStyle = {... styles.themeBtn, ...{
-		backgroundColor: isDarkTheme ? '#ffffff2e' : appTheme.APP_BACKGROUND
-	}};
+	const [ time, setTime ] = React.useState(TIME.FIFTEEN);
 
-	let submitBtnStyle = {
-		backgroundColor: isDarkTheme ? '#ffffff2e' : appTheme.APP_BACKGROUND
-	};
+	function onValueChange(val) {
+		setTime(INDEX_TIME[val]);
+		formData.time = INDEX_TIME[val];
+	}
 
-	let slider = (mode == MATCH_MODE.FRIEND) ?
-		[
-			<TextVibe style={ [styles.menuText, textColor] }> { 'Time' } </TextVibe>,
+	return (
+		<View>
 			<Slider
 				value={ TIME_INDEX[time] }
 				step={ 1 }
@@ -65,10 +201,8 @@ export default function HomeCreateMenu(props) {
 				minimumTrackTintColor={ 'darkslateblue' }
 				maximumTrackTintColor={ 'grey' }
 				style={ styles.timeSlider }
-				onValueChange={(val) => {
-					setTime(INDEX_TIME[val]);
-				}}/>,
-			<TextVibe style={ [styles.timeText, textColor] }>
+				onValueChange={ (val) => onValueChange(val) }/>
+			<TextVibe style={ [styles.timeText, textColor] }> Time:&nbsp;&nbsp;
 				{
 					time == TIME.FIVE     ? '5 min' :
 					time == TIME.TEN      ? '10 min' :
@@ -78,35 +212,38 @@ export default function HomeCreateMenu(props) {
 					''
 				}
 			</TextVibe>
-		]
-		: null;
-
-	return (
-		<ModalVibe
-			coverAll={ true }
-			isVisible={ visible }
-			onDismiss={ onDismiss }>
-
-			<TextVibe style={ [styles.menuText, textColor] }> { MODE_NAMES[mode] } Mode </TextVibe>
-
-			<View style={ styles.themeContainer }>
-				<ButtonVibe style={ themeBtnStyle } onPress={() => changeTheme(-1)}>
-					<Image source={ IMAGE['BACK' + (isDarkTheme ? '' : '_DARK')] } style={ styles.themeBtnImage }/>
-				</ButtonVibe>
-				<Image source={ themeImage } style={ styles.themeImage }/>
-				<ButtonVibe style={ themeBtnStyle } onPress={() => changeTheme(1)}>
-					<Image source={ IMAGE['BACK' + (isDarkTheme ? '' : '_DARK')] } style={ [styles.themeBtnImage,  {transform: [{ scaleX: -1 }]}] }/>
-				</ButtonVibe>
-			</View>
-
-			{ slider }
-
-			<ButtonVibe style={ [styles.menuSubmitBtn, submitBtnStyle] } onPress={ () => onSubmit(theme, mode == MATCH_MODE.COMPUTER ? TIME.INFINITE : time) }>
-				<TextVibe style={ [styles.menuSubmitBtnText, textColor] }>Create Match</TextVibe>
-			</ButtonVibe>
-		</ModalVibe>
+		</View>
 	);
 }
+
+function SubmitButton({ isDarkTheme, onPress }) {
+	const appTheme = isDarkTheme ? APP_THEME.DARK : APP_THEME.LIGHT;
+
+	const submitBtnStyle = {
+		backgroundColor: isDarkTheme ? '#ffffff2e' : appTheme.APP_BACKGROUND
+	};
+
+	const textColor = {
+		color: appTheme.COLOR
+	};
+
+	return (
+		<ButtonVibe style={ [styles.menuSubmitBtn, submitBtnStyle] } onPress={ onPress }>
+			<TextVibe style={ [styles.menuSubmitBtnText, textColor] }>Create Match</TextVibe>
+		</ButtonVibe>
+	);
+}
+
+const shadow = {
+	shadowColor: "#000",
+	shadowOffset: {
+		width: 0,
+		height: 1,
+	},
+	shadowOpacity: 0.22,
+	shadowRadius: 2.22,
+	elevation: 3,
+};
 
 const styles = StyleSheet.create({
 	menuText: {
@@ -127,7 +264,7 @@ const styles = StyleSheet.create({
 			marginRight: vw(),
 			backgroundColor: 'white',
 			padding: vw(2),
-			borderRadius: borderRadius,
+			borderRadius: BORDER_RADIUS,
 			flex: 1,
 			alignItems: 'center',
 			justifyContent: 'center',
@@ -148,22 +285,49 @@ const styles = StyleSheet.create({
 			metal: { backgroundColor: '#d2d2d2' },
 			nature: { backgroundColor: '#c7da61' },
 
+	profileBtn: {
+		borderRadius: BORDER_RADIUS,
+		marginRight: vw(),
+
+		...shadow,
+	},
+
+		profileImg: {
+			borderRadius: BORDER_RADIUS,
+		},
+
 	themeContainer: {
 		flexDirection: 'row',
 		marginTop: vw(4),
-		marginBottom: vw(8),
+		marginBottom: vw(4),
 	},
 
-		themeImage: {
-			width: vw(65),
-			height: vw(65),
+		themeImageWrap: {
+			...shadow,
 		},
+
+			themeImage: {
+				width: vw(65),
+				height: vw(65),
+			},
 
 		themeBtn: {
 			flex: 1,
 			height: vw(65),
 			borderRadius: 0,
+
+			...shadow,
 		},
+
+			themeBtnLeft: {
+				borderTopLeftRadius: vw(),
+				borderBottomLeftRadius: vw(),
+			},
+
+			themeBtnRight: {
+				borderTopRightRadius: vw(),
+				borderBottomRightRadius: vw(),
+			},
 
 			themeBtnImage: {
 				width: vw(10),
@@ -172,6 +336,7 @@ const styles = StyleSheet.create({
 
 	timeSlider: {
 		width: '100%',
+		...shadow,
 	},
 
 		timeText: {
@@ -179,14 +344,18 @@ const styles = StyleSheet.create({
 			fontSize: vw(5),
 			textAlign: 'right',
 			width: '100%',
+			marginTop: vw(-4),
+			marginBottom: vw(4),
 		},
 
 	menuSubmitBtn: {
-		marginTop: vw(5),
+		marginTop: vw(2),
 		backgroundColor: '#ffffff2e',
 		padding: vw(2),
-		borderRadius: borderRadius,
+		borderRadius: BORDER_RADIUS,
 		width: '100%',
+
+		...shadow,
 	},
 
 		menuSubmitBtnText: {
