@@ -191,10 +191,10 @@ export function winType(move, team) {
 		return team == TEAM.W;
 	}
 	else if (move == DB_RESIGN_BLACK) {
-		return team == TEAM.B ? 2 : undefined;
+		return team == TEAM.B ? 2 : false;
 	}
 	else if (move == DB_RESIGN_WHITE) {
-		return team == TEAM.W ? 2 : undefined;
+		return team == TEAM.W ? 2 : false;
 	}
 }
 

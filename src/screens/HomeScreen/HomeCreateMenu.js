@@ -42,13 +42,12 @@ export default function HomeCreateMenu(props) {
 	};
 
 	function createMatch() {
-		// let isAI = mode == MATCH_MODE.COMPUTER;
-		// Backend.createMatch(theme, time, isAI).then(match_id => {
-		// 	Cache.theme[match_id] = theme;
-		// 	navigateGame(match_id);
-		// });
-		// onSubmit();
-		console.log(formData)
+		let isAI = mode == MATCH_MODE.COMPUTER;
+		Backend.createMatch(formData).then(match_id => {
+			Cache.theme[match_id] = theme;
+			navigateGame(match_id);
+		});
+		onSubmit();
 	}
 
 	return (
@@ -61,6 +60,13 @@ export default function HomeCreateMenu(props) {
 				{ MODE_NAMES[mode] } Mode
 			</TextVibe>
 
+			<FriendSelector
+				isDarkTheme={ isDarkTheme }
+				formData={ formData }
+				opponents={ opponents }
+				friends={ friends }
+				visible={ !modeAI }/>
+
 			<ThemeSelector
 				isDarkTheme={ isDarkTheme }
 				formData={ formData }/>
@@ -68,13 +74,6 @@ export default function HomeCreateMenu(props) {
 			<TimeSelector
 				isDarkTheme={ isDarkTheme }
 				formData={ formData }
-				visible={ !modeAI }/>
-
-			<FriendSelector
-				isDarkTheme={ isDarkTheme }
-				formData={ formData }
-				opponents={ opponents }
-				friends={ friends }
 				visible={ !modeAI }/>
 
 			<SubmitButton
@@ -198,7 +197,7 @@ function TimeSelector({ isDarkTheme, formData, visible }) {
 				step={ 1 }
 				maximumValue={ 4 }
 				thumbTintColor={ 'white' }
-				minimumTrackTintColor={ 'darkslateblue' }
+				minimumTrackTintColor={ 'green' }
 				maximumTrackTintColor={ 'grey' }
 				style={ styles.timeSlider }
 				onValueChange={ (val) => onValueChange(val) }/>
@@ -298,8 +297,8 @@ const styles = StyleSheet.create({
 
 	themeContainer: {
 		flexDirection: 'row',
-		marginTop: vw(4),
-		marginBottom: vw(4),
+		marginTop: vw(12),
+		marginBottom: vw(8),
 	},
 
 		themeImageWrap: {
@@ -336,7 +335,6 @@ const styles = StyleSheet.create({
 
 	timeSlider: {
 		width: '100%',
-		...shadow,
 	},
 
 		timeText: {
@@ -345,7 +343,7 @@ const styles = StyleSheet.create({
 			textAlign: 'right',
 			width: '100%',
 			marginTop: vw(-4),
-			marginBottom: vw(4),
+			// marginBottom: vw(4),
 		},
 
 	menuSubmitBtn: {

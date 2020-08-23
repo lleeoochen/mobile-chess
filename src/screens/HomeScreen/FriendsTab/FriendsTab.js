@@ -104,9 +104,8 @@ function FriendItem(props) {
 	let subColor = { color: appTheme.SUB_COLOR };
 	// let btnColor = { backgroundColor: appTheme.MENU_BACKGROUND };
 
-	// Win stats
-	let winPercent = (stats.win * 100.0 / (stats.win + stats.lose)).toFixed(2);
-	if (winPercent == 'NaN') winPercent = '--';
+	// Calculate stats
+	let { winRate, total } = stats.analyze();
 
 	// Action button state
 	let disabled = friendState != null && friendState != FRIEND.REQUEST_RECEIVED;
@@ -149,8 +148,8 @@ function FriendItem(props) {
 			<AutoHeightImage width={ matchSize } source={ formatImage(enemy.photo) } style={ styles.friendImage }/>
 			<View style={ styles.friendMiddle }>
 				<TextVibe style={ [styles.friendName, color] }>{ enemy.name }</TextVibe>
-				<TextVibe style={ [styles.friendStat, subColor] }>Win: { winPercent }%</TextVibe>
-				<TextVibe style={ [styles.friendStat, subColor] }>Total: { stats.lose + stats.win }</TextVibe>
+				<TextVibe style={ [styles.friendStat, subColor] }>Win: { winRate }%</TextVibe>
+				<TextVibe style={ [styles.friendStat, subColor] }>Total: { total }</TextVibe>
 			</View>
 			{ actionButton }
 		</ButtonVibe>

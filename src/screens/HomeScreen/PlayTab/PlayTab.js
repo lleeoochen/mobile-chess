@@ -5,7 +5,7 @@ import AutoHeightImage from 'react-native-auto-height-image';
 import Carousel from 'react-native-snap-carousel';
 
 import { URL, TEAM, IMAGE, APP_THEME, MATCH_MODE } from 'chessvibe/src/Const';
-import Util, { formatDate, vw, vh, winType, formatImage } from 'chessvibe/src/Util';
+import Util, { formatDate, vw, vh, formatImage } from 'chessvibe/src/Util';
 import Cache from 'chessvibe/src/Cache';
 import Backend from 'chessvibe/src/Backend';
 import SideMenu from 'react-native-side-menu'

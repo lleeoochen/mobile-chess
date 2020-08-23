@@ -4,7 +4,7 @@ import { ActionBar, WebVibe, TextVibe, ModalVibe, ButtonVibe, DialogVibe } from 
 import AutoHeightImage from 'react-native-auto-height-image';
 
 import { URL, TEAM, IMAGE, APP_THEME } from 'chessvibe/src/Const';
-import Util, { formatDate, vw, wh, winType, formatImage } from 'chessvibe/src/Util';
+import Util, { formatDate, vw, wh, formatImage } from 'chessvibe/src/Util';
 import Cache from 'chessvibe/src/Cache';
 import Backend from 'chessvibe/src/Backend';
 import SideMenu from 'react-native-side-menu'

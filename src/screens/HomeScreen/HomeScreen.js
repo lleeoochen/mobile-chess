@@ -8,10 +8,11 @@ import { HomeStore } from 'chessvibe/src/redux/Store';
 import { useSelector } from 'react-redux';
 
 import { URL, TEAM, IMAGE, STORAGE_IS_DARK_THEME, MATCH_MODE } from 'chessvibe/src/Const';
-import Util, { formatDate, vw, wh, winType, strict_equal } from 'chessvibe/src/Util';
+import Util, { formatDate, vw, wh, strict_equal } from 'chessvibe/src/Util';
 import Cache from 'chessvibe/src/Cache';
 import Backend from 'chessvibe/src/Backend';
 import Storage from 'chessvibe/src/Storage';
+import Stats from 'chessvibe/src/Stats';
 
 import HomeUserMenu from './HomeUserMenu';
 import HomeCreateMenu from './HomeCreateMenu';
@@ -215,8 +216,6 @@ export default function HomeScreen(props) {
 				}
 			}
 
-			console.log(JSON.stringify(results, null, 2));
-
 			// Sort opponent by latest date
 			results.sort((r1, r2) => {
 				if (!r1.matches[0]) return -1;
@@ -245,25 +244,14 @@ export default function HomeScreen(props) {
 			let opponentsSet = new Set();
 			results.forEach(result => {
 				let { enemy, matches } = result;
-				let stats = {
-					draw: 0,
-					stalemate: 0,
-					win: 0,
-					lose: 0,
-					ongoing: 0,
-					resign: 0,
-				};
+				let stats = new Stats();
 
 				matches.forEach((match, j) => {
 					let match_data = match[1];
 
-					let color = (match_data.black == Cache.userID) ? TEAM.B : TEAM.W;
-					let win = winType(match_data.moves[match_data.moves.length - 1], color);
-					if (win === true) stats.win += 1;
-					else if (win === false) stats.lose += 1;
-					else if (win === 0) stats.draw += 1;
-					else if (win === 1) stats.stalemate += 1;
-					else if (win === 2) stats.resign += 1;
+					let team = (match_data.black == Cache.userID) ? TEAM.B : TEAM.W;
+					let lastMove = match_data.moves[match_data.moves.length - 1];
+					stats.aggregate(lastMove, team);
 				});
 
 				if (enemy.name && enemy.name != 'Computer') {
