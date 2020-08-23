@@ -5,13 +5,11 @@ import AutoHeightImage from 'react-native-auto-height-image';
 import Store, { PopupStore } from 'chessvibe/src/redux/Store';
 
 import * as Reducer from 'chessvibe/src/redux/Reducer';
-import { vw, vh, formatTimer } from 'chessvibe/src/Util';
+import { vw, vh, formatTimer, formatImage } from 'chessvibe/src/Util';
 import * as Const from 'chessvibe/src/Const';
 import { ActionBar, WebVibe, TextVibe, ModalVibe, ButtonVibe } from 'chessvibe/src/widgets';
 
 import BaseBoardGrid from './BaseBoardGrid';
-
-var new_match_img = require('chessvibe/assets/new_match.png');
 
 const pictureSize = vw(15);
 const margin_size = vw(1);
@@ -75,7 +73,7 @@ export default function BasePlayerPanel(props) {
 			<ButtonVibe style={ imageStyle } onPress={ () => PopupStore.openProfile(player) }>
 				<AutoHeightImage
 					width={ pictureSize }
-					source={ player && player.photo ? { uri: player.photo + '=c' } : new_match_img }/>
+					source={ formatImage(player ? player.photo : null) }/>
 			</ButtonVibe>
 
 			<View style={ styles.middleContainer }>

@@ -3,7 +3,7 @@ import { StyleSheet, TouchableOpacity, View, Image, ScrollView } from 'react-nat
 import Slider from "react-native-slider";
 import { TextVibe, ModalVibe, ButtonVibe } from 'chessvibe/src/widgets';
 import AutoHeightImage from 'react-native-auto-height-image';
-import { vw } from 'chessvibe/src/Util';
+import { vw, formatImage } from 'chessvibe/src/Util';
 import { THEME_ID, TIME, IMAGE, APP_THEME, MATCH_MODE, FRIEND } from 'chessvibe/src/Const';
 import { useSelector } from 'react-redux';
 
@@ -126,7 +126,7 @@ function FriendSelector({ isDarkTheme, formData, opponents, friends, visible }) 
 
 				<AutoHeightImage
 					width={ MATCH_SIZE }
-					source={ person.photo ? { uri: person.photo + '=c' } : IMAGE.NEW_MATCH }
+					source={ formatImage(person.photo) }
 					style={ [styles.profileImg, borderStyle] }/>
 
 			</ButtonVibe>

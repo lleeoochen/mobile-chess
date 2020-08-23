@@ -2,7 +2,7 @@ import * as React from 'react';
 import { ScrollView, View, StyleSheet, TouchableOpacity, Image, Animated } from 'react-native';
 import { TextVibe, ModalVibe, ButtonVibe } from 'chessvibe/src/widgets';
 import AutoHeightImage from 'react-native-auto-height-image';
-import { vw } from 'chessvibe/src/Util';
+import { vw, formatImage } from 'chessvibe/src/Util';
 import Cache from 'chessvibe/src/Cache';
 import { useSelector } from 'react-redux';
 import { IMAGE, APP_THEME } from 'chessvibe/src/Const';
@@ -33,7 +33,7 @@ export default function ProfilePopup(props) {
 				<AutoHeightImage
 					width={ vw(40) }
 					style={ styles.titleImage }
-					source={ profile.photo ? { uri: profile.photo + '=c' } : IMAGE.NEW_MATCH }/>
+					source={ formatImage(profile.photo) }/>
 			</View>
 			<View style={ styles.content }>
 				<TextVibe style={ [styles.text, color] }> { profile.email } </TextVibe>

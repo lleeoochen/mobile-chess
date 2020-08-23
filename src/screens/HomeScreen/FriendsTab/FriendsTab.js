@@ -5,7 +5,7 @@ import AutoHeightImage from 'react-native-auto-height-image';
 import SearchBar from 'react-native-search-bar';
 
 import { IMAGE, APP_THEME, FRIEND } from 'chessvibe/src/Const';
-import { vw } from 'chessvibe/src/Util';
+import { vw, formatImage } from 'chessvibe/src/Util';
 import Backend from 'chessvibe/src/Backend';
 import { PopupStore } from 'chessvibe/src/redux/Store';
 
@@ -146,7 +146,7 @@ function FriendItem(props) {
 
 	return (
 		<ButtonVibe style={ styles.friendBox } onPress={ onPress }>
-			<AutoHeightImage width={ matchSize } source={ enemy.photo ? { uri: enemy.photo + '=c' } : IMAGE.NEW_MATCH } style={ styles.friendImage }/>
+			<AutoHeightImage width={ matchSize } source={ formatImage(enemy.photo) } style={ styles.friendImage }/>
 			<View style={ styles.friendMiddle }>
 				<TextVibe style={ [styles.friendName, color] }>{ enemy.name }</TextVibe>
 				<TextVibe style={ [styles.friendStat, subColor] }>Win: { winPercent }%</TextVibe>

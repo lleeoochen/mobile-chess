@@ -4,7 +4,7 @@ import { ActionBar, WebVibe, TextVibe, ModalVibe, ButtonVibe, DialogVibe } from 
 import AutoHeightImage from 'react-native-auto-height-image';
 
 import { URL, TEAM, IMAGE, APP_THEME } from 'chessvibe/src/Const';
-import Util, { formatDate, vw, wh, winType } from 'chessvibe/src/Util';
+import Util, { formatDate, vw, wh, winType, formatImage } from 'chessvibe/src/Util';
 import Cache from 'chessvibe/src/Cache';
 import Backend from 'chessvibe/src/Backend';
 import SideMenu from 'react-native-side-menu'
@@ -91,6 +91,9 @@ export default function HistoryTab(props) {
 			let $active_matches = [];
 			let $inactive_matches = [];
 
+			if (matches.length == 0)
+				continue;
+
 			matches.forEach((match, j) => {
 				let match_name = match[0];
 				let match_data = match[1];
@@ -107,7 +110,7 @@ export default function HistoryTab(props) {
 				if (active) {
 					$active_matches.push(
 						<ButtonVibe key={ j } style={ {...styles.matchView, ...borderStyle} } onPress={() => navigateGame(match_name)} onLongPress={ () => selectMatch(match_name) }>
-							<AutoHeightImage width={ matchSize } source={ enemy.photo ? { uri: enemy.photo + '=c' } : IMAGE.NEW_MATCH } style={ styles.matchImg }/>
+							<AutoHeightImage width={ matchSize } source={ formatImage(enemy.photo) } style={ styles.matchImg }/>
 							<View style={ {...styles.matchDate, ...colorStyle} }>
 								<TextVibe> { d_str } </TextVibe>
 							</View>
@@ -117,7 +120,7 @@ export default function HistoryTab(props) {
 				else {
 					$inactive_matches.push(
 						<ButtonVibe key={ j } style={ {...styles.matchView, ...borderStyle} } onPress={() => navigateGame(match_name)} onLongPress={ () => selectMatch(match_name) }>
-							<AutoHeightImage width={ matchSize } source={ enemy.photo ? { uri: enemy.photo + '=c' } : IMAGE.NEW_MATCH } style={ styles.matchImg }/>
+							<AutoHeightImage width={ matchSize } source={ formatImage(enemy.photo) } style={ styles.matchImg }/>
 							<View style={ {...styles.matchDate, ...colorStyle} }>
 								<TextVibe> { d_str } </TextVibe>
 							</View>

@@ -3,7 +3,7 @@ import { StyleSheet, TouchableWithoutFeedback, View, Image, ScrollView, Animated
 import Slider from "react-native-slider";
 import { TextVibe, ModalVibe, ButtonVibe } from 'chessvibe/src/widgets';
 import AutoHeightImage from 'react-native-auto-height-image';
-import { vw, vh } from 'chessvibe/src/Util';
+import { vw, vh, formatImage } from 'chessvibe/src/Util';
 import { THEME_ID, TIME, IMAGE, APP_THEME, NOTIFICATION_TYPE, FRIEND } from 'chessvibe/src/Const';
 import { useSelector } from 'react-redux';
 import Backend from 'chessvibe/src/GameBackend';
@@ -184,7 +184,7 @@ function Notification(props) {
 			break;
 
 		case NOTIFICATION_TYPE.FRIEND_REQUEST:
-			icon = user.photo ? { uri: user.photo + '=c' } : isDarkTheme ? IMAGE.FRIENDS : IMAGE.FRIENDS_DARK;
+			icon = user.photo ? formatImage(user.photo) : isDarkTheme ? IMAGE.FRIENDS : IMAGE.FRIENDS_DARK;
 
 			if (friendAlready) {
 				message = (user.name || '') + ' is now your friend.';
@@ -201,12 +201,12 @@ function Notification(props) {
 			break;
 
 		case NOTIFICATION_TYPE.FRIEND_ACCEPTED:
-			icon = user.photo ? { uri: user.photo + '=c' } : isDarkTheme ? IMAGE.FRIENDS : IMAGE.FRIENDS_DARK;
+			icon = user.photo ? formatImage(user.photo) : isDarkTheme ? IMAGE.FRIENDS : IMAGE.FRIENDS_DARK;
 			message = (user.name || '') + ' accepted your friend request.';
 			break;
 
 		case NOTIFICATION_TYPE.CHALLENGE:
-			icon = user.photo ? { uri: user.photo + '=c' } : isDarkTheme ? IMAGE.DRAW : IMAGE.DRAW_DARK;
+			icon = user.photo ? formatImage(user.photo) : isDarkTheme ? IMAGE.DRAW : IMAGE.DRAW_DARK;
 			message = (user.name || '') + ' challenged you to a chess match.';
 			confirmText = 'Accept';
 			confirmIcon = isDarkTheme ? IMAGE.DRAW_DARK : IMAGE.DRAW;

@@ -15,6 +15,7 @@ import {
 	BOARD_SIZE,
 
 	THEME,
+	IMAGE,
 
 	DB_THEME_CLASSIC,
 	DB_THEME_WINTER,
@@ -239,3 +240,8 @@ export function piece(grid) {
 export function strict_equal(a, b) {
 	return JSON.stringify(a) === JSON.stringify(b);
 };
+
+export function formatImage(imgUrl) {
+	if (!imgUrl) return IMAGE.NEW_MATCH;
+	return { uri: imgUrl.replace(/(.*)=.*/, '$1') + '=c' };
+}

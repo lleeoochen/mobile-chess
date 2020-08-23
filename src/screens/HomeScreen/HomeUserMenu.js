@@ -2,13 +2,12 @@ import * as React from 'react';
 import { ScrollView, View, StyleSheet, TouchableOpacity, Image, Animated } from 'react-native';
 import { TextVibe, ModalVibe, ButtonVibe } from 'chessvibe/src/widgets';
 import AutoHeightImage from 'react-native-auto-height-image';
-import { vw } from 'chessvibe/src/Util';
+import { vw, formatImage } from 'chessvibe/src/Util';
 import Cache from 'chessvibe/src/Cache';
 import { useSelector } from 'react-redux';
 import { IMAGE, APP_THEME } from 'chessvibe/src/Const';
 import Store, { HomeStore, PopupStore } from 'chessvibe/src/redux/Store';
 
-const new_match_img = require('chessvibe/assets/new_match.png');
 const borderRadius = vw();
 
 export default function HomeUserMenu(props) {
@@ -121,7 +120,7 @@ export default function HomeUserMenu(props) {
 				<AutoHeightImage
 					style={ styles.menuImage }
 					width={ vw(25) }
-					source={ user.photo ? { uri: user.photo + '=c' } : new_match_img }/>
+					source={ formatImage(user.photo) }/>
 				<TextVibe style={ [styles.menuText, textColor] }>{ user.name || '' }</TextVibe>
 			</ButtonVibe>
 

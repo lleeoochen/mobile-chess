@@ -215,8 +215,13 @@ export default function HomeScreen(props) {
 				}
 			}
 
+			console.log(JSON.stringify(results, null, 2));
+
 			// Sort opponent by latest date
 			results.sort((r1, r2) => {
+				if (!r1.matches[0]) return -1;
+				if (!r2.matches[0]) return 1;
+
 				let r1_time = r1.matches[0][1].updated || 0;
 				if (typeof r1_time == 'object') r1_time = 0;
 

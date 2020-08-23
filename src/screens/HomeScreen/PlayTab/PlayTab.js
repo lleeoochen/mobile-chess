@@ -5,7 +5,7 @@ import AutoHeightImage from 'react-native-auto-height-image';
 import Carousel from 'react-native-snap-carousel';
 
 import { URL, TEAM, IMAGE, APP_THEME, MATCH_MODE } from 'chessvibe/src/Const';
-import Util, { formatDate, vw, vh, winType } from 'chessvibe/src/Util';
+import Util, { formatDate, vw, vh, winType, formatImage } from 'chessvibe/src/Util';
 import Cache from 'chessvibe/src/Cache';
 import Backend from 'chessvibe/src/Backend';
 import SideMenu from 'react-native-side-menu'
@@ -98,7 +98,7 @@ export default function PlayTab(props) {
 
 				$matches.push(
 					<ButtonVibe key={ i + '' + j } style={ {...styles.matchView, ...borderStyle} } onPress={() => navigateGame(match_name)}>
-						<AutoHeightImage width={ matchSize } source={ enemy.photo ? { uri: enemy.photo + '=c' } : IMAGE.NEW_MATCH } style={ styles.matchImg }/>
+						<AutoHeightImage width={ matchSize } source={ formatImage(enemy.photo) } style={ styles.matchImg }/>
 						<View style={ {...styles.matchDate, ...colorStyle} }>
 							<TextVibe> { d_str } </TextVibe>
 						</View>
