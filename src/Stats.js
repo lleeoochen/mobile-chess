@@ -12,15 +12,20 @@ import {
 
 export default class Stats {
 
-	constructor() {
-		this.stats = {
-			draw: 0,
-			stalemate: 0,
-			win: 0,
-			lose: 0,
-			ongoing: 0,
-			resign: 0,
-		};
+	constructor(stats) {
+		if (stats) {
+			this.stats = JSON.parse(JSON.stringify(stats)).stats;
+		}
+		else {
+			this.stats = {
+				draw: 0,
+				stalemate: 0,
+				win: 0,
+				lose: 0,
+				ongoing: 0,
+				resign: 0,
+			};
+		}
 	}
 
 	aggregate(lastMove, team) {

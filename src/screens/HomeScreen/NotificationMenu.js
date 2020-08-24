@@ -10,7 +10,7 @@ import Backend from 'chessvibe/src/GameBackend';
 import { PopupStore } from 'chessvibe/src/redux/Store';
 
 export default function NotificationMenu(props) {
-	const { visible, setVisible, isDarkTheme, notificationIDs=[], friends } = props;
+	const { visible, setVisible, isDarkTheme, notificationIDs=[], friends, navigateGame=()=>{}, matches } = props;
 	const appTheme = isDarkTheme ? APP_THEME.DARK : APP_THEME.LIGHT;
 
 	const fullShift = vh(-120);
@@ -89,7 +89,9 @@ export default function NotificationMenu(props) {
 				data={ data }
 				friends={ friends }
 				id={ notificationIDs[index] }
-				isDarkTheme={ isDarkTheme }/>
+				isDarkTheme={ isDarkTheme }
+				navigateGame={ navigateGame }
+				matches={ matches }/>
 		);
 	});
 
@@ -131,6 +133,8 @@ function Notification(props) {
 		id='',
 		friends={},
 		isDarkTheme=false,
+		navigateGame,
+		matches,
 	} = props;
 
 	const appTheme = isDarkTheme ? APP_THEME.DARK : APP_THEME.LIGHT;
@@ -208,8 +212,15 @@ function Notification(props) {
 		case NOTIFICATION_TYPE.CHALLENGE:
 			icon = user.photo ? formatImage(user.photo) : isDarkTheme ? IMAGE.DRAW : IMAGE.DRAW_DARK;
 			message = (user.name || '') + ' challenged you to a chess match.';
-			confirmText = 'Accept';
-			confirmIcon = isDarkTheme ? IMAGE.DRAW_DARK : IMAGE.DRAW;
+
+			let matchStarted = matches.some(match => match.includes(payload + '-'));
+			if (!matchStarted && payload) {
+				confirmText = 'Accept';
+				confirmIcon = isDarkTheme ? IMAGE.DRAW_DARK : IMAGE.DRAW;
+				confirmClick = () => {
+					navigateGame(payload);
+				};
+			}
 			break;
 
 		default:

@@ -7,6 +7,7 @@ import SearchBar from 'react-native-search-bar';
 import { IMAGE, APP_THEME, FRIEND } from 'chessvibe/src/Const';
 import { vw, formatImage } from 'chessvibe/src/Util';
 import Backend from 'chessvibe/src/Backend';
+import Stats from 'chessvibe/src/Stats';
 import { PopupStore } from 'chessvibe/src/redux/Store';
 
 const matchSize = vw(20);
@@ -105,7 +106,7 @@ function FriendItem(props) {
 	// let btnColor = { backgroundColor: appTheme.MENU_BACKGROUND };
 
 	// Calculate stats
-	let { winRate, total } = stats.analyze();
+	let { winRate, total } = new Stats(stats).analyze();
 
 	// Action button state
 	let disabled = friendState != null && friendState != FRIEND.REQUEST_RECEIVED;

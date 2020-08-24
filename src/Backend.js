@@ -64,10 +64,11 @@ export default class Backend {
 		});
 	}
 
-	static createMatch(theme, time, AI=false) {
+	static createMatch(theme, time, friend, AI=false) {
 		return Util.request('POST', URL.BACKEND + '/chess/create_match', {
 			theme: theme,
-			time: time || MAX_TIME,
+			time: time,
+			friend: friend,
 			AI: AI,
 		});
 	}

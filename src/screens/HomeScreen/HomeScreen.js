@@ -139,10 +139,18 @@ export default function HomeScreen(props) {
 					opponents={ opponents }
 					friends={ user.current.friends }
 					onDismiss={ () => showCreateMenu({ show: false, mode: createMenuVisible.mode }) }
-					onSubmit={() => showCreateMenu({ show: false }) }/>
+					onSubmit={(theme, time, friend, isAI) => {
+						showCreateMenu({ show: false });
+						Backend.createMatch(theme, time, friend, isAI).then(match_id => {
+							Cache.theme[match_id] = theme;
+							navigateGame(match_id);
+						});
+					} }/>
 
 				<NotificationMenu
-					notificationIDs={ user.current.notifications }
+					matches={ user.current.matches }
+					navigateGame={ navigateGame }
+					notificationIDs={ (user.current.notifications || []).reverse() }
 					friends={ user.current.friends }
 					isDarkTheme={ isDarkTheme }
 					visible={ notificationsVisible }

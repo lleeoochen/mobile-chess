@@ -25,7 +25,7 @@ const MODE_NAMES = ['', 'Computer', 'Friend'];
 
 
 export default function HomeCreateMenu(props) {
-	let { mode, visible, opponents, friends, onDismiss, onSubmit } = props;
+	const { mode, visible, opponents, friends, onDismiss, onSubmit } = props;
 
 	const isDarkTheme = useSelector(state => state.home.isDarkTheme);
 	const appTheme = isDarkTheme ? APP_THEME.DARK : APP_THEME.LIGHT;
@@ -43,11 +43,8 @@ export default function HomeCreateMenu(props) {
 
 	function createMatch() {
 		let isAI = mode == MATCH_MODE.COMPUTER;
-		Backend.createMatch(formData).then(match_id => {
-			Cache.theme[match_id] = theme;
-			navigateGame(match_id);
-		});
-		onSubmit();
+		let { theme, time, friend } = formData;
+		onSubmit(theme, time, friend, isAI);
 	}
 
 	return (

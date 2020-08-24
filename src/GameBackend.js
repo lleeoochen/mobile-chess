@@ -14,6 +14,7 @@ export default class GameBackend extends Backend {
 			if (!this.match.white && user_id != this.match.black) {
 				this.registerOpponent(user_id);
 				this.my_team = TEAM.W;
+				return;
 			}
 			else if (user_id == this.match.black) {
 				this.my_team = TEAM.B;
