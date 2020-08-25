@@ -271,7 +271,7 @@ const styles = StyleSheet.create({
 		position: 'absolute',
 		width: '90%',
 		minHeight: vh(20),
-		maxHeight: vh(70),
+		maxHeight: vh(50),
 
 		alignSelf: 'flex-end',
 		top: vw(1),

@@ -5,6 +5,7 @@
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
 #import "RNSplashScreen.h"
+#import "RNFBMessagingModule.h"
 
 #if DEBUG
 #import <FlipperKit/FlipperClient.h>
@@ -46,9 +47,12 @@ static void InitializeFlipper(UIApplication *application) {
   [bridge moduleForClass:[RCTDevLoadingView class]];
   #endif
 
+  // Firebase push notif
+  NSDictionary *appProperties = [RNFBMessagingModule addCustomPropsToUserProps:nil withLaunchOptions:launchOptions];
+
   RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:bridge
                                                    moduleName:@"ChessVibe"
-                                            initialProperties:nil];
+                                            initialProperties:appProperties];
 
   rootView.backgroundColor = [[UIColor alloc] initWithRed:0.0f green:0.0f blue:0.0f alpha:1];
 

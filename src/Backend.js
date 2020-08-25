@@ -101,4 +101,10 @@ export default class Backend {
 			message,
 		});
 	}
+
+	static uploadAPNSToken(token) {
+		return Util.request('POST', URL.BACKEND + '/chess/upload_apns_token', {
+			token,
+		});
+	}
 }

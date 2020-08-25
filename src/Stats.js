@@ -74,6 +74,8 @@ export default class Stats {
 	}
 
 	analyze() {
+		if (this.stats == undefined) return {};
+
 		let stats = this.stats;
 		let total = stats.win + stats.lose + stats.draw + stats.stalemate + stats.resign;
 		let wins = stats.win + stats.resign + stats.draw / 2.0 + stats.stalemate / 2.0;

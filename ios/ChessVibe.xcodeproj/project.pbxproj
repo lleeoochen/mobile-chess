@@ -89,6 +89,7 @@
 		8A9333316C21449EA7BFC183 /* Spectral-Italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Spectral-Italic.ttf"; path = "../assets/fonts/Spectral-Italic.ttf"; sourceTree = "<group>"; };
 		98F0C2EFDDBAB68100BF4D37 /* Pods-ChessVibe-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChessVibe-tvOSTests.debug.xcconfig"; path = "Target Support Files/Pods-ChessVibe-tvOSTests/Pods-ChessVibe-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
 		9947359824AB283D0057A11A /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		99FF4D1E24F3744800D642C5 /* ChessVibe.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = ChessVibe.entitlements; path = ChessVibe/ChessVibe.entitlements; sourceTree = "<group>"; };
 		9F8B1F4A4B0F40378E20DE03 /* Spectral-BoldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Spectral-BoldItalic.ttf"; path = "../assets/fonts/Spectral-BoldItalic.ttf"; sourceTree = "<group>"; };
 		A2628CA53A224220AADE572E /* Spectral-SemiBoldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Spectral-SemiBoldItalic.ttf"; path = "../assets/fonts/Spectral-SemiBoldItalic.ttf"; sourceTree = "<group>"; };
 		A57D3760D8974F08A5F02A26 /* Spectral-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Spectral-Medium.ttf"; path = "../assets/fonts/Spectral-Medium.ttf"; sourceTree = "<group>"; };
@@ -160,6 +161,7 @@
 		13B07FAE1A68108700A75B9A /* ChessVibe */ = {
 			isa = PBXGroup;
 			children = (
+				99FF4D1E24F3744800D642C5 /* ChessVibe.entitlements */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
@@ -756,6 +758,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = ChessVibe/ChessVibe.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = XF2DH6Z7D9;
 				ENABLE_BITCODE = NO;
@@ -765,7 +768,7 @@
 				);
 				INFOPLIST_FILE = ChessVibe/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 1.7;
+				MARKETING_VERSION = 1.8;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -785,12 +788,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = ChessVibe/ChessVibe.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = XF2DH6Z7D9;
 				ENABLE_BITCODE = YES;
 				INFOPLIST_FILE = ChessVibe/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 1.7;
+				MARKETING_VERSION = 1.8;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",

@@ -3,6 +3,7 @@ import { Animated, View, SafeAreaView, ScrollView, StyleSheet, StatusBar, Toucha
 import { ActionBar, WebVibe, TextVibe, ModalVibe, ButtonVibe, DialogVibe } from 'chessvibe/src/widgets';
 import AutoHeightImage from 'react-native-auto-height-image';
 import SideMenu from 'react-native-side-menu';
+import messaging from '@react-native-firebase/messaging';
 
 import { HomeStore } from 'chessvibe/src/redux/Store';
 import { useSelector } from 'react-redux';
@@ -97,6 +98,19 @@ export default function HomeScreen(props) {
 		});
 	}, [tab, isDarkTheme, notificationsVisible]);
 
+	// Upload APNS Token for push notification
+	React.useEffect(() => {
+		// Get the device token
+		messaging().getToken().then(token => Backend.uploadAPNSToken(token));
+		console.log();
+
+		// If using other push notification providers (ie Amazon SNS, etc)
+		// you may need to get the APNs token instead for iOS:
+		// if(Platform.OS == 'ios') { messaging().getAPNSToken().then(token => { return Backend.uploadAPNSToken(token); }); }
+
+		// Listen to whether the token changes
+		return messaging().onTokenRefresh(token => Backend.uploadAPNSToken(token));
+	}, []);
 
 	// Render function
 	function render() {

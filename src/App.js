@@ -5,6 +5,8 @@ import { createStackNavigator } from 'react-navigation-stack';
 import { Provider, useSelector } from 'react-redux';
 import SplashScreen from 'react-native-splash-screen';
 import Spinner from 'react-native-loading-spinner-overlay';
+import messaging from '@react-native-firebase/messaging';
+import PushNotificationIOS from "@react-native-community/push-notification-ios";
 
 import Entry from './screens/EntryScreen';
 import Home from './screens/HomeScreen';
@@ -23,6 +25,18 @@ import { showDrawer } from 'chessvibe/src/redux/Reducer';
 import Store, { HomeStore } from 'chessvibe/src/redux/Store';
 
 LogBox.ignoreLogs(['Task orphaned']);
+
+
+async function requestUserPermission() {
+	const authStatus = await messaging().requestPermission();
+	const enabled =
+		authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+		authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+
+	if (enabled) {
+		console.log('Authorization status:', authStatus);
+	}
+}
 
 // Navigation
 const Navigator = createStackNavigator(
@@ -114,7 +128,7 @@ function AppContent() {
 		}
 
 		// console.log(Cache);
-	    appState.current = state;
+		appState.current = state;
 	}
 
 	// Listener for app state
@@ -127,6 +141,11 @@ function AppContent() {
 			AppState.removeEventListener("change", state => onAppStateChanged(state));
 		};
 	}, []);
+
+	React.useEffect(() => {
+		requestUserPermission();
+		PushNotificationIOS.setApplicationIconBadgeNumber(0)
+	});
 
 	return (
 		<SafeAreaView style={{ flex: 1, backgroundColor: 'black' }}>
