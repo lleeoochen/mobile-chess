@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { AppState, LogBox, Animated, View, SafeAreaView } from 'react-native';
+import { AppState, LogBox, Animated, View, SafeAreaView, Platform } from 'react-native';
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 import { Provider, useSelector } from 'react-redux';
@@ -144,7 +144,10 @@ function AppContent() {
 
 	React.useEffect(() => {
 		requestUserPermission();
-		PushNotificationIOS.setApplicationIconBadgeNumber(0)
+
+		if (Platform.OS === 'ios') {
+			PushNotificationIOS.setApplicationIconBadgeNumber(0)
+		}
 	});
 
 	return (
