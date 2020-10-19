@@ -5,6 +5,8 @@
         android:drawable="@color/black"/>
 
     <item
+        android:width="200dp"
+        android:height="200dp"
         android:drawable="@mipmap/logo"
         android:gravity="center" />
 

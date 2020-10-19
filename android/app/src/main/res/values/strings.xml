@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">ChessVibe</string>
+    <string name="notification_channel">ChessVibeNotification</string>
 </resources>
