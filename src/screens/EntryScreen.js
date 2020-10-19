@@ -127,7 +127,7 @@ export default function EntryScreen(props) {
 				<StatusBar hidden={ true }/>
 
 				<FadeInView style={ styles.titleWrap }>
-					<TextVibe style={ styles.title }>Chess Vibe</TextVibe>
+					<TextVibe style={ styles.title }>ChessVibe</TextVibe>
 				</FadeInView>
 				<Image style={ styles.logo } source={ logoImg }/>
 
