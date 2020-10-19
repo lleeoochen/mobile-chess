@@ -23,6 +23,8 @@ const TIME_INDEX = {
 const INDEX_THEME = [THEME_ID.CLASSIC, THEME_ID.WINTER, THEME_ID.METAL, THEME_ID.NATURE];
 const MODE_NAMES = ['', 'Computer', 'Friend'];
 
+const MENU_BUTTON_COLOR = '#424c5a';
+
 
 export default function HomeCreateMenu(props) {
 	const { mode, visible, opponents, friends, onDismiss, onSubmit } = props;
@@ -141,7 +143,7 @@ function ThemeSelector({ isDarkTheme, formData }) {
 	const [ theme, setTheme ] = React.useState(THEME_ID.CLASSIC);
 
 	const themeBtnStyle = {... styles.themeBtn, ...{
-		backgroundColor: isDarkTheme ? '#ffffff2e' : appTheme.APP_BACKGROUND
+		backgroundColor: isDarkTheme ? MENU_BUTTON_COLOR : appTheme.APP_BACKGROUND
 	}};
 
 	const themeImage =
@@ -216,7 +218,7 @@ function SubmitButton({ isDarkTheme, onPress }) {
 	const appTheme = isDarkTheme ? APP_THEME.DARK : APP_THEME.LIGHT;
 
 	const submitBtnStyle = {
-		backgroundColor: isDarkTheme ? '#ffffff2e' : appTheme.APP_BACKGROUND
+		backgroundColor: isDarkTheme ? MENU_BUTTON_COLOR : appTheme.APP_BACKGROUND
 	};
 
 	const textColor = {
@@ -345,7 +347,7 @@ const styles = StyleSheet.create({
 
 	menuSubmitBtn: {
 		marginTop: vw(2),
-		backgroundColor: '#ffffff2e',
+		backgroundColor: MENU_BUTTON_COLOR,
 		padding: vw(2),
 		borderRadius: BORDER_RADIUS,
 		width: '100%',
