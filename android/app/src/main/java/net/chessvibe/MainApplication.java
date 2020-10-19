@@ -1,7 +1,12 @@
 package net.chessvibe;
 
 import androidx.multidex.MultiDexApplication;
+
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Context;
+import android.os.Build;
+
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
 import org.devio.rn.splashscreen.SplashScreenReactPackage;
@@ -48,6 +53,18 @@ public class MainApplication extends MultiDexApplication implements ReactApplica
     super.onCreate();
     SoLoader.init(this, /* native exopackage */ false);
     initializeFlipper(this, getReactNativeHost().getReactInstanceManager());
+
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+          NotificationChannel notificationChannel = new NotificationChannel(this.getString(R.string.notification_channel), "MainChannel", NotificationManager.IMPORTANCE_HIGH);
+          notificationChannel.setShowBadge(true);
+          notificationChannel.setDescription("Test Notifications");
+          notificationChannel.enableVibration(true);
+          notificationChannel.enableLights(true);
+          notificationChannel.setVibrationPattern(new long[]{400, 200, 400});
+          //notificationChannel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
+          NotificationManager manager = getSystemService(NotificationManager.class);
+          manager.createNotificationChannel(notificationChannel);
+      }
   }
 
   /**
