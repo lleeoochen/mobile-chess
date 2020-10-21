@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { AppState, LogBox, Animated, View, SafeAreaView, Platform } from 'react-native';
 import { createAppContainer } from 'react-navigation';
+import { createBottomTabNavigator } from 'react-navigation-tabs';
 import { createStackNavigator } from 'react-navigation-stack';
 import { Provider, useSelector } from 'react-redux';
 import SplashScreen from 'react-native-splash-screen';
@@ -20,30 +21,15 @@ import Storage from './Storage';
 import Cache, { CACHE_DEFAULT } from './Cache';
 
 import SideMenu from 'react-native-side-menu'
-import HomeUserMenu from './screens/HomeScreen/HomeUserMenu';
-import { showDrawer } from 'chessvibe/src/redux/Reducer';
 import Store, { HomeStore } from 'chessvibe/src/redux/Store';
 
 LogBox.ignoreLogs(['Task orphaned']);
 
 
-async function requestUserPermission() {
-	const authStatus = await messaging().requestPermission();
-	const enabled =
-		authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-		authStatus === messaging.AuthorizationStatus.PROVISIONAL;
-
-	if (enabled) {
-		console.log('Authorization status:', authStatus);
-	}
-}
-
-// Navigation
-const Navigator = createStackNavigator(
+// Login Navigation
+const LoginNavigator = createStackNavigator(
 	{
 		Entry: { screen: Entry },
-		Home: { screen: Home },
-		Game: { screen: Game },
 	},
 	{
 		initialRouteName: 'Entry',
@@ -65,51 +51,55 @@ const Navigator = createStackNavigator(
 );
 
 // export default createAppContainer(Navigator);
-const Container = createAppContainer(Navigator);
+const LoginContainer = createAppContainer(LoginNavigator);
 
 
-const UserMenu = (navRef, drawerOpen, openDrawer) => {
-	return (<HomeUserMenu visible={ true } navRef={ navRef } drawerOpen={ drawerOpen } openDrawer={ openDrawer }/>);
-};
 
-const LogoutControl = ({ navRef, openDrawer }) => {
-	let toLogout = useSelector(state => state.home.toLogout);
-	const [ spinnerShown, showSpinner ] = React.useState(false);
-
-	async function navgiateLogout() {
-		openDrawer(false);
-
-		setTimeout(() => {
-			navRef.current._navigation.navigate('Entry', {
-				signout: true
-			});
-			showSpinner(false);
-		}, 500);
-
-		HomeStore.toLogout(false);
+// Content Navigation
+const MainNavigator = createStackNavigator(
+	{
+		Home: { screen: Home },
+		Game: { screen: Game },
+	},
+	{
+		initialRouteName: 'Home',
+		defaultNavigationOptions: {
+			headerStyle: {
+				backgroundColor: 'black',
+				shadowColor: 'black',
+				shadowRadius: vw(0.5),
+				elevation: 2,
+				height: vw(15),
+			},
+			headerTintColor: 'white',
+			headerTitleStyle: {
+				fontWeight: 'bold',
+			},
+			gestureEnabled: false,
+		},
 	}
+);
 
-	if (toLogout && !spinnerShown) {
-		showSpinner(true);
-		navgiateLogout();
+// export default createAppContainer(Navigator);
+const MainContainer = createAppContainer(MainNavigator);
+
+
+
+async function requestUserPermission() {
+	const authStatus = await messaging().requestPermission();
+	const enabled =
+		authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+		authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+
+	if (enabled) {
+		console.log('Authorization status:', authStatus);
 	}
-
-	return (
-		<Spinner
-			visible={ spinnerShown }
-			overlayColor={ 'rgba(0, 0, 0, 0.5)' }/>
-	);
-};
+}
 
 function AppContent() {
+	const [navStack, setNavStack] = React.useState('login');
 	const appState = React.useRef(AppState.currentState);
-	const [ drawerOpen, openDrawer ] = React.useState(false);
 	const navRef = React.useRef(null);
-
-	function onDrawerChange() {
-		if (drawerOpen)
-			openDrawer(false);
-	}
 
 	// Clean up when app closes
 	async function onAppStateChanged(state) {
@@ -150,23 +140,12 @@ function AppContent() {
 		}
 	});
 
+
+	const NavContainer = navStack === 'login' ? LoginContainer : MainContainer;
+
 	return (
 		<SafeAreaView style={{ flex: 1, backgroundColor: 'black' }}>
-			<SideMenu
-				menu={ UserMenu(navRef, drawerOpen, openDrawer) }
-				openMenuOffset={ vw(70) }
-				onChange={() => onDrawerChange()}
-				disableGestures={ true }
-				bounceBackOnOverdraw={ false }
-				animationFunction={(prop, value) => Animated.timing(prop, {
-					toValue: value,
-					duration: 200,
-					useNativeDriver: true,
-				})}
-				isOpen={ drawerOpen }>
-				<Container ref={ navRef } screenProps={{ openDrawer }}/>
-			</SideMenu>
-			<LogoutControl navRef={ navRef } openDrawer={ openDrawer }/>
+			<NavContainer screenProps={{setNavStack}}/>
 			<ProfilePopup/>
 		</SafeAreaView>
 	);

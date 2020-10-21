@@ -3,9 +3,10 @@ import { THEME, TEAM, STORAGE_IS_DARK_THEME } from 'chessvibe/src/Const';
 import Storage from 'chessvibe/src/Storage';
 
 // Initial store state
-const initState = {
+const initState = Object.freeze({
 	home: {
 		user: null,
+		alertMenuShown: false,
 		isDarkTheme: false,
 		toLogout: false,
 	},
@@ -19,23 +20,27 @@ const initState = {
 	popup: {
 		profile: null,
 	},
-};
+});
 
 
 
 // Home Action Reducers
 export const HomeReducer = {
 	updateUser: createReducer((state, data) => {
-		let home = { ...state.home, ...{ user: data } };
-		return { ...state, ...{ home } };
+		let home = { ...state.home, user: data };
+		return { ...state, home };
+	}),
+	toggleAlertMenu: createReducer((state) => {
+		let home = { ...state.home, alertMenuShown: !state.home.alertMenuShown };
+		return { ...state, home };
 	}),
 	setIsDarkTheme: createReducer((state, data) => {
-		let home = { ...state.home, ...{ isDarkTheme: data } };
-		return { ...state, ...{ home } };
+		let home = { ...state.home, isDarkTheme: data };
+		return { ...state, home };
 	}),
 	toLogout: createReducer((state, data) => {
-		let home = { ...state.home, ...{ toLogout: data } };
-		return { ...state, ...{ home } };
+		let home = { ...state.home, toLogout: data };
+		return { ...state, home };
 	}),
 };
 
@@ -71,6 +76,12 @@ export const PopupReducer = {
 	}),
 };
 
+// Root Reducer
+export const RootReducer = {
+	reset: createReducer((state, data) => {
+		return JSON.parse(JSON.stringify(initState));
+	}),
+};
 
 
 // App Reducer

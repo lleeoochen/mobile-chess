@@ -3,6 +3,8 @@ import { Animated, View, SafeAreaView, ScrollView, StyleSheet, StatusBar, Toucha
 import { ActionBar, WebVibe, TextVibe, ModalVibe, ButtonVibe, DialogVibe } from 'chessvibe/src/widgets';
 import AutoHeightImage from 'react-native-auto-height-image';
 import SearchBar from 'react-native-search-bar';
+import Store, { HomeStore } from 'chessvibe/src/redux/Store';
+import { useSelector } from 'react-redux';
 
 import { IMAGE, APP_THEME, FRIEND } from 'chessvibe/src/Const';
 import { vw, formatImage } from 'chessvibe/src/Util';
@@ -13,9 +15,25 @@ import { PopupStore } from 'chessvibe/src/redux/Store';
 const matchSize = vw(20);
 const borderRadius = vw();
 
+// Navigation
+FriendsTab.navigationOptions = ({navigation}) => {
+	return {
+		tabBarLabel: 'Friends',
+		tabBarIcon: (
+			<Image style={ styles.tab } source={ IMAGE['FRIENDS' + (Store.getState().home.isDarkTheme ? '' : '_DARK')] }/>
+		)
+	};
+};
+
 // Home Screen
 export default function FriendsTab(props) {
-	const { isDarkTheme, opponents, friends={} } = props;
+	// Screen props from navigation
+	const {
+		isDarkTheme,
+		opponents,
+		friends={},
+	} = props.navigation.getScreenProps();
+
 	const appTheme = isDarkTheme ? APP_THEME.DARK : APP_THEME.LIGHT;
 	let [ searchText, setSearchText ] = React.useState('');
 
@@ -157,12 +175,20 @@ function FriendItem(props) {
 	);
 }
 
+const tab_size = vw(7);
 
 const styles = StyleSheet.create({
 	view: {
 		alignSelf: 'stretch',
 		flex: 1,
 		backgroundColor: '#1a283a',
+	},
+
+	tab: {
+		width: tab_size,
+		height: tab_size,
+		marginTop: 'auto',
+		marginBottom: 'auto',
 	},
 
 	friendBox: {

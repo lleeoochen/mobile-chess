@@ -9,7 +9,7 @@ import Util, { vw, vh } from '../Util';
 import Cache, { CACHE_DEFAULT } from '../Cache';
 
 import Storage from 'chessvibe/src/Storage';
-import { HomeStore } from 'chessvibe/src/redux/Store';
+import { HomeStore, RootStore } from 'chessvibe/src/redux/Store';
 
 let logoImg = require('chessvibe/assets/logo.jpg');
 
@@ -22,6 +22,8 @@ EntryScreen.navigationOptions = ({navigation}) => {
 
 // Entry Screen
 export default function EntryScreen(props) {
+	const {setNavStack} = props.navigation.getScreenProps();
+
 	const [ initializing, setInitializing ] = React.useState(true);
 	const [ signingin, setSigningin ] = React.useState(false);
 	const [ user, setUser ] = React.useState();
@@ -81,6 +83,7 @@ export default function EntryScreen(props) {
 		try {
 			await GoogleSignin.signOut();
 			await auth().signOut();
+			RootStore.reset();
 			Object.assign(Cache, JSON.parse(JSON.stringify(CACHE_DEFAULT)));
 			Storage.clear();
 		}
@@ -104,7 +107,7 @@ export default function EntryScreen(props) {
 		if (result.session_token) {
 			Cache.sessionToken = result.session_token;
 			Cache.userID = auth().currentUser.uid;
-			props.navigation.navigate('Home');
+			setNavStack('main');
 		}
 		else {
 			signOut();
@@ -148,7 +151,7 @@ export default function EntryScreen(props) {
 			<StatusBar hidden={ true }/>
 
 			<FadeInView style={ styles.titleWrap }>
-				<TextVibe style={ styles.title }>Chess Vibe</TextVibe>
+				<TextVibe style={ styles.title }>ChessVibe</TextVibe>
 			</FadeInView>
 			<Image style={ styles.logo } source={ logoImg }/>
 

@@ -2,14 +2,16 @@ import * as React from 'react';
 import { Switch, Animated, View, SafeAreaView, ScrollView, StyleSheet, StatusBar, TouchableOpacity, Image, Button, RefreshControl } from 'react-native';
 import { ActionBar, WebVibe, TextVibe, ModalVibe, ButtonVibe, DialogVibe } from 'chessvibe/src/widgets';
 import AutoHeightImage from 'react-native-auto-height-image';
+import { GoogleSignin } from '@react-native-community/google-signin';
+import auth from '@react-native-firebase/auth';
 
 import { URL, TEAM, IMAGE, STORAGE_IS_DARK_THEME, APP_THEME } from 'chessvibe/src/Const';
 import Util, { formatDate, vw, wh } from 'chessvibe/src/Util';
 import Storage from 'chessvibe/src/Storage';
-import Cache from 'chessvibe/src/Cache';
+import Cache, { CACHE_DEFAULT } from 'chessvibe/src/Cache';
 import Backend from 'chessvibe/src/Backend';
 import SideMenu from 'react-native-side-menu'
-import { HomeStore } from 'chessvibe/src/redux/Store';
+import Store, { HomeStore, RootStore } from 'chessvibe/src/redux/Store';
 import { useSelector } from 'react-redux';
 
 import ReportModal from './ReportModal';
@@ -18,9 +20,24 @@ import AboutModal from './AboutModal';
 const matchSize = vw((100 - 2 - 6 - 4) / 4);
 const borderRadius = vw();
 
+// Navigation
+SettingsTab.navigationOptions = ({navigation}) => {
+	return {
+		tabBarLabel: 'Settings',
+		tabBarIcon: (
+			<Image style={ styles.tab } source={ IMAGE['SETTINGS' + (Store.getState().home.isDarkTheme ? '' : '_DARK')] }/>
+		)
+	};
+};
+
 // Home Screen
 export default function SettingsTab(props) {
-	const { isDarkTheme } = props;
+	// Screen props from navigation
+	const {
+		isDarkTheme,
+		setNavStack,
+	} = props.navigation.getScreenProps();
+
 	const appTheme = isDarkTheme ? APP_THEME.DARK : APP_THEME.LIGHT;
 	const [ repotModalShown, showReportModal ] = React.useState(false);
 	const [ aboutModalShown, showAboutModal ] = React.useState(false);
@@ -34,13 +51,13 @@ export default function SettingsTab(props) {
 		backgroundColor: appTheme.SETTING_BORDER,
 	};
 
+
 	return (
 		<View style={ viewStyle }>
 			<ScrollView>
 				<View style={ styles.divider }/>
 
 				<View style={ borderStyle }/>
-
 					<SwitchSetting
 						title={ 'Dark Theme' }
 						initEnabled={ isDarkTheme }
@@ -54,13 +71,11 @@ export default function SettingsTab(props) {
 						title={ 'Push Notification' }
 						enabled={ true }
 						appTheme={ appTheme }/>
-
 				<View style={ borderStyle }/>
 
 				<View style={ styles.divider }/>
 
 				<View style={ borderStyle }/>
-
 					<MoreSetting
 						title={ 'Report Issues' }
 						type={ 'more' }
@@ -74,8 +89,21 @@ export default function SettingsTab(props) {
 						type={ 'more' }
 						isDarkTheme={ isDarkTheme }
 						onPress={ () => showAboutModal(true) }/>
+				<View style={ borderStyle }/>
+
+				<View style={ styles.divider }/>
 
 				<View style={ borderStyle }/>
+					<MoreSetting
+						title={ 'Logout' }
+						type={ 'more' }
+						isDarkTheme={ isDarkTheme }
+						onPress={async () => {
+							await signOut();
+							setNavStack('login');
+						}}/>
+				<View style={ borderStyle }/>
+
 			</ScrollView>
 
 			<ReportModal
@@ -154,10 +182,33 @@ function MoreSetting(props) {
 }
 
 
+// Signout
+async function signOut() {
+	try {
+		await GoogleSignin.signOut();
+		await auth().signOut();
+		RootStore.reset();
+		Object.assign(Cache, JSON.parse(JSON.stringify(CACHE_DEFAULT)));
+		Storage.clear();
+	}
+	catch (error) {
+		console.log(error);
+	}
+}
+
+const tab_size = vw(7);
+
 const styles = StyleSheet.create({
 	view: {
 		alignSelf: 'stretch',
 		flex: 1,
+	},
+
+	tab: {
+		width: tab_size,
+		height: tab_size,
+		marginTop: 'auto',
+		marginBottom: 'auto',
 	},
 
 		setting: {

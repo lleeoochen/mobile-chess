@@ -3,6 +3,10 @@ import { Animated, View, SafeAreaView, ScrollView, StyleSheet, StatusBar, Toucha
 import { ActionBar, WebVibe, TextVibe, ModalVibe, ButtonVibe, DialogVibe } from 'chessvibe/src/widgets';
 import AutoHeightImage from 'react-native-auto-height-image';
 import Carousel from 'react-native-snap-carousel';
+import Store, { HomeStore } from 'chessvibe/src/redux/Store';
+import { useSelector } from 'react-redux';
+import HomeCreateMenu from '../HomeCreateMenu';
+
 
 import { URL, TEAM, IMAGE, APP_THEME, MATCH_MODE } from 'chessvibe/src/Const';
 import Util, { formatDate, vw, vh, formatImage } from 'chessvibe/src/Util';
@@ -14,8 +18,27 @@ const matchSize = vw((100 - 2 - 6 - 4) / 4);
 const borderRadius = vw();
 
 
+// Navigation
+PlayTab.navigationOptions = ({navigation}) => {
+	return {
+		tabBarLabel: 'Play',
+		tabBarIcon: (
+			<Image style={ styles.tab } source={ IMAGE['DRAW' + (Store.getState().home.isDarkTheme ? '' : '_DARK')] }/>
+		)
+	};
+};
+
 // Home Screen
 export default function PlayTab(props) {
+	// Screen props from navigation
+	const {
+		isDarkTheme,
+		newMatches,
+		friends,
+		opponents,
+		navigateGame,
+	} = props.navigation.getScreenProps();
+
 	const ACTION_DATA = [
 		{
 			text: 'Sandbox',
@@ -37,7 +60,9 @@ export default function PlayTab(props) {
 		},
 	];
 
-	const { newMatches, navigateGame, showCreateMenu, isDarkTheme } = props;
+
+	const [ createMenuVisible, showCreateMenu ] = React.useState({ show: false });
+
 
 	const startingMode = 1;
 	const [ description, setDescription ] = React.useState(ACTION_DATA[startingMode].description);
@@ -56,8 +81,7 @@ export default function PlayTab(props) {
 			.start();
 			firstLoad.current = false;
 		}
-	},
-	[newMatches]);
+	}, [newMatches]);
 
 
 	// Custom theme styles
@@ -147,15 +171,37 @@ export default function PlayTab(props) {
 				onScrollIndexChanged={ index => onSnapToMode(ACTION_DATA[index]) }/>
 			<TextVibe style={ [styles.description, { color: appTheme.SUB_COLOR }] }>{ description }</TextVibe>
 			{ $container }
+
+			<HomeCreateMenu
+				visible={ createMenuVisible.show }
+				mode={ createMenuVisible.mode }
+				opponents={ opponents }
+				friends={ friends || {} }
+				onDismiss={ () => showCreateMenu({ show: false, mode: createMenuVisible.mode }) }
+				onSubmit={(theme, time, friend, isAI) => {
+					showCreateMenu({ show: false });
+					Backend.createMatch(theme, time, friend, isAI).then(match_id => {
+						Cache.theme[match_id] = theme;
+						navigateGame(match_id);
+					});
+				} }/>
 		</View>
 	);
 }
 
+const tab_size = vw(7);
 
 const styles = StyleSheet.create({
 	view: {
 		alignSelf: 'stretch',
 		flex: 1,
+	},
+
+	tab: {
+		width: tab_size,
+		height: tab_size,
+		marginTop: 'auto',
+		marginBottom: 'auto',
 	},
 
 	carousel: {

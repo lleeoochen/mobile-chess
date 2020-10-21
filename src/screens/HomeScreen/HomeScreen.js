@@ -4,11 +4,14 @@ import { ActionBar, WebVibe, TextVibe, ModalVibe, ButtonVibe, DialogVibe } from 
 import AutoHeightImage from 'react-native-auto-height-image';
 import SideMenu from 'react-native-side-menu';
 import messaging from '@react-native-firebase/messaging';
+import { createAppContainer } from 'react-navigation';
+import { createBottomTabNavigator } from 'react-navigation-tabs';
+import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';
 
 import { HomeStore } from 'chessvibe/src/redux/Store';
 import { useSelector } from 'react-redux';
 
-import { URL, TEAM, IMAGE, STORAGE_IS_DARK_THEME, MATCH_MODE } from 'chessvibe/src/Const';
+import { URL, TEAM, IMAGE, STORAGE_IS_DARK_THEME, MATCH_MODE, APP_THEME } from 'chessvibe/src/Const';
 import Util, { formatDate, vw, wh, strict_equal } from 'chessvibe/src/Util';
 import Cache from 'chessvibe/src/Cache';
 import Backend from 'chessvibe/src/Backend';
@@ -16,7 +19,6 @@ import Storage from 'chessvibe/src/Storage';
 import Stats from 'chessvibe/src/Stats';
 
 import HomeUserMenu from './HomeUserMenu';
-import HomeCreateMenu from './HomeCreateMenu';
 import NotificationMenu from './NotificationMenu';
 import PlayTab from './PlayTab';
 import HistoryTab from './HistoryTab';
@@ -43,29 +45,29 @@ const wait = (timeout) => {
 // Navigation
 HomeScreen.navigationOptions = ({navigation}) => {
 	const { params = {} } = navigation.state;
-	return ActionBar(NAV_TITLE[params.tab], 'MENU', params.openMenu, 'BELL', params.openCreate, params.isDarkTheme);
+	return ActionBar(NAV_TITLE[params.tab], undefined, undefined, 'BELL', params.openNotification, params.isDarkTheme);
 };
 
 
 // Home Screen
 export default function HomeScreen(props) {
+	const {setNavStack} = props.navigation.getScreenProps();
+
 	const isDarkTheme = useSelector(state => state.home.isDarkTheme);
+	const appTheme = isDarkTheme ? APP_THEME.DARK : APP_THEME.LIGHT;
 
 	const [ opponents, setOpponents ] = React.useState(Cache.home.opponents);
 	const [ matches, setMatches ] = React.useState(Cache.home.matches);
-	const [ createMenuVisible, showCreateMenu ] = React.useState({ show: false });
-	const [ refreshing, setRefreshing ] = React.useState(false);
-	const [ notificationsVisible, showNotifications ] = React.useState(false);
 
 	const onRefresh = React.useCallback(() => refresh(), []);
 	const user = React.useRef({});
+	const screenTab = React.useRef('PlayTab');
 
 	const { params = {} } = props.navigation.state;
 	const { tab='play' } = params;
 	const hidden = { display: 'none' };
 
 	function refresh() {
-		setRefreshing(true);
 		fetchMatches();
 	}
 
@@ -84,25 +86,10 @@ export default function HomeScreen(props) {
 		});
 	}, []);
 
-
-	React.useEffect(() => {
-		props.navigation.setParams({
-			tab: tab,
-			isDarkTheme: isDarkTheme,
-			openMenu: () => {
-				props.screenProps.openDrawer(true);
-			},
-			openCreate: () => {
-				showNotifications(!notificationsVisible);
-			},
-		});
-	}, [tab, isDarkTheme, notificationsVisible]);
-
 	// Upload APNS Token for push notification
 	React.useEffect(() => {
 		// Get the device token
 		messaging().getToken().then(token => Backend.uploadAPNSToken(token));
-		console.log();
 
 		// If using other push notification providers (ie Amazon SNS, etc)
 		// you may need to get the APNs token instead for iOS:
@@ -114,72 +101,76 @@ export default function HomeScreen(props) {
 
 	// Render function
 	function render() {
+		const HomeNavigator = createMaterialBottomTabNavigator(
+			{
+				PlayTab:     { screen: PlayTab },
+				HistoryTab:  { screen: HistoryTab },
+				FriendsTab:  { screen: FriendsTab },
+				SettingsTab: { screen: SettingsTab },
+			},
+			{
+				initialRouteName: screenTab.current,
+				backBehavior: 'none',
+
+				// Material tab bar config
+				activeColor: appTheme.COLOR,
+				inactiveColor: 'grey',
+				barStyle: {
+					backgroundColor: appTheme.MENU_BACKGROUND,
+				},
+
+				// Regular tab bar config
+				tabBarOptions: {
+					activeTintColor: appTheme.COLOR,
+					activeBackgroundColor: appTheme.MENU_BACKGROUND,
+					inactiveTintColor: 'grey',
+					inactiveBackgroundColor: appTheme.MENU_BACKGROUND,
+					style: {
+						borderTopWidth: 0,
+						borderTopColor: "transparent",
+					},
+				}
+			}
+		);
+
+		const Container = createAppContainer(HomeNavigator);
+
 		return (
 			<SafeAreaView style={ styles.view }>
 				<StatusBar hidden={ true }/>
 
-				<PlayTab
-					navigation={ props.navigation }
-					navigateGame={ navigateGame }
-					newMatches={ matches.new }
-					showCreateMenu={ showCreateMenu }
-					isDarkTheme={ isDarkTheme }
-					style={ tab == 'play' ? {} : hidden }/>
+				<Container
+					onNavigationStateChange={(prevState, currentState, action) => {
+						screenTab.current = getActiveRouteName(currentState);
+					}}
+					screenProps={{
+						isDarkTheme,
+						newMatches: matches.new,
+						oldMatches: matches.old,
+						friends: user.current.friends,
+						opponents,
+						navigateGame,
+						refresh,
+						setNavStack,
+					}}/>
 
-				<HistoryTab
-					navigation={ props.navigation }
-					oldMatches={ matches.old }
-					navigateGame={ navigateGame }
-					refreshing={ refreshing }
-					refresh={ refresh }
-					isDarkTheme={ isDarkTheme }
-					style={ tab == 'history' ? {} : hidden }/>
+				<HomeNotificationMenu
+					user={user}
+					isDarkTheme={isDarkTheme}
+					navigateGame={navigateGame}
+					navigation={props.navigation}
+					tab={tab}/>
 
-				<FriendsTab
-					navigation={ props.navigation }
-					isDarkTheme={ isDarkTheme }
-					opponents={ opponents }
-					friends={ user.current.friends }
-					style={ tab == 'friends' ? {} : hidden }/>
-
-				<SettingsTab
-					navigation={ props.navigation }
-					isDarkTheme={ isDarkTheme }
-					style={ tab == 'settings' ? {} : hidden }/>
-
-				<HomeCreateMenu
-					visible={ createMenuVisible.show }
-					mode={ createMenuVisible.mode }
-					opponents={ opponents }
-					friends={ user.current.friends }
-					onDismiss={ () => showCreateMenu({ show: false, mode: createMenuVisible.mode }) }
-					onSubmit={(theme, time, friend, isAI) => {
-						showCreateMenu({ show: false });
-						Backend.createMatch(theme, time, friend, isAI).then(match_id => {
-							Cache.theme[match_id] = theme;
-							navigateGame(match_id);
-						});
-					} }/>
-
-				<NotificationMenu
-					matches={ user.current.matches }
-					navigateGame={ navigateGame }
-					notificationIDs={ (user.current.notifications || []).reverse() }
-					friends={ user.current.friends }
-					isDarkTheme={ isDarkTheme }
-					visible={ notificationsVisible }
-					setVisible={ showNotifications }/>
 			</SafeAreaView>
 		);
 	}
 
 	// ====================== Functions ======================
 
-	// Navigate to game
 	function navigateGame(match) {
 		props.navigation.navigate('Game', {
-			match: match,
-			refresh: () => fetchMatches()
+			match,
+			refresh: () => fetchMatches(),
 		});
 	}
 
@@ -294,15 +285,53 @@ export default function HomeScreen(props) {
 
 			Cache.home.opponents = resultOpponents;
 			Cache.home.matches = resultMatches;
-
-			setRefreshing(false);
 		});
+	}
+
+	// gets the current screen from navigation state
+	function getActiveRouteName(navigationState) {
+		if (!navigationState) {
+			return null;
+		}
+
+		const route = navigationState.routes[navigationState.index];
+		// dive into nested navigators
+		if (route.routes) {
+			return getActiveRouteName(route);
+		}
+		return route.routeName;
 	}
 
 	// ====================== Functions ======================
 
 	// Render
 	return render();
+}
+
+
+function HomeNotificationMenu({user, isDarkTheme, navigation, navigateGame, tab}) {
+	const alertMenuShown = useSelector(state => state.home.alertMenuShown);
+
+	React.useEffect(() => {
+		navigation.setParams({
+			tab: tab,
+			isDarkTheme: isDarkTheme,
+			openNotification: () => {
+				HomeStore.toggleAlertMenu();
+			},
+		});
+	}, [tab, isDarkTheme]);
+
+	return (
+		<NotificationMenu
+			matches={ user.current.matches }
+			navigateGame={ navigateGame }
+			notificationIDs={ (user.current.notifications || []).reverse() }
+			friends={ user.current.friends }
+			isDarkTheme={ isDarkTheme }
+			visible={ alertMenuShown }
+			setVisible={ HomeStore.toggleAlertMenu }/>
+	);
 }
 
 

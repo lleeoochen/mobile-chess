@@ -2,6 +2,8 @@ import * as React from 'react';
 import { Animated, View, SafeAreaView, ScrollView, StyleSheet, StatusBar, TouchableOpacity, Image, Button, RefreshControl } from 'react-native';
 import { ActionBar, WebVibe, TextVibe, ModalVibe, ButtonVibe, DialogVibe } from 'chessvibe/src/widgets';
 import AutoHeightImage from 'react-native-auto-height-image';
+import Store, { HomeStore } from 'chessvibe/src/redux/Store';
+import { useSelector } from 'react-redux';
 
 import { URL, TEAM, IMAGE, APP_THEME } from 'chessvibe/src/Const';
 import Util, { formatDate, vw, wh, formatImage } from 'chessvibe/src/Util';
@@ -12,16 +14,34 @@ import SideMenu from 'react-native-side-menu'
 const matchSize = vw((100 - 2 - 6 - 4) / 4);
 const borderRadius = vw();
 
+
+// Navigation
+HistoryTab.navigationOptions = ({navigation}) => {
+	return {
+		tabBarLabel: 'History',
+		tabBarIcon: (
+			<Image style={ styles.tab } source={ IMAGE['HISTORY' + (Store.getState().home.isDarkTheme ? '' : '_DARK')] }/>
+		)
+	};
+};
+
 // Home Screen
 export default function HistoryTab(props) {
-	const { oldMatches, navigateGame, refreshing, refresh, isDarkTheme } = props;
-	const appTheme = isDarkTheme ? APP_THEME.DARK : APP_THEME.LIGHT;
+	// Screen props from navigation
+	const {
+		isDarkTheme,
+		oldMatches,
+		navigateGame,
+		refresh,
+	} = props.navigation.getScreenProps();
+
 	// const [ selectedMatch, selectMatch ] = React.useState(null);
+	const appTheme = isDarkTheme ? APP_THEME.DARK : APP_THEME.LIGHT;
 	const user = React.useRef({});
 	const [ fadein ] = React.useState(new Animated.Value(0));
+	const [ refreshing, setRefreshing ] = React.useState(false);
 	const onRefresh = React.useCallback(() => refresh(), []);
 	const firstLoad = React.useRef(true);
-
 
 	React.useEffect(() => {
 		if (firstLoad.current) {
@@ -151,12 +171,20 @@ export default function HistoryTab(props) {
 	return render();
 }
 
+const tab_size = vw(7);
 
 const styles = StyleSheet.create({
 	view: {
 		alignSelf: 'stretch',
 		flex: 1,
 		backgroundColor: '#1a283a',
+	},
+
+	tab: {
+		width: tab_size,
+		height: tab_size,
+		marginTop: 'auto',
+		marginBottom: 'auto',
 	},
 
 		playerBox: {

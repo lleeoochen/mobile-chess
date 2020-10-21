@@ -163,7 +163,7 @@ export default function GameScreen(props) {
 	});
 
 	var isIOS = Platform.OS === 'ios';
-	var topSpace = isIOS ? getStatusBarHeight() : 0;
+	var topSpace = getStatusBarHeight();
 	var bottomSpace = isIOS ? getBottomSpace() : 0;
 	var offset = vw(15);
 

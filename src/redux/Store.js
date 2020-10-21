@@ -1,5 +1,5 @@
 import { createStore } from 'redux';
-import Reducer, { HomeReducer, GameReducer, PopupReducer } from './Reducer';
+import Reducer, { HomeReducer, GameReducer, PopupReducer, RootReducer } from './Reducer';
 
 var Store = createStore(Reducer);
 
@@ -16,4 +16,5 @@ function makeDispatch(reducer) {
 export const HomeStore = makeDispatch(HomeReducer);
 export const GameStore = makeDispatch(GameReducer);
 export const PopupStore = makeDispatch(PopupReducer);
+export const RootStore = makeDispatch(RootReducer);
 export default Store;
