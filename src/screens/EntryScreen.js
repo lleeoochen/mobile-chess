@@ -1,11 +1,11 @@
 import * as React from 'react';
-import { View, SafeAreaView, Text, Button, StyleSheet, StatusBar, Image, Dimensions } from 'react-native';
+import { SafeAreaView, StyleSheet, StatusBar, Image } from 'react-native';
 import { FadeInView, TextVibe } from 'chessvibe/src/widgets';
-import { GoogleSignin, GoogleSigninButton, statusCodes } from '@react-native-community/google-signin';
+import { GoogleSignin, GoogleSigninButton } from '@react-native-community/google-signin';
 import auth from '@react-native-firebase/auth';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { URL, STORAGE_IS_DARK_THEME } from '../Const';
-import Util, { vw, vh } from '../Util';
+import Util from '../Util';
 import Cache, { CACHE_DEFAULT } from '../Cache';
 
 import Storage from 'chessvibe/src/Storage';
@@ -14,7 +14,7 @@ import { HomeStore, RootStore } from 'chessvibe/src/redux/Store';
 let logoImg = require('chessvibe/assets/logo.jpg');
 
 // Navigation
-EntryScreen.navigationOptions = ({navigation}) => {
+EntryScreen.navigationOptions = () => {
 	return {
 		headerShown: false
 	};
@@ -56,7 +56,7 @@ export default function EntryScreen(props) {
 		if (user) {
 			showSpinner(true);
 			setTimeout(() => {
-				navigateHome(user);
+				navigateHome();
 			},
 			500);
 		}
@@ -70,7 +70,7 @@ export default function EntryScreen(props) {
 			let { idToken } = await GoogleSignin.signIn();
 			let gCredential = auth.GoogleAuthProvider.credential(idToken);
 
-			let res = await auth().signInWithCredential(gCredential);
+			await auth().signInWithCredential(gCredential);
 		}
 		catch (error) {
 			console.log(error);
@@ -94,7 +94,7 @@ export default function EntryScreen(props) {
 	}
 
 	// Navigate to home
-	async function navigateHome(user) {
+	async function navigateHome() {
 		let isDarkTheme = await Storage.get(STORAGE_IS_DARK_THEME) || 'true';
 
 		HomeStore.setIsDarkTheme(isDarkTheme == 'true');
@@ -166,9 +166,9 @@ const logoSize = 200;
 const styles = StyleSheet.create({
 	screen: {
 		flex: 1,
-		display: "flex",
-		justifyContent: "center",
-		alignItems: "center",
+		display: 'flex',
+		justifyContent: 'center',
+		alignItems: 'center',
 		backgroundColor: 'black',
 	},
 	titleWrap: {

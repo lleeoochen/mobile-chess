@@ -6,8 +6,6 @@ import { HomeStore } from 'chessvibe/src/redux/Store';
 
 export default class Backend {
 
-	static socket = null;
-
 	static init() {
 		if (this.socket)
 			this.socket.close();
@@ -19,7 +17,7 @@ export default class Backend {
 		});
 
 		this.socket.on('error', (error) => {
-			console.log("SOCKET ERROR: ", error);
+			console.log('SOCKET ERROR: ', error);
 
 			if (error == 'Authentication error') {
 				HomeStore.toLogout(true);
@@ -73,7 +71,7 @@ export default class Backend {
 		});
 	}
 
-	static deleteMatch(match_id, resolve) {
+	static deleteMatch(match_id) {
 		return Util.request('POST', URL.BACKEND + '/chess/delete_match', {
 			match_id: match_id,
 		});

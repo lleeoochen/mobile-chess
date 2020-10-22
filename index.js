@@ -1,3 +1,4 @@
+import React from 'react';
 import { AppRegistry } from 'react-native';
 import App from './src/App';
 import { name as appName } from './app.json';
@@ -16,7 +17,6 @@ function HeadlessCheck({ isHeadless }) {
 		// App has been launched in the background by iOS, ignore
 		return null;
 	}
-
 	return <App />;
 }
 

@@ -26,9 +26,7 @@ import {
 export default class Util {
 
 	static request(method, url, body) {
-		return new Promise(async (resolve, reject) => {
-			let time_start = new Date().getTime();
-
+		return new Promise(async (resolve) => {
 			const response = await fetch(url, {
 				method: method,
 				headers: {
@@ -168,7 +166,7 @@ export function formatTimer(timer) {
 	let sec = timer - min * 60;
 	min = min < 10 ? '0' + min : min;
 	sec = sec < 10 ? '0' + sec : sec;
-	return min + ":" + sec;
+	return min + ':' + sec;
 }
 
 export function winType(move, team) {
@@ -228,7 +226,7 @@ export function getWinMessage(match) {
 		return 'Black Resigned. White Team Wins!';
 	}
 
-	return 'Game Over.'
+	return 'Game Over.';
 }
 
 export function piece(grid) {
@@ -239,7 +237,7 @@ export function piece(grid) {
 
 export function strict_equal(a, b) {
 	return JSON.stringify(a) === JSON.stringify(b);
-};
+}
 
 export function formatImage(imgUrl) {
 	if (!imgUrl) return IMAGE.NEW_MATCH;

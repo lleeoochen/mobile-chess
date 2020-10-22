@@ -1,6 +1,4 @@
-import { shallowEqual } from 'react-redux';
-import { THEME, TEAM, STORAGE_IS_DARK_THEME } from 'chessvibe/src/Const';
-import Storage from 'chessvibe/src/Storage';
+import { THEME } from 'chessvibe/src/Const';
 
 // Initial store state
 const initState = Object.freeze({
@@ -50,7 +48,7 @@ export const GameReducer = {
 		let game = { ...state.game, ...data };
 		return { ...state, ...{ game } };
 	}),
-	reset: createReducer((state, data) => {
+	reset: createReducer((state) => {
 		state.game = initState.game;
 		return { ...state };
 	}),
@@ -78,7 +76,7 @@ export const PopupReducer = {
 
 // Root Reducer
 export const RootReducer = {
-	reset: createReducer((state, data) => {
+	reset: createReducer(() => {
 		return JSON.parse(JSON.stringify(initState));
 	}),
 };
@@ -86,12 +84,6 @@ export const RootReducer = {
 
 // App Reducer
 export default function Reducer(state = initState, action) {
-	const AppReducer = {
-		home: HomeReducer,
-		game: GameReducer,
-		popup: PopupReducer,
-	};
-
 	if (action.reduce) {
 		return action.reduce(state, action.data);
 	}

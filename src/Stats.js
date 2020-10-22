@@ -83,6 +83,6 @@ export default class Stats {
 		let winRate = (100.0 * wins / total).toFixed(2);
 		if (winRate == 'NaN') winRate = null;
 
-		return { winRate, wins, total }
+		return { winRate, wins, total };
 	}
 }

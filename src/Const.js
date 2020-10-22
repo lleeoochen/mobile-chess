@@ -4,14 +4,14 @@ export const URL = Object.freeze({
 });
 
 
-export const CHESS = {King: "King", Queen: "Queen", Rook: "Rook", Bishop: "Bishop", Knight: "Knight", Pawn: "Pawn", None: "None"};
+export const CHESS = {King: 'King', Queen: 'Queen', Rook: 'Rook', Bishop: 'Bishop', Knight: 'Knight', Pawn: 'Pawn', None: 'None'};
 export const VALUE = {King: 200, Queen: 9, Rook: 5, Bishop: 3, Knight: 3, Pawn: 1, None: 0};
-export const TEAM = {B: "B", W: "W", None:"N"};
+export const TEAM = {B: 'B', W: 'W', None:'N'};
 
 export const BOARD_SIZE = 8;
 
-export const MATCHES_TABLE = "chess_matches";
-export const USERS_TABLE = "chess_users";
+export const MATCHES_TABLE = 'chess_matches';
+export const USERS_TABLE = 'chess_users';
 
 export const IMAGE = {
 	// General images
@@ -53,19 +53,19 @@ export const IMAGE = {
 	PREVIEW_NATURE:  require('chessvibe/assets/preview/nature.png'),
 
 	// Chess pieces
-	BKing:   require("chessvibe/assets/BKing.png"),
-	BQueen:  require("chessvibe/assets/BQueen.png"),
-	BRook:   require("chessvibe/assets/BRook.png"),
-	BBishop: require("chessvibe/assets/BBishop.png"),
-	BKnight: require("chessvibe/assets/BKnight.png"),
-	BPawn:   require("chessvibe/assets/BPawn.png"),
+	BKing:   require('chessvibe/assets/BKing.png'),
+	BQueen:  require('chessvibe/assets/BQueen.png'),
+	BRook:   require('chessvibe/assets/BRook.png'),
+	BBishop: require('chessvibe/assets/BBishop.png'),
+	BKnight: require('chessvibe/assets/BKnight.png'),
+	BPawn:   require('chessvibe/assets/BPawn.png'),
 
-	WKing:   require("chessvibe/assets/WKing.png"),
-	WQueen:  require("chessvibe/assets/WQueen.png"),
-	WRook:   require("chessvibe/assets/WRook.png"),
-	WBishop: require("chessvibe/assets/WBishop.png"),
-	WKnight: require("chessvibe/assets/WKnight.png"),
-	WPawn:   require("chessvibe/assets/WPawn.png"),
+	WKing:   require('chessvibe/assets/WKing.png'),
+	WQueen:  require('chessvibe/assets/WQueen.png'),
+	WRook:   require('chessvibe/assets/WRook.png'),
+	WBishop: require('chessvibe/assets/WBishop.png'),
+	WKnight: require('chessvibe/assets/WKnight.png'),
+	WPawn:   require('chessvibe/assets/WPawn.png'),
 
 	// Review buttons
 	FORWARD:      require('chessvibe/assets/forward.png'),
@@ -109,67 +109,67 @@ export const APP_THEME = Object.freeze({
 
 export const THEME = Object.freeze({
 	CLASSIC: {
-		ID:                     "classic",
-		COLOR_BOARD_LIGHT:      "#E6BF83",
-		COLOR_BOARD_DARK:       "#8B4513",
-		COLOR_HIGHLIGHT_LIGHT:  "#9E93E1",
-		COLOR_HIGHLIGHT_DARK:   "#7B68EE",
-		COLOR_LAST_MOVE_LIGHT:  "#FDFD84",
-		COLOR_LAST_MOVE_DARK:   "#EFEF6E",
+		ID:                     'classic',
+		COLOR_BOARD_LIGHT:      '#E6BF83',
+		COLOR_BOARD_DARK:       '#8B4513',
+		COLOR_HIGHLIGHT_LIGHT:  '#9E93E1',
+		COLOR_HIGHLIGHT_DARK:   '#7B68EE',
+		COLOR_LAST_MOVE_LIGHT:  '#FDFD84',
+		COLOR_LAST_MOVE_DARK:   '#EFEF6E',
 		COLOR_UTILITY: {
-			DESKTOP:            "#494949",
-			MOBILE:             "#89898980",
+			DESKTOP:            '#494949',
+			MOBILE:             '#89898980',
 		},
 		BACKGROUND_IMAGE:       IMAGE.CLASSIC,
-		NAME_TITLE_COLOR:       "white"
+		NAME_TITLE_COLOR:       'white'
 	},
 
 	WINTER: {
-		ID:                     "winter",
-		COLOR_BOARD_LIGHT:      "#00B3DE",
-		COLOR_BOARD_DARK:       "#3D507B",
-		COLOR_HIGHLIGHT_LIGHT:  "#CC5E7C",
-		COLOR_HIGHLIGHT_DARK:   "#D63460",
-		COLOR_LAST_MOVE_LIGHT:  "#FDFD84",
-		COLOR_LAST_MOVE_DARK:   "#EFEF6E",
+		ID:                     'winter',
+		COLOR_BOARD_LIGHT:      '#00B3DE',
+		COLOR_BOARD_DARK:       '#3D507B',
+		COLOR_HIGHLIGHT_LIGHT:  '#CC5E7C',
+		COLOR_HIGHLIGHT_DARK:   '#D63460',
+		COLOR_LAST_MOVE_LIGHT:  '#FDFD84',
+		COLOR_LAST_MOVE_DARK:   '#EFEF6E',
 		COLOR_UTILITY: {
-			DESKTOP:            "#494949",
-			MOBILE:             "#FFFFFF33",
+			DESKTOP:            '#494949',
+			MOBILE:             '#FFFFFF33',
 		},
 		BACKGROUND_IMAGE:       IMAGE.WINTER,
-		NAME_TITLE_COLOR:       "white",
+		NAME_TITLE_COLOR:       'white',
 	},
 
 	METAL: {
-		ID:                     "metal",
-		COLOR_BOARD_LIGHT:      "#d2d2d2",
-		COLOR_BOARD_DARK:       "#5a5858",
-		COLOR_HIGHLIGHT_LIGHT:  "#9e93e1",
-		COLOR_HIGHLIGHT_DARK:   "#7B68EE",
-		COLOR_LAST_MOVE_LIGHT:  "#FDFD84",
-		COLOR_LAST_MOVE_DARK:   "#EFEF6E",
+		ID:                     'metal',
+		COLOR_BOARD_LIGHT:      '#d2d2d2',
+		COLOR_BOARD_DARK:       '#5a5858',
+		COLOR_HIGHLIGHT_LIGHT:  '#9e93e1',
+		COLOR_HIGHLIGHT_DARK:   '#7B68EE',
+		COLOR_LAST_MOVE_LIGHT:  '#FDFD84',
+		COLOR_LAST_MOVE_DARK:   '#EFEF6E',
 		COLOR_UTILITY: {
-			DESKTOP:            "#494949",
-			MOBILE:             "#89898980",
+			DESKTOP:            '#494949',
+			MOBILE:             '#89898980',
 		},
 		BACKGROUND_IMAGE:       IMAGE.METAL,
-		NAME_TITLE_COLOR:       "white"
+		NAME_TITLE_COLOR:       'white'
 	},
 
 	NATURE: {
-		ID:                     "nature",
-		COLOR_BOARD_LIGHT:      "#c7da61",
-		COLOR_BOARD_DARK:       "#437149",
-		COLOR_HIGHLIGHT_LIGHT:  "#9e93e1",
-		COLOR_HIGHLIGHT_DARK:   "#7B68EE",
-		COLOR_LAST_MOVE_LIGHT:  "#BB92AB",
-		COLOR_LAST_MOVE_DARK:   "#905E7C",
+		ID:                     'nature',
+		COLOR_BOARD_LIGHT:      '#c7da61',
+		COLOR_BOARD_DARK:       '#437149',
+		COLOR_HIGHLIGHT_LIGHT:  '#9e93e1',
+		COLOR_HIGHLIGHT_DARK:   '#7B68EE',
+		COLOR_LAST_MOVE_LIGHT:  '#BB92AB',
+		COLOR_LAST_MOVE_DARK:   '#905E7C',
 		COLOR_UTILITY: {
-			DESKTOP:            "#494949",
-			MOBILE:             "#00000080",
+			DESKTOP:            '#494949',
+			MOBILE:             '#00000080',
 		},
 		BACKGROUND_IMAGE:       IMAGE.NATURE,
-		NAME_TITLE_COLOR:       "white",
+		NAME_TITLE_COLOR:       'white',
 	},
 });
 

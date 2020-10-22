@@ -1,27 +1,22 @@
 import * as React from 'react';
-import { AppState, LogBox, Animated, View, SafeAreaView, Platform } from 'react-native';
+import { AppState, LogBox, SafeAreaView, Platform } from 'react-native';
 import { createAppContainer } from 'react-navigation';
-import { createBottomTabNavigator } from 'react-navigation-tabs';
 import { createStackNavigator } from 'react-navigation-stack';
-import { Provider, useSelector } from 'react-redux';
+import { Provider } from 'react-redux';
 import SplashScreen from 'react-native-splash-screen';
-import Spinner from 'react-native-loading-spinner-overlay';
 import messaging from '@react-native-firebase/messaging';
-import PushNotificationIOS from "@react-native-community/push-notification-ios";
+import PushNotificationIOS from '@react-native-community/push-notification-ios';
 
 import Entry from './screens/EntryScreen';
 import Home from './screens/HomeScreen';
 import Game from './screens/GameScreen';
 import ProfilePopup from './screens/Popups/ProfilePopup';
-import { vw, vh } from './Util';
+import { vw } from './Util';
 import { STORAGE_APP_CACHE } from './Const';
 
 import store from './redux/Store';
 import Storage from './Storage';
 import Cache, { CACHE_DEFAULT } from './Cache';
-
-import SideMenu from 'react-native-side-menu'
-import Store, { HomeStore } from 'chessvibe/src/redux/Store';
 
 LogBox.ignoreLogs(['Task orphaned']);
 
@@ -99,7 +94,6 @@ async function requestUserPermission() {
 function AppContent() {
 	const [navStack, setNavStack] = React.useState('login');
 	const appState = React.useRef(AppState.currentState);
-	const navRef = React.useRef(null);
 
 	// Clean up when app closes
 	async function onAppStateChanged(state) {
@@ -125,10 +119,10 @@ function AppContent() {
 	React.useEffect(() => {
 		SplashScreen.hide();
 
-		AppState.addEventListener("change", state => onAppStateChanged(state));
+		AppState.addEventListener('change', state => onAppStateChanged(state));
 
 		return () => {
-			AppState.removeEventListener("change", state => onAppStateChanged(state));
+			AppState.removeEventListener('change', state => onAppStateChanged(state));
 		};
 	}, []);
 
@@ -136,7 +130,7 @@ function AppContent() {
 		requestUserPermission();
 
 		if (Platform.OS === 'ios') {
-			PushNotificationIOS.setApplicationIconBadgeNumber(0)
+			PushNotificationIOS.setApplicationIconBadgeNumber(0);
 		}
 	});
 
@@ -158,4 +152,3 @@ export default function App() {
 		</Provider>
 	);
 }
-
