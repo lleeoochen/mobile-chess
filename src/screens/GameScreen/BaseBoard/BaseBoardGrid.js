@@ -1,12 +1,9 @@
 import * as React from 'react';
-import { StatusBar, View, SafeAreaView, Text, Image, StyleSheet } from 'react-native';
-import { useSelector, shallowEqual } from 'react-redux';
-import Store from 'chessvibe/src/redux/Store';
-import * as Reducer from 'chessvibe/src/redux/Reducer';
-import { vw, vh } from 'chessvibe/src/Util';
+import { View, StyleSheet } from 'react-native';
+import { useSelector } from 'react-redux';
+import { vw } from 'chessvibe/src/Util';
 import * as Const from 'chessvibe/src/Const';
 import { TextVibe } from 'chessvibe/src/widgets';
-
 
 export default function BaseBoardGrid(props) {
 	let { x, y, numbering, color, isLight, theme, style } = props;

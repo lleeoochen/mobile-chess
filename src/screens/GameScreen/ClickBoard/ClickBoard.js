@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { TouchableOpacity, View, StyleSheet } from 'react-native';
-import { useSelector, useDispatch, shallowEqual } from 'react-redux';
-import { vw, vh } from 'chessvibe/src/Util';
+import { vw } from 'chessvibe/src/Util';
 import { BOARD_SIZE } from 'chessvibe/src/Const';
 
 
@@ -29,6 +28,7 @@ export default function ClickBoard(props) {
 const margin_size = vw(1);
 const cell_size = (vw(100) - 4 * margin_size) / 8;
 
+/* eslint-disable react-native/no-unused-styles */
 const styles = StyleSheet.create({
 	x0: { left: 0 * cell_size },
 	x1: { left: 1 * cell_size },

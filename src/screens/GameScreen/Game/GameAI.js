@@ -1,11 +1,6 @@
-import Store        from 'chessvibe/src/redux/Store';
-import * as Reducer from 'chessvibe/src/redux/Reducer';
 import * as Const   from 'chessvibe/src/Const';
 import Util         from 'chessvibe/src/Util';
-import PieceFactory from './piecefactory';
-import Grid         from './grid';
 import Backend      from 'chessvibe/src/GameBackend';
-import Cache        from 'chessvibe/src/Cache';
 import Game         from './Game';
 
 export default class GameAI extends Game {
@@ -27,7 +22,7 @@ export default class GameAI extends Game {
 				let aDist = Math.sqrt(Math.pow(a.oldGrid.x - x, 2) + Math.pow(a.oldGrid.y - y, 2));
 				let bDist = Math.sqrt(Math.pow(b.oldGrid.x - x, 2) + Math.pow(b.oldGrid.y - y, 2));
 				return aDist - bDist;
-			}
+			};
 
 			chosens.sort(kingDistanceSort);
 
@@ -115,7 +110,7 @@ export default class GameAI extends Game {
 								chosenGroups[chosen] = [{ oldGrid, newGrid, value }];
 							}
 							else if (value == chosenGroups[chosen][0].value) {
-								chosenGroups[chosen].push({ oldGrid, newGrid, value })
+								chosenGroups[chosen].push({ oldGrid, newGrid, value });
 							}
 						}
 						else {
@@ -124,7 +119,7 @@ export default class GameAI extends Game {
 								chosenGroups[chosen] = [{ oldGrid, newGrid, value }];
 							}
 							else if (value == chosenGroups[chosen][0].value) {
-								chosenGroups[chosen].push({ oldGrid, newGrid, value })
+								chosenGroups[chosen].push({ oldGrid, newGrid, value });
 							}
 						}
 
@@ -159,12 +154,4 @@ export default class GameAI extends Game {
 		this.moveChess(oldGrid, newGrid);
 		return true;
 	}
-}
-
-function gridSort(a, b) {
-	return a.piece.value - b.piece.value;
-}
-
-function gridSortReverse(a, b) {
-	return b.piece.value - a.piece.value;
 }

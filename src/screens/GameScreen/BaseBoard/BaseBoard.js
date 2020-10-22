@@ -1,16 +1,13 @@
 import * as React from 'react';
-import { StatusBar, View, SafeAreaView, Text, Image, StyleSheet } from 'react-native';
-import { useSelector, shallowEqual } from 'react-redux';
-import Store from 'chessvibe/src/redux/Store';
-import * as Reducer from 'chessvibe/src/redux/Reducer';
-import { vw, vh } from 'chessvibe/src/Util';
+import { View, StyleSheet } from 'react-native';
+import { useSelector } from 'react-redux';
+import { vw } from 'chessvibe/src/Util';
 import * as Const from 'chessvibe/src/Const';
 
 import BaseBoardGrid from './BaseBoardGrid';
 import BasePlayerPanel from './BasePlayerPanel';
 
-
-export default function BaseBoard(props) {
+export default function BaseBoard() {
 	const theme = useSelector(state => state.game.theme);
 	const downward = useSelector(state => state.game.downward);
 	const team = useSelector(state => state.game.team);
@@ -66,11 +63,11 @@ export default function BaseBoard(props) {
 
 	return (
 		<View style={ styles.container }>
-			<BasePlayerPanel color={ blackTop ? "black" : "white" } pos={ 'top' }/>
+			<BasePlayerPanel color={ blackTop ? 'black' : 'white' } pos={ 'top' }/>
 			<View style={ styles.board }>
 				{ grids }
 			</View>
-			<BasePlayerPanel color={ blackTop ? "white" : "black" } pos={ 'bottom' }/>
+			<BasePlayerPanel color={ blackTop ? 'white' : 'black' } pos={ 'bottom' }/>
 		</View>
 	);
 }
@@ -79,6 +76,7 @@ const margin_size = vw(1);
 const cell_size = (vw(100) - 4 * margin_size) / 8;
 const canvas_size = margin_size * 2 + cell_size * 8;
 
+/* eslint-disable react-native/no-unused-styles */
 const styles = StyleSheet.create({
 	x0: { left: 0 * cell_size },
 	x1: { left: 1 * cell_size },

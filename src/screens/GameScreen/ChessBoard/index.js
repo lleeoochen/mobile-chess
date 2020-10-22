@@ -1,2 +1,2 @@
-import ChessBoard from './ChessBoard'
+import ChessBoard from './ChessBoard';
 export default ChessBoard;

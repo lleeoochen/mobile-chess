@@ -1,2 +1,2 @@
-import ClickBoard from './ClickBoard'
+import ClickBoard from './ClickBoard';
 export default ClickBoard;

@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
 
 import { getWinMessage } from 'chessvibe/src/Util';
-import { TEAM, DB_REQUEST_ASK, DIALOG } from 'chessvibe/src/Const';
+import { TEAM, DIALOG } from 'chessvibe/src/Const';
 import { DialogVibe } from 'chessvibe/src/widgets';
 import Backend from 'chessvibe/src/GameBackend';
 
@@ -26,7 +26,6 @@ export default function UtilityDialogs(props) {
 	const [ inviteState, setInviteState ] = inviteHook;
 	const [ chatState, setChatState ] = chatHook;
 	const [ endingState, setEndingState ] = endingHook;
-	const dialogHooks = Object.values(props);
 
 	// Game variables
 	const theme = useSelector(state => state.game.theme);

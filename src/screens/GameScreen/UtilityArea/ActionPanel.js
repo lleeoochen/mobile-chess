@@ -1,17 +1,13 @@
 import * as React from 'react';
-import { View, StyleSheet, Animated } from 'react-native';
+import { StyleSheet, Animated } from 'react-native';
 import { useSelector } from 'react-redux';
-import { vw, vh } from 'chessvibe/src/Util';
+import { vw } from 'chessvibe/src/Util';
 import { TEAM, MAX_TIME, DB_REQUEST_ASK, DIALOG } from 'chessvibe/src/Const';
-import { TextVibe, ButtonVibe, ModalVibe, DialogVibe } from 'chessvibe/src/widgets';
+import { TextVibe, ButtonVibe } from 'chessvibe/src/widgets';
 import Backend from 'chessvibe/src/GameBackend';
 
-const margin_size = vw();
-const cell_size = (vw(100) - 4 * margin_size) / 8;
-const borderRadius = vw();
-
 export default function ActionPanel(props) {
-	const { theme, whitePlayer, blackPlayer, setResignState } = props;
+	const { theme, setResignState } = props;
 	const game = useSelector(state => state.game);
 	const { minimizeDrawer=() => {} } = props;
 	const modeAI = game != null && game.modeAI;
@@ -109,7 +105,7 @@ export default function ActionPanel(props) {
 				key={ index }
 				disabled={ disabled }
 				style={ btnStyle }
-				useGestureButton={ Platform.OS === "android" }
+				useGestureButton={ Platform.OS === 'android' }
 				onPress={ onPress }>
 				<TextVibe style={ styles.btnText }> { text } </TextVibe>
 			</ButtonVibe>
@@ -124,55 +120,16 @@ export default function ActionPanel(props) {
 	);
 }
 
-
-
-
 const styles = StyleSheet.create({
-
-	btnContainer: {
+	btn: {
 		flex: 1,
-		flexDirection: 'row',
-		paddingHorizontal: vw(2),
-		backgroundColor: 'darkslategrey',
+		marginRight: vw(0.5),
+		width: vw(25 - 3.5 / 4),
 	},
 
-		btn: {
-			flex: 1,
-			marginRight: vw(0.5),
-			width: vw(25 - 3.5 / 4),
+		btnText: {
+			fontSize: vw(5),
+			textAlign: 'center',
+			color: 'white',
 		},
-
-			btnText: {
-				fontSize: vw(5),
-				textAlign: 'center',
-				color: 'white',
-			},
-
-			cancelBtn: {
-				backgroundColor: 'white',
-				paddingVertical: vw(),
-				paddingHorizontal: vw(3),
-				margin: vw(),
-			},
-
-			confirmBtn: {
-				backgroundColor: '#57bf69',
-				paddingVertical: vw(),
-				paddingHorizontal: vw(3),
-				margin: vw(),
-				fontWeight: 'bold',
-			},
-
-	text: {
-		fontSize: vw(5),
-		textAlign: 'center',
-		color: 'white',
-		backgroundColor: 'darkslategrey',
-		paddingHorizontal: vw(2),
-		marginBottom: vw(5),
-	},
-
-	black: {
-		color: 'black',
-	},
 });

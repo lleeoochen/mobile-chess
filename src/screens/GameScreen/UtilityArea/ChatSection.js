@@ -1,16 +1,12 @@
 import * as React from 'react';
-import { View, StyleSheet, TextInput, Animated } from 'react-native';
+import { View, StyleSheet, Animated } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import Clipboard from '@react-native-community/clipboard';
 import { useSelector } from 'react-redux';
-import Util, { vw, vh, strict_equal } from 'chessvibe/src/Util';
-import { IMAGE, URL, DIALOG } from 'chessvibe/src/Const';
-import { TextVibe, ButtonVibe, ModalVibe, KeyboardVibe, DialogVibe, InputVibe } from 'chessvibe/src/widgets';
-import AutoHeightImage from 'react-native-auto-height-image';
+import Util, { vw, strict_equal } from 'chessvibe/src/Util';
+import { TextVibe, ButtonVibe, InputVibe } from 'chessvibe/src/widgets';
 import Backend from 'chessvibe/src/GameBackend';
 
-const margin_size = vw();
-const cell_size = (vw(100) - 4 * margin_size) / 8;
 const borderRadius = vw();
 
 const header_height = 70;
@@ -20,14 +16,11 @@ const panel_height = header_height - handle_height;
 const copied_width = 50;
 
 export default function ChatSection(props) {
-	const theme = useSelector(state => state.game.theme);
 	const chat = useSelector(state => state.game.match ? state.game.match.chat : [], strict_equal);
 	const contentRef = React.useRef();
 	const [ messageCache, setMessageCache ] = React.useState(null);
-	const { gameRef, setChatState, minimizeDrawer=()=>{} } = props;
+	const { gameRef } = props;
 
-	let colorLight = { backgroundColor: theme.COLOR_BOARD_LIGHT };
-	let colorDark = { backgroundColor: theme.COLOR_BOARD_DARK };
 	let colorBlack = { backgroundColor: 'black' };
 
 	// Render chat bubbles
@@ -48,8 +41,6 @@ export default function ChatSection(props) {
 					right={ messageObj.team == gameRef.team }
 					onPress={ async () => {
 						Clipboard.setString(messageObj.message);
-						// setChatState(DIALOG.REQUEST_SHOW);
-						// minimizeDrawer();
 					}}>
 					{ messageObj.message }
 				</ChatBubble>
@@ -134,10 +125,10 @@ function ChatBubble(props) {
 		<ButtonVibe
 			key={ 'chatBubble' }
 			style={ viewStyle }
-			useGestureButton={ Platform.OS === "android" }
+			useGestureButton={ Platform.OS === 'android' }
 			onPress={ () => {
 				setShowCopiedMessage(true);
-				props.onPress();
+				onPress();
 				setTimeout(() => {
 					setShowCopiedMessage(false);
 				}, 1000);
@@ -167,10 +158,6 @@ function ChatBubble(props) {
 
 
 const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-	},
-
 	chatContent: {
 		paddingHorizontal: vw(),
 	},
@@ -227,19 +214,9 @@ const styles = StyleSheet.create({
 			fontSize: vw(5),
 			color: 'white',
 			backgroundColor: '#0d151f',
-			// borderColor: 'gray',
 			borderWidth: 1,
 			borderBottomLeftRadius: borderRadius,
 			borderBottomRightRadius: borderRadius,
-
-			// shadowColor: "#ffffff",
-			// shadowOffset: {
-			// 	width: 0,
-			// 	height: 0,
-			// },
-			// shadowOpacity: 0.5,
-			// shadowRadius: 3,
-			// elevation: 1,
 			height: Platform.OS === 'android' ? panel_height * 1.2 : panel_height,
 		},
 });

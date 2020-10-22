@@ -1,15 +1,11 @@
 import * as React from 'react';
-import { View, StyleSheet, Animated } from 'react-native';
+import { StyleSheet, Animated } from 'react-native';
 import Clipboard from '@react-native-community/clipboard';
 import { useSelector } from 'react-redux';
-import { vw, vh } from 'chessvibe/src/Util';
+import { vw } from 'chessvibe/src/Util';
 import { IMAGE, URL, DIALOG } from 'chessvibe/src/Const';
-import { TextVibe, ButtonVibe, ModalVibe, DialogVibe } from 'chessvibe/src/widgets';
+import { TextVibe, ButtonVibe } from 'chessvibe/src/widgets';
 import AutoHeightImage from 'react-native-auto-height-image';
-
-const margin_size = vw();
-const cell_size = (vw(100) - 4 * margin_size) / 8;
-const borderRadius = vw();
 
 export default function InvitePanel(props) {
 	const theme = useSelector(state => state.game.theme);
@@ -24,7 +20,7 @@ export default function InvitePanel(props) {
 		<ButtonVibe
 			disabled={ gameRef == null }
 			style={ btnStyle }
-			useGestureButton={ Platform.OS === "android" }
+			useGestureButton={ Platform.OS === 'android' }
 			onPress={ async () => {
 				Clipboard.setString(URL.FRONTEND + '/game?match=' + gameRef.match_id);
 				setInviteState(DIALOG.REQUEST_SHOW);
@@ -61,24 +57,4 @@ const styles = StyleSheet.create({
 		ml2: {
 			marginLeft: vw(2),
 		},
-
-		cancelBtn: {
-			backgroundColor: 'white',
-			paddingVertical: vw(),
-			paddingHorizontal: vw(3),
-			margin: vw(),
-		},
-
-	text: {
-		fontSize: vw(5),
-		textAlign: 'center',
-		color: 'white',
-		backgroundColor: 'darkslategrey',
-		paddingHorizontal: vw(2),
-		marginBottom: vw(5),
-	},
-
-	black: {
-		color: 'black',
-	},
 });

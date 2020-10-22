@@ -1,12 +1,7 @@
 import * as React from 'react';
-import { StatusBar, View, SafeAreaView, Text, Image, StyleSheet } from 'react-native';
-import { useSelector, shallowEqual } from 'react-redux';
+import { useSelector } from 'react-redux';
 import LinearGradient from 'react-native-linear-gradient';
-import Store from 'chessvibe/src/redux/Store';
-import * as Reducer from 'chessvibe/src/redux/Reducer';
-import { vw, vh, strict_equal } from 'chessvibe/src/Util';
 import * as Const from 'chessvibe/src/Const';
-
 
 export default function BaseBorder(props) {
 	const { stats, team, enemy, downward } = useSelector(state => {

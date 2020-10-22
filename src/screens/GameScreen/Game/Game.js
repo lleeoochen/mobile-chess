@@ -1,5 +1,4 @@
 import Store, { GameStore } from 'chessvibe/src/redux/Store';
-import * as Reducer from 'chessvibe/src/redux/Reducer';
 import * as Const   from 'chessvibe/src/Const';
 import Util         from 'chessvibe/src/Util';
 import PieceFactory from './piecefactory';
@@ -58,13 +57,11 @@ export default class Game {
 
 		        if (value == false)
 			        Promise.resolve();
-		    }
+		    };
 
 		    this.get = function() {
 		        return value;
-		    }
-
-		    var promise = new Promise(this.set);
+		    };
 		}
 		this.playingBack = new PlayingBack();
 		this.playingBack.set(false);
@@ -165,7 +162,7 @@ export default class Game {
 
 		//Action0 - Castle
 		if (this.canCastle(this.oldGrid, newGrid)) {
-			Backend.updateChessboard(this.oldGrid, newGrid, this.turn, this.black_timer, this.white_timer).catch(err => {
+			Backend.updateChessboard(this.oldGrid, newGrid, this.turn, this.black_timer, this.white_timer).catch(() => {
 				this.clearMoves();
 				this.fillGrid(this.oldGrid, Const.COLOR_ORIGINAL);
 				this.unmoveChess();
@@ -192,7 +189,7 @@ export default class Game {
 
 		//Action3 - Move Piece by clicking on empty grid or eat enemy by clicking on legal grid. Switch turn.
 		else if (this.oldGrid != null && this.get_piece(this.oldGrid) != null && isLegal) {
-			Backend.updateChessboard(this.oldGrid, newGrid, this.turn, this.black_timer, this.white_timer).catch(err => {
+			Backend.updateChessboard(this.oldGrid, newGrid, this.turn, this.black_timer, this.white_timer).catch(() => {
 				this.clearMoves();
 				this.fillGrid(this.oldGrid, Const.COLOR_ORIGINAL);
 				this.unmoveChess();
@@ -201,9 +198,9 @@ export default class Game {
 
 			this.moveChess(this.oldGrid, newGrid);
 			if (this.team == Const.TEAM.B)
-				this.black_timer += 1
+				this.black_timer += 1;
 			else
-				this.white_timer += 1
+				this.white_timer += 1;
 			this.oldGrid = null;
 		}
 	}
@@ -218,7 +215,7 @@ export default class Game {
 			let flipped = this.turn == this.team ? this.downward : !this.downward;
 			let move = Util.unpack(match.moves[this.moves_applied], flipped);
 
-			await new Promise((resolve, reject) => {
+			await new Promise((resolve) => {
 				setTimeout(() => {
 					breakloop = !this.moveChess(this.chessboard[move.old_x][move.old_y], this.chessboard[move.new_x][move.new_y]);
 					resolve();
@@ -428,7 +425,6 @@ export default class Game {
 	isKingSafe(team, oldGrid, newGrid) {
 		let board = this.copyBoard(this.chessboard);
 
-		let isKingSafe = true;
 		let target_grid = this.king_grid[team];
 
 		if (oldGrid && newGrid) {
@@ -439,9 +435,8 @@ export default class Game {
 				target_grid = newGrid;
 		}
 
-		let validPieces = this.getReachablePieces(board, target_grid, team)
+		let validPieces = this.getReachablePieces(board, target_grid, team);
 		let enemies = validPieces.enemies;
-		let friends = validPieces.friends;
 
 		return enemies.length == 0;
 	}
@@ -774,7 +769,7 @@ export default class Game {
 
 		//Pawn to Queen Move
 		if (flag == Const.FLAG_PAWN_TO_QUEEN) {
-			this.unmovePawnToQueen(newGrid, oldGrid, eaten_piece);
+			this.unmovePawnToQueen(newGrid, oldGrid);
 		}
 
 		//Update king position
@@ -799,9 +794,6 @@ export default class Game {
 	unmoveEatPiece(eatenGrid, eaten_piece) {
 		if (eaten_piece != -1) {
 			this.stats[this.pieces[eaten_piece].team] += Const.VALUE[this.pieces[eaten_piece].type];
-
-			var new_img = this.pieces[eaten_piece].image;
-			var newGridTeam = this.pieces[eaten_piece].team;
 
 			eatenGrid.piece = eaten_piece;
 
@@ -836,7 +828,7 @@ export default class Game {
 		}
 	}
 
-	unmovePawnToQueen(newGrid, oldGrid, eaten_piece) {
+	unmovePawnToQueen(newGrid, oldGrid) {
 		oldGrid.piece = newGrid.piece;
 		this.initEachPiece(this.id++, oldGrid.x, oldGrid.y, this.get_piece(oldGrid).team, Const.CHESS.Pawn);
 
@@ -855,7 +847,7 @@ export default class Game {
 
 		while (this.moves_applied > 0 && this.moves_applied > moves_target && !this.stopPlayBack) {
 
-			await new Promise((resolve, reject) => {
+			await new Promise((resolve) => {
 				this.playTimeout = setTimeout(() => {
 					if (!this.stopPlayBack) {
 						this.unmoveChess();
@@ -870,7 +862,7 @@ export default class Game {
 			let flipped = this.turn == this.team ? this.downward : !this.downward;
 			let move = Util.unpack(this.match.moves[this.moves_applied], flipped);
 
-			await new Promise((resolve, reject) => {
+			await new Promise((resolve) => {
 				this.playTimeout = setTimeout(() => {
 					if (!this.stopPlayBack) {
 						breakloop = !this.moveChess(this.chessboard[move.old_x][move.old_y], this.chessboard[move.new_x][move.new_y]);

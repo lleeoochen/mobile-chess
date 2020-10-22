@@ -1,2 +1,2 @@
-import BackImage from './BackImage'
+import BackImage from './BackImage';
 export default BackImage;

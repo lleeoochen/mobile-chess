@@ -1,5 +1,4 @@
 import * as Const from 'chessvibe/src/Const';
-import Grid   from './grid';
 import Bishop from './bishop';
 import King   from './king';
 import Knight from './knight';

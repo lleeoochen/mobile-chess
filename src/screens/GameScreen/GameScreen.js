@@ -1,15 +1,15 @@
 import * as React from 'react';
-import { StatusBar, SafeAreaView, StyleSheet, View, ScrollView, KeyboardAvoidingView } from 'react-native';
+import { StatusBar, SafeAreaView, StyleSheet, ScrollView, KeyboardAvoidingView } from 'react-native';
 import { StackActions } from 'react-navigation';
-import Animated from 'react-native-reanimated'
+import Animated from 'react-native-reanimated';
 import { isIphoneX, getStatusBarHeight, getBottomSpace } from 'react-native-iphone-x-helper';
 import { ActionBar } from 'chessvibe/src/widgets';
 
 import Store, { GameStore } from 'chessvibe/src/redux/Store';
 import { useSelector } from 'react-redux';
 
-import { THEME, TEAM, IMAGE, MAX_TIME } from 'chessvibe/src/Const';
-import Util, { vw, vh } from 'chessvibe/src/Util';
+import { THEME, MAX_TIME } from 'chessvibe/src/Const';
+import Util, { vw } from 'chessvibe/src/Util';
 
 import Cache from 'chessvibe/src/Cache';
 import Backend from 'chessvibe/src/GameBackend';
@@ -59,7 +59,7 @@ export default function GameScreen(props) {
 						return {};
 
 					goingBack.current = true;
-					return StackActions.pop()
+					return StackActions.pop();
 				})());
 			},
 			changeTheme: () => {
@@ -94,8 +94,8 @@ export default function GameScreen(props) {
 					GameStore.initGame(game);
 				}
 
-				await new Promise((resolve, reject) => {
-					setTimeout(() => { resolve() }, 500);
+				await new Promise((resolve) => {
+					setTimeout(() => { resolve(); }, 500);
 				});
 			}
 			else {
@@ -181,7 +181,7 @@ export default function GameScreen(props) {
 	// Render
 	return (
 		<KeyboardAvoidingView
-			behavior={Platform.OS == "ios" ? "padding" : "height"}
+			behavior={Platform.OS == 'ios' ? 'padding' : 'height'}
 			keyboardVerticalOffset={ keyboardOffset }
 			style={styles.container}>
 
@@ -214,12 +214,8 @@ export default function GameScreen(props) {
 const margin_size = vw(1);
 const cell_size = (vw(100) - 4 * margin_size) / 8;
 const canvas_size = margin_size * 2 + cell_size * 8;
-const borderRadius = vw();
 
-
-const handle_height = 20 + vw(3);
 const panel_height = vw(12);
-const header_height = panel_height + handle_height;
 
 const styles = StyleSheet.create({
 	container: {
@@ -228,7 +224,6 @@ const styles = StyleSheet.create({
 
 	outerCanvas: {
 		flex: 1,
-		height: canvas_size,
 		justifyContent: 'center',
 		alignItems: 'center',
 		height: '100%',
@@ -246,14 +241,6 @@ const styles = StyleSheet.create({
 	},
 	utilityArea: {
 		height: panel_height,
-		// marginHorizontal: vw(),
 		backgroundColor: 'black',
-	},
-	shadowContainer: {
-		backgroundColor: 'white',
-		position: 'absolute',
-		flex: 1,
-		width: vw(100),
-		height: vh(100),
 	},
 });

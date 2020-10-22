@@ -1,15 +1,12 @@
 import * as React from 'react';
-import { StatusBar, View, SafeAreaView, Text, Image, StyleSheet, ScrollView } from 'react-native';
-import { useSelector, shallowEqual } from 'react-redux';
+import { View, StyleSheet, ScrollView } from 'react-native';
+import { useSelector } from 'react-redux';
 import AutoHeightImage from 'react-native-auto-height-image';
-import Store, { PopupStore } from 'chessvibe/src/redux/Store';
+import { PopupStore } from 'chessvibe/src/redux/Store';
 
-import * as Reducer from 'chessvibe/src/redux/Reducer';
-import { vw, vh, formatTimer, formatImage } from 'chessvibe/src/Util';
+import { vw, formatTimer, formatImage } from 'chessvibe/src/Util';
 import * as Const from 'chessvibe/src/Const';
-import { ActionBar, WebVibe, TextVibe, ModalVibe, ButtonVibe } from 'chessvibe/src/widgets';
-
-import BaseBoardGrid from './BaseBoardGrid';
+import { TextVibe, ButtonVibe } from 'chessvibe/src/widgets';
 
 const pictureSize = vw(15);
 const margin_size = vw(1);
@@ -19,7 +16,6 @@ const canvas_size = margin_size * 2 + cell_size * 8;
 export default function BasePlayerPanel(props) {
 	const { color, pos } = props;
 	const theme = useSelector(state => state.game.theme);
-	const match = useSelector(state => state.game.match) || {};
 	const turn = useSelector(state => state.game.turn);
 
 	let eaten = useSelector(state => state.game.eaten, (a, b) => {
@@ -79,7 +75,7 @@ export default function BasePlayerPanel(props) {
 			<View style={ styles.middleContainer }>
 				<View style={ styles.middleTopContainer }>
 					<TextVibe style={ titleStyle }>
-						{ player && player.name ? player.name : "" }
+						{ player && player.name ? player.name : '' }
 					</TextVibe>
 					<TextVibe style={ [titleStyle, timerColor] }>{ timerText }</TextVibe>
 				</View>
@@ -87,7 +83,7 @@ export default function BasePlayerPanel(props) {
 				<ScrollView horizontal={ true } contentContainerStyle={ { alignSelf: 'center' } }>
 					{
 						eaten.map((img, i) => {
-							return <AutoHeightImage key={i} width={ vw(5) } source={ img }/>
+							return <AutoHeightImage key={i} width={ vw(5) } source={ img }/>;
 						})
 					}
 				</ScrollView>
@@ -129,8 +125,4 @@ const styles = StyleSheet.create({
 				flexDirection: 'row',
 				justifyContent: 'space-between',
 			},
-
-				playerName: {
-					color: 'white'
-				}
 });

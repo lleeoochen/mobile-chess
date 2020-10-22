@@ -1,20 +1,15 @@
 import * as React from 'react';
-import { View, StyleSheet, Animated } from 'react-native';
+import { StyleSheet, Animated } from 'react-native';
 import { useSelector } from 'react-redux';
-import { vw, vh } from 'chessvibe/src/Util';
+import { vw } from 'chessvibe/src/Util';
 import { IMAGE } from 'chessvibe/src/Const';
-import { TextVibe, ButtonVibe } from 'chessvibe/src/widgets';
+import { ButtonVibe } from 'chessvibe/src/widgets';
 import AutoHeightImage from 'react-native-auto-height-image';
-
-const margin_size = vw();
-const cell_size = (vw(100) - 4 * margin_size) / 8;
-const borderRadius = vw();
 
 export default function ActionPanel(props) {
 	const theme = useSelector(state => state.game.theme);
-	const game = useSelector(state => state.game); // for updating purpose
 	const { gameRef, minimizeDrawer=() => {} } = props;
-	const [ updated, update ] = React.useState(false);
+	const [ , update ] = React.useState(false);
 	const [ playing, setPlaying ] = React.useState(false);
 
 
@@ -128,7 +123,7 @@ export default function ActionPanel(props) {
 				disabled={ disabled }
 				style={ btnStyle }
 				onPress={ onPress }
-				useGestureButton={ Platform.OS === "android" }>
+				useGestureButton={ Platform.OS === 'android' }>
 				<AutoHeightImage width={ vw(5) } source={ image }/>
 			</ButtonVibe>
 		);
@@ -147,10 +142,4 @@ const styles = StyleSheet.create({
 		marginRight: vw(0.5),
 		width: vw(20 - 4 / 5),
 	},
-
-		btnText: {
-			fontSize: vw(5),
-			textAlign: 'center',
-			color: 'white',
-		},
 });

@@ -1,12 +1,10 @@
 import * as React from 'react';
-import { TouchableOpacity, View, StyleSheet, ScrollView, KeyboardAvoidingView, Animated } from 'react-native';
-import { useSelector, useDispatch, shallowEqual } from 'react-redux';
-import Util, { vw, vh, strict_equal } from 'chessvibe/src/Util';
-import { BOARD_SIZE, IMAGE, TEAM, DB_REQUEST_ASK, DIALOG, APP_THEME } from 'chessvibe/src/Const';
-import { TextVibe, DialogVibe } from 'chessvibe/src/widgets';
-import AutoHeightImage from 'react-native-auto-height-image';
+import { View, StyleSheet, Animated } from 'react-native';
+import { useSelector } from 'react-redux';
+import Util, { vw, vh } from 'chessvibe/src/Util';
+import { TEAM, DB_REQUEST_ASK, DIALOG } from 'chessvibe/src/Const';
+import { TextVibe } from 'chessvibe/src/widgets';
 import BottomSheet from 'reanimated-bottom-sheet';
-import Backend from 'chessvibe/src/GameBackend';
 
 import ActionPanel from './ActionPanel';
 import ReviewPanel from './ReviewPanel';
@@ -15,7 +13,6 @@ import ChatSection from './ChatSection';
 import UtilityDialogs from './UtilityDialogs';
 
 const margin_size = vw();
-const cell_size = (vw(100) - 4 * margin_size) / 8;
 const borderRadius = vw();
 
 const handle_height = 20 + vw(3);
@@ -23,8 +20,7 @@ const panel_height = vw(12);
 const header_height = panel_height + handle_height;
 
 export default function UtilityArea(props) {
-	const { gameRef, isDarkTheme } = props;
-	const appTheme = isDarkTheme ? APP_THEME.DARK : APP_THEME.LIGHT;
+	const { gameRef } = props;
 
 	var flash = new Animated.Value(1);
 	const [ flashing, setFlashing ] = React.useState(false);
@@ -318,7 +314,6 @@ const styles = StyleSheet.create({
 			elevation: 2,
 
 			width: '100%',
-			backgroundColor: 'orange',
 		},
 
 	// Pullup Content

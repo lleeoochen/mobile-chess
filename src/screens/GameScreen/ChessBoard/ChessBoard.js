@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { StatusBar, View, SafeAreaView, Text, Image, StyleSheet, Animated } from 'react-native';
-import { useSelector, shallowEqual } from 'react-redux';
-import { vw, vh, piece } from 'chessvibe/src/Util';
-import { BOARD_SIZE, TEAM, CHESS } from 'chessvibe/src/Const';
+import { View, Image, StyleSheet, Animated } from 'react-native';
+import { useSelector } from 'react-redux';
+import { vw, piece } from 'chessvibe/src/Util';
+import { BOARD_SIZE } from 'chessvibe/src/Const';
 
 
 export default function ChessBoard(props) {
@@ -88,6 +88,7 @@ export default function ChessBoard(props) {
 const margin_size = vw(1);
 const cell_size = (vw(100) - 4 * margin_size) / 8;
 
+/* eslint-disable react-native/no-unused-styles */
 const styles = StyleSheet.create({
 	x0: { left: 0 * cell_size },
 	x1: { left: 1 * cell_size },

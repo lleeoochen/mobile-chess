@@ -1,5 +1,4 @@
 import * as Const from 'chessvibe/src/Const';
-import Util from 'chessvibe/src/Util';
 import Piece from './piece';
 
 
@@ -9,7 +8,7 @@ export default class None extends Piece {
 		super(team, Const.CHESS.None, Const.VALUE.None, image);
 	}
 
-	getPossibleMoves(game, chessboard, grid) {
+	getPossibleMoves() {
 		return [];
 	}
 }

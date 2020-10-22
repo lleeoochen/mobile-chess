@@ -1,2 +1,2 @@
-import UtilityArea from './UtilityArea'
+import UtilityArea from './UtilityArea';
 export default UtilityArea;
