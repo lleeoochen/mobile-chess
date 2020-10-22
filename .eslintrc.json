@@ -1,0 +1,45 @@
+{
+    "env": {
+        "browser": true,
+        "es2021": true,
+        "react-native/react-native": true
+    },
+    "extends": [
+        "eslint:recommended",
+        "plugin:react/recommended"
+    ],
+    "parserOptions": {
+        "ecmaFeatures": {
+            "jsx": true
+        },
+        "ecmaVersion": 12,
+        "sourceType": "module"
+    },
+    "plugins": [
+        "react",
+        "react-native"
+    ],
+    "rules": {
+        "indent": "off",
+        "quotes": [
+            "error",
+            "single",
+            {
+                "avoidEscape": true
+            }
+        ],
+        "semi": [
+            "error",
+            "always"
+        ],
+        "linebreak-style": "off",
+        "space-infix-ops": "off",
+        "no-undef": "off",
+        "no-case-declarations": "off",
+        "no-mixed-spaces-and-tabs": ["error", "smart-tabs"],
+        "no-async-promise-executor": "off",
+        "react/prop-types": "off",
+        "react/display-name": "off",
+        "react-native/no-unused-styles": "error"
+    }
+}
