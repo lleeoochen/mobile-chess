@@ -1,11 +1,8 @@
 import * as React from 'react';
 import { StyleSheet, TouchableWithoutFeedback, View, Image, ScrollView, Animated } from 'react-native';
-import Slider from "react-native-slider";
-import { TextVibe, ModalVibe, ButtonVibe } from 'chessvibe/src/widgets';
-import AutoHeightImage from 'react-native-auto-height-image';
+import { TextVibe, ButtonVibe } from 'chessvibe/src/widgets';
 import { vw, vh, formatImage } from 'chessvibe/src/Util';
-import { THEME_ID, TIME, IMAGE, APP_THEME, NOTIFICATION_TYPE, FRIEND } from 'chessvibe/src/Const';
-import { useSelector } from 'react-redux';
+import { IMAGE, APP_THEME, NOTIFICATION_TYPE, FRIEND } from 'chessvibe/src/Const';
 import Backend from 'chessvibe/src/GameBackend';
 import { PopupStore } from 'chessvibe/src/redux/Store';
 
@@ -130,7 +127,6 @@ export default function NotificationMenu(props) {
 function Notification(props) {
 	const {
 		data={},
-		id='',
 		friends={},
 		isDarkTheme=false,
 		navigateGame,
@@ -281,7 +277,7 @@ const styles = StyleSheet.create({
 
 		backgroundColor: 'black',
 
-		shadowColor: "#000",
+		shadowColor: '#000',
 		shadowOffset: {
 			width: 0,
 			height: 0,

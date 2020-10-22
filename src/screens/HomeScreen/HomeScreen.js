@@ -1,24 +1,19 @@
 import * as React from 'react';
-import { Animated, View, SafeAreaView, ScrollView, StyleSheet, StatusBar, TouchableOpacity, Image, Button, RefreshControl } from 'react-native';
-import { ActionBar, WebVibe, TextVibe, ModalVibe, ButtonVibe, DialogVibe } from 'chessvibe/src/widgets';
-import AutoHeightImage from 'react-native-auto-height-image';
-import SideMenu from 'react-native-side-menu';
+import { SafeAreaView, StyleSheet, StatusBar } from 'react-native';
+import { ActionBar } from 'chessvibe/src/widgets';
 import messaging from '@react-native-firebase/messaging';
 import { createAppContainer } from 'react-navigation';
-import { createBottomTabNavigator } from 'react-navigation-tabs';
 import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';
 
 import { HomeStore } from 'chessvibe/src/redux/Store';
 import { useSelector } from 'react-redux';
 
-import { URL, TEAM, IMAGE, STORAGE_IS_DARK_THEME, MATCH_MODE, APP_THEME } from 'chessvibe/src/Const';
-import Util, { formatDate, vw, wh, strict_equal } from 'chessvibe/src/Util';
+import { TEAM, APP_THEME } from 'chessvibe/src/Const';
+import Util from 'chessvibe/src/Util';
 import Cache from 'chessvibe/src/Cache';
 import Backend from 'chessvibe/src/Backend';
-import Storage from 'chessvibe/src/Storage';
 import Stats from 'chessvibe/src/Stats';
 
-import HomeUserMenu from './HomeUserMenu';
 import NotificationMenu from './NotificationMenu';
 import PlayTab from './PlayTab';
 import HistoryTab from './HistoryTab';
@@ -26,21 +21,12 @@ import FriendsTab from './FriendsTab';
 import SettingsTab from './SettingsTab';
 
 
-const matchSize = vw((100 - 2 - 6 - 4) / 4);
-const borderRadius = vw();
-
 const NAV_TITLE = {
 	play: 'ChessVibe',
 	history: 'History',
 	friends: 'Friends',
 	settings: 'Settings',
 };
-
-const wait = (timeout) => {
-	return new Promise(resolve => {
-		setTimeout(resolve, timeout);
-	});
-}
 
 // Navigation
 HomeScreen.navigationOptions = ({navigation}) => {
@@ -59,13 +45,11 @@ export default function HomeScreen(props) {
 	const [ opponents, setOpponents ] = React.useState(Cache.home.opponents);
 	const [ matches, setMatches ] = React.useState(Cache.home.matches);
 
-	const onRefresh = React.useCallback(() => refresh(), []);
 	const user = React.useRef({});
 	const screenTab = React.useRef('PlayTab');
 
 	const { params = {} } = props.navigation.state;
 	const { tab='play' } = params;
-	const hidden = { display: 'none' };
 
 	function refresh() {
 		fetchMatches();
@@ -127,7 +111,7 @@ export default function HomeScreen(props) {
 					inactiveBackgroundColor: appTheme.MENU_BACKGROUND,
 					style: {
 						borderTopWidth: 0,
-						borderTopColor: "transparent",
+						borderTopColor: 'transparent',
 					},
 				}
 			}
@@ -140,7 +124,7 @@ export default function HomeScreen(props) {
 				<StatusBar hidden={ true }/>
 
 				<Container
-					onNavigationStateChange={(prevState, currentState, action) => {
+					onNavigationStateChange={(prevState, currentState) => {
 						screenTab.current = getActiveRouteName(currentState);
 					}}
 					screenProps={{
@@ -259,7 +243,7 @@ export default function HomeScreen(props) {
 				let { enemy, matches } = result;
 				let stats = new Stats();
 
-				matches.forEach((match, j) => {
+				matches.forEach((match) => {
 					let match_data = match[1];
 
 					let team = (match_data.black == Cache.userID) ? TEAM.B : TEAM.W;
@@ -340,8 +324,4 @@ const styles = StyleSheet.create({
 		alignSelf: 'stretch',
 		flex: 1,
 	},
-
-		playerScroll: {
-			alignItems: 'center',
-		},
 });

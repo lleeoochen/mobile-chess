@@ -1,12 +1,11 @@
 import * as React from 'react';
-import { ScrollView, View, StyleSheet, TouchableOpacity, Image, Animated } from 'react-native';
-import { TextVibe, ModalVibe, ButtonVibe } from 'chessvibe/src/widgets';
+import { ScrollView, StyleSheet, Image, Animated } from 'react-native';
+import { TextVibe, ButtonVibe } from 'chessvibe/src/widgets';
 import AutoHeightImage from 'react-native-auto-height-image';
 import { vw, formatImage } from 'chessvibe/src/Util';
-import Cache from 'chessvibe/src/Cache';
 import { useSelector } from 'react-redux';
 import { IMAGE, APP_THEME } from 'chessvibe/src/Const';
-import Store, { HomeStore, PopupStore } from 'chessvibe/src/redux/Store';
+import { HomeStore, PopupStore } from 'chessvibe/src/redux/Store';
 
 const borderRadius = vw();
 
@@ -18,21 +17,11 @@ export default function HomeUserMenu(props) {
 	const appTheme = isDarkTheme ? APP_THEME.DARK : APP_THEME.LIGHT;
 
 	let {
-		visible=false,
-		onDismiss=() => {},
 		onLogout=() => {
 
 			HomeStore.toLogout(true);
 			setSelected(0);
 		},
-		stats={
-			draw: 0,
-			stalemate: 0,
-			win: 0,
-			lose: 0,
-			ongoing: 0,
-			resign: 0,
-		}
 	} = props;
 
 	React.useEffect(() => {
@@ -153,11 +142,6 @@ const styles = StyleSheet.create({
 		marginLeft: vw(5),
 	},
 
-	menuStat: {
-		color: 'white',
-		fontSize: vw(5),
-	},
-
 	profile: {
 		alignItems: 'flex-start'
 	},
@@ -195,7 +179,6 @@ const styles = StyleSheet.create({
 
 		logoutBtnText: {
 			fontSize: vw(5),
-			textAlign: 'center',
 			textAlign: 'left',
 		},
 });

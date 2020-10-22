@@ -1,13 +1,12 @@
 import * as React from 'react';
-import { StyleSheet, TouchableOpacity, View, Image, ScrollView } from 'react-native';
-import Slider from "react-native-slider";
+import { StyleSheet, View, Image, ScrollView } from 'react-native';
+import Slider from 'react-native-slider';
 import { TextVibe, ModalVibe, ButtonVibe } from 'chessvibe/src/widgets';
 import AutoHeightImage from 'react-native-auto-height-image';
 import { vw, formatImage } from 'chessvibe/src/Util';
 import { THEME_ID, TIME, IMAGE, APP_THEME, MATCH_MODE, FRIEND } from 'chessvibe/src/Const';
 import { useSelector } from 'react-redux';
 
-const new_match_img = require('chessvibe/assets/new_match.png');
 const BORDER_RADIUS = vw();
 const MATCH_SIZE = vw((90 - 8 - 4) / 5);
 
@@ -94,7 +93,7 @@ function FriendSelector({ isDarkTheme, formData, opponents, friends, visible }) 
 						.map(opponent => {
 							return opponent[0];
 						})
-						.sort((p1, p2) => {
+						.sort((p1) => {
 							return friends[p1.user_id] == FRIEND.FRIENDED ? -1 : 1;
 						});
 
@@ -233,7 +232,7 @@ function SubmitButton({ isDarkTheme, onPress }) {
 }
 
 const shadow = {
-	shadowColor: "#000",
+	shadowColor: '#000',
 	shadowOffset: {
 		width: 0,
 		height: 1,
@@ -247,41 +246,8 @@ const styles = StyleSheet.create({
 	menuText: {
 		color: 'white',
 		fontSize: vw(5),
-		// textAlign: 'center',
 		width: '100%',
 	},
-
-	menuContainer: {
-		flexDirection: 'row',
-		width: '100%',
-		marginTop: vw(4),
-		marginBottom: vw(8),
-	},
-
-		menuBtn: {
-			marginRight: vw(),
-			backgroundColor: 'white',
-			padding: vw(2),
-			borderRadius: BORDER_RADIUS,
-			flex: 1,
-			alignItems: 'center',
-			justifyContent: 'center',
-		},
-
-			menuBtnText: {
-				fontSize: vw(4),
-				textAlign: 'center',
-			},
-
-			selected: {
-				borderWidth: vw(),
-				borderColor: 'black',
-			},
-
-			classic: { backgroundColor: '#e6bf83' },
-			winter: { backgroundColor: '#00b3de' },
-			metal: { backgroundColor: '#d2d2d2' },
-			nature: { backgroundColor: '#c7da61' },
 
 	profileBtn: {
 		borderRadius: BORDER_RADIUS,

@@ -1,22 +1,19 @@
 import * as React from 'react';
-import { Animated, View, SafeAreaView, ScrollView, StyleSheet, StatusBar, TouchableOpacity, Image, Button, RefreshControl } from 'react-native';
-import { ActionBar, WebVibe, TextVibe, ModalVibe, ButtonVibe, DialogVibe } from 'chessvibe/src/widgets';
+import { Animated, View, SafeAreaView, ScrollView, StyleSheet, StatusBar, Image, RefreshControl } from 'react-native';
+import { TextVibe, ButtonVibe } from 'chessvibe/src/widgets';
 import AutoHeightImage from 'react-native-auto-height-image';
-import Store, { HomeStore } from 'chessvibe/src/redux/Store';
-import { useSelector } from 'react-redux';
+import Store from 'chessvibe/src/redux/Store';
 
-import { URL, TEAM, IMAGE, APP_THEME } from 'chessvibe/src/Const';
-import Util, { formatDate, vw, wh, formatImage } from 'chessvibe/src/Util';
+import { IMAGE, APP_THEME } from 'chessvibe/src/Const';
+import { formatDate, vw, formatImage } from 'chessvibe/src/Util';
 import Cache from 'chessvibe/src/Cache';
-import Backend from 'chessvibe/src/Backend';
-import SideMenu from 'react-native-side-menu'
 
 const matchSize = vw((100 - 2 - 6 - 4) / 4);
 const borderRadius = vw();
 
 
 // Navigation
-HistoryTab.navigationOptions = ({navigation}) => {
+HistoryTab.navigationOptions = () => {
 	return {
 		tabBarLabel: 'History',
 		tabBarIcon: (
@@ -37,9 +34,8 @@ export default function HistoryTab(props) {
 
 	// const [ selectedMatch, selectMatch ] = React.useState(null);
 	const appTheme = isDarkTheme ? APP_THEME.DARK : APP_THEME.LIGHT;
-	const user = React.useRef({});
 	const [ fadein ] = React.useState(new Animated.Value(0));
-	const [ refreshing, setRefreshing ] = React.useState(false);
+	const [ refreshing ] = React.useState(false);
 	const onRefresh = React.useCallback(() => refresh(), []);
 	const firstLoad = React.useRef(true);
 
@@ -56,12 +52,12 @@ export default function HistoryTab(props) {
 	}, [oldMatches]);
 
 
-	function deleteMatch(match_id) {
-		Backend.deleteMatch(match_id).then(async () => {
-			selectMatch(null);
-			refresh();
-		});
-	}
+	// function deleteMatch(match_id) {
+	// 	Backend.deleteMatch(match_id).then(async () => {
+	// 		selectMatch(null);
+	// 		refresh();
+	// 	});
+	// }
 
 	let viewStyle = [styles.view, props.style, {
 		backgroundColor: appTheme.CONTENT_BACKGROUND
@@ -122,7 +118,6 @@ export default function HistoryTab(props) {
 				let d = new Date(match_data.updated);
 				let d_str = formatDate(d, '%M/%D');
 
-				let color = (match_data.black == Cache.userID) ? TEAM.B : TEAM.W;
 				let active = Math.floor(match_data.moves[match_data.moves.length - 1] / 10) != 0;
 				let borderStyle = match_data.black == Cache.userID ? styles.blackBorder : styles.whiteBorder;
 				let colorStyle = active ? styles.greenColor : styles.greyColor;
@@ -204,7 +199,7 @@ const styles = StyleSheet.create({
 				width: matchSize,
 				marginRight: vw(2),
 				borderRadius: borderRadius,
-				shadowColor: "#000",
+				shadowColor: '#000',
 				shadowOffset: {
 					width: 0,
 					height: 1,

@@ -1,10 +1,9 @@
 import * as React from 'react';
-import { Animated, View, SafeAreaView, ScrollView, StyleSheet, StatusBar, TouchableOpacity, Image, Button, RefreshControl } from 'react-native';
-import { ActionBar, WebVibe, TextVibe, ModalVibe, ButtonVibe, DialogVibe } from 'chessvibe/src/widgets';
+import { View, SafeAreaView, ScrollView, StyleSheet, Image } from 'react-native';
+import { TextVibe, ButtonVibe } from 'chessvibe/src/widgets';
 import AutoHeightImage from 'react-native-auto-height-image';
 import SearchBar from 'react-native-search-bar';
-import Store, { HomeStore } from 'chessvibe/src/redux/Store';
-import { useSelector } from 'react-redux';
+import Store from 'chessvibe/src/redux/Store';
 
 import { IMAGE, APP_THEME, FRIEND } from 'chessvibe/src/Const';
 import { vw, formatImage } from 'chessvibe/src/Util';
@@ -13,10 +12,9 @@ import Stats from 'chessvibe/src/Stats';
 import { PopupStore } from 'chessvibe/src/redux/Store';
 
 const matchSize = vw(20);
-const borderRadius = vw();
 
 // Navigation
-FriendsTab.navigationOptions = ({navigation}) => {
+FriendsTab.navigationOptions = () => {
 	return {
 		tabBarLabel: 'Friends',
 		tabBarIcon: (
@@ -70,8 +68,8 @@ export default function FriendsTab(props) {
 			<Search
 				appTheme={ appTheme }
 				initText={ searchText }
-				onSubmit={ (text) => { setSearchText(text) } }
-				onDismiss={ () => { setSearchText('') } }/>
+				onSubmit={ (text) => { setSearchText(text); } }
+				onDismiss={ () => { setSearchText(''); } }/>
 			<ScrollView>
 				{ people }
 			</ScrollView>
@@ -80,8 +78,8 @@ export default function FriendsTab(props) {
 }
 
 // Hack to get text to change color
-function SearchLight(props) { return <SearchInput initText={ props.initText } appTheme={ props.appTheme } onSubmit={ props.onSubmit } onDismiss={ props.onDismiss }/> }
-function SearchDark(props) { return <SearchInput initText={ props.initText } appTheme={ props.appTheme } onSubmit={ props.onSubmit } onDismiss={ props.onDismiss }/> }
+function SearchLight(props) { return <SearchInput initText={ props.initText } appTheme={ props.appTheme } onSubmit={ props.onSubmit } onDismiss={ props.onDismiss }/>; }
+function SearchDark(props) { return <SearchInput initText={ props.initText } appTheme={ props.appTheme } onSubmit={ props.onSubmit } onDismiss={ props.onDismiss }/>; }
 function SearchInput(props) {
 	let { appTheme, onSubmit, onDismiss, initText } = props;
 	let [ text, changeText ] = React.useState(initText);
