@@ -3,9 +3,8 @@ import { StyleSheet, TouchableWithoutFeedback, View, Animated, SafeAreaView } fr
 import Modal from 'react-native-modal';
 import { vw, vh } from '../Util';
 import { APP_THEME } from '../Const';
-import Store from 'chessvibe/src/redux/Store';
 import { useSelector } from 'react-redux';
-import { TouchableWithoutFeedback as RNGHTouchableWithoutFeedback } from "react-native-gesture-handler";
+import { TouchableWithoutFeedback as RNGHTouchableWithoutFeedback } from 'react-native-gesture-handler';
 
 export default function ModalVibe(props) {
 	const { isVisible=false, style={}, coverAll=false, onDismiss=() => {} } = props;
@@ -42,10 +41,9 @@ export default function ModalVibe(props) {
 				animationInTiming={ duration }
 				animationOutTiming={ duration }
 				backdropTransitionInTiming={ duration }
-				backdropTransitionOutTiming={ duration }
+				backdropTransitionOutTiming={ 0 }
 				activeOpacity={ 0 }
 				hideModalContentWhileAnimating={ true }
-				backdropTransitionOutTiming={ 0 }
 				onModalHide={ props.onModalHide }
 				style={ styles.modal }>
 				<TouchableWithoutFeedback onPress={ onDismiss }>
@@ -64,24 +62,24 @@ export default function ModalVibe(props) {
 		if (wantVisible) {
 			// Start animation when modal is getting visible
 			Animated.timing(top, {
-			    toValue: 0,
-			    duration,
-			    useNativeDriver: true,
+				toValue: 0,
+				duration,
+				useNativeDriver: true,
 			})
 			.start();
 
 			Animated.timing(shadowIndex, {
 				toValue: 0.8,
-			    duration,
+				duration,
 				useNativeDriver: true,
 			})
 			.start();
 		}
 		else {
 			Animated.timing(top, {
-			    toValue: vh(100),
-			    duration,
-			    useNativeDriver: true,
+				toValue: vh(100),
+				duration,
+				useNativeDriver: true,
 			})
 			.start(() => {
 				// Set modal to invisible after animation is done
@@ -90,7 +88,7 @@ export default function ModalVibe(props) {
 
 			Animated.timing(shadowIndex, {
 				toValue: 0,
-			    duration,
+				duration,
 				useNativeDriver: true,
 			})
 			.start();
@@ -130,8 +128,8 @@ const styles = StyleSheet.create({
 
 	menuWrap: {
 		flex: 1,
-		justifyContent: "center",
-		alignItems: "center",
+		justifyContent: 'center',
+		alignItems: 'center',
 		width: '100%',
 	},
 

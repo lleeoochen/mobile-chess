@@ -8,7 +8,6 @@ import KeyboardVibe from './KeyboardVibe';
 import DialogVibe from './DialogVibe';
 import InputVibe from './InputVibe';
 
-
 export {
 	ActionBar,
 	FadeInView,
