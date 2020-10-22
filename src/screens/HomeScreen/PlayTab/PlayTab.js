@@ -1,25 +1,22 @@
 import * as React from 'react';
-import { Animated, View, SafeAreaView, ScrollView, StyleSheet, StatusBar, TouchableOpacity, Image, Button, RefreshControl } from 'react-native';
-import { ActionBar, WebVibe, TextVibe, ModalVibe, ButtonVibe, DialogVibe } from 'chessvibe/src/widgets';
+import { Animated, View, ScrollView, StyleSheet, Image } from 'react-native';
+import { TextVibe, ButtonVibe } from 'chessvibe/src/widgets';
 import AutoHeightImage from 'react-native-auto-height-image';
 import Carousel from 'react-native-snap-carousel';
-import Store, { HomeStore } from 'chessvibe/src/redux/Store';
-import { useSelector } from 'react-redux';
+import Store from 'chessvibe/src/redux/Store';
 import HomeCreateMenu from '../HomeCreateMenu';
 
-
-import { URL, TEAM, IMAGE, APP_THEME, MATCH_MODE } from 'chessvibe/src/Const';
-import Util, { formatDate, vw, vh, formatImage } from 'chessvibe/src/Util';
+import { IMAGE, APP_THEME, MATCH_MODE } from 'chessvibe/src/Const';
+import { formatDate, vw, formatImage } from 'chessvibe/src/Util';
 import Cache from 'chessvibe/src/Cache';
 import Backend from 'chessvibe/src/Backend';
-import SideMenu from 'react-native-side-menu'
 
 const matchSize = vw((100 - 2 - 6 - 4) / 4);
 const borderRadius = vw();
 
 
 // Navigation
-PlayTab.navigationOptions = ({navigation}) => {
+PlayTab.navigationOptions = () => {
 	return {
 		tabBarLabel: 'Play',
 		tabBarIcon: (
@@ -142,14 +139,14 @@ export default function PlayTab(props) {
 	}
 
 	// Render carousel action buttons
-	let actionItem = ({ item, index }) => {
+	let actionItem = ({ item }) => {
 		return (
 			<ButtonVibe style={ styles.actionBtn } onPress={ item.onPress }>
 				<Image source={ item.image } style={ styles.actionBtnImage } blurRadius={vw(0)}/>
 				<TextVibe style={ styles.actionBtnText }>{ item.text }</TextVibe>
 			</ButtonVibe>
 		);
-	}
+	};
 
 	// Render
 	let $container = renderMatches();
@@ -215,7 +212,7 @@ const styles = StyleSheet.create({
 			// marginBottom: 0,
 			marginTop: vw(10),
 
-			shadowColor: "#000",
+			shadowColor: '#000',
 			shadowOffset: {
 				width: 0,
 				height: 1,
@@ -275,7 +272,7 @@ const styles = StyleSheet.create({
 			marginRight: vw(2),
 			borderRadius: borderRadius,
 
-			shadowColor: "#000",
+			shadowColor: '#000',
 			shadowOffset: {
 				width: 0,
 				height: 1,

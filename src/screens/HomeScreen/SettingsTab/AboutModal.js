@@ -1,17 +1,10 @@
 import * as React from 'react';
-import { Keyboard, Switch, Animated, View, SafeAreaView, ScrollView, StyleSheet, StatusBar, TouchableOpacity, TouchableWithoutFeedback, Image, Button, RefreshControl } from 'react-native';
-import { ActionBar, WebVibe, TextVibe, ModalVibe, ButtonVibe, DialogVibe, InputVibe } from 'chessvibe/src/widgets';
-import AutoHeightImage from 'react-native-auto-height-image';
+import { View, StyleSheet } from 'react-native';
+import { TextVibe, ModalVibe } from 'chessvibe/src/widgets';
 import * as DeviceInfo from 'react-native-device-info';
 
-import { URL, TEAM, IMAGE, STORAGE_IS_DARK_THEME, APP_THEME } from 'chessvibe/src/Const';
-import Util, { formatDate, vw, vh } from 'chessvibe/src/Util';
-import Storage from 'chessvibe/src/Storage';
-import Cache from 'chessvibe/src/Cache';
-import Backend from 'chessvibe/src/Backend';
-import SideMenu from 'react-native-side-menu'
-import Store from 'chessvibe/src/redux/Store';
-import { useSelector } from 'react-redux';
+import { APP_THEME } from 'chessvibe/src/Const';
+import { vw } from 'chessvibe/src/Util';
 
 
 // Home Screen
@@ -21,14 +14,6 @@ export default function AboutModal(props) {
 
 	let textColor = {
 		color: appTheme.COLOR
-	};
-
-	let inputStyle = {
-		backgroundColor: isDarkTheme ? '#ffffff2e' : appTheme.MENU_BACKGROUND
-	};
-
-	let btnStyle = {
-		backgroundColor: appTheme.APP_BACKGROUND
 	};
 
 	return (

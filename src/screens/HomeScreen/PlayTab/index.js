@@ -1,2 +1,2 @@
-import PlayTab from './PlayTab'
+import PlayTab from './PlayTab';
 export default PlayTab;

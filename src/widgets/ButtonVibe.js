@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { TouchableOpacity, StyleSheet } from 'react-native';
-import { vw, vh } from 'chessvibe/src/Util';
-import { TouchableOpacity as RNGHTouchableOpacity } from "react-native-gesture-handler";
+import { vw } from 'chessvibe/src/Util';
+import { TouchableOpacity as RNGHTouchableOpacity } from 'react-native-gesture-handler';
 
 export default function ButtonVibe(props) {
 	let { style, children, useGestureButton=false, ...attributes } = props;

@@ -1,27 +1,20 @@
 import * as React from 'react';
-import { Switch, Animated, View, SafeAreaView, ScrollView, StyleSheet, StatusBar, TouchableOpacity, Image, Button, RefreshControl } from 'react-native';
-import { ActionBar, WebVibe, TextVibe, ModalVibe, ButtonVibe, DialogVibe } from 'chessvibe/src/widgets';
-import AutoHeightImage from 'react-native-auto-height-image';
+import { Switch, View, ScrollView, StyleSheet, Image } from 'react-native';
+import { TextVibe, ButtonVibe } from 'chessvibe/src/widgets';
 import { GoogleSignin } from '@react-native-community/google-signin';
 import auth from '@react-native-firebase/auth';
 
-import { URL, TEAM, IMAGE, STORAGE_IS_DARK_THEME, APP_THEME } from 'chessvibe/src/Const';
-import Util, { formatDate, vw, wh } from 'chessvibe/src/Util';
+import { IMAGE, STORAGE_IS_DARK_THEME, APP_THEME } from 'chessvibe/src/Const';
+import { vw } from 'chessvibe/src/Util';
 import Storage from 'chessvibe/src/Storage';
 import Cache, { CACHE_DEFAULT } from 'chessvibe/src/Cache';
-import Backend from 'chessvibe/src/Backend';
-import SideMenu from 'react-native-side-menu'
 import Store, { HomeStore, RootStore } from 'chessvibe/src/redux/Store';
-import { useSelector } from 'react-redux';
 
 import ReportModal from './ReportModal';
 import AboutModal from './AboutModal';
 
-const matchSize = vw((100 - 2 - 6 - 4) / 4);
-const borderRadius = vw();
-
 // Navigation
-SettingsTab.navigationOptions = ({navigation}) => {
+SettingsTab.navigationOptions = () => {
 	return {
 		tabBarLabel: 'Settings',
 		tabBarIcon: (
@@ -151,7 +144,7 @@ function SwitchSetting(props) {
 				<TextVibe style={ textStyle }>{ title }</TextVibe>
 				<Switch
 					onValueChange={ toggleSwitch }
-					trackColor={{ false: "#767577", true: "#81b0ff" }}
+					trackColor={{ false: '#767577', true: '#81b0ff' }}
 					value={ enabled }
 					style={ styles.settingBtn }/>
 			</View>

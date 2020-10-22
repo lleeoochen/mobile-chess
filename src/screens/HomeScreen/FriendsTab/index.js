@@ -1,2 +1,2 @@
-import FriendsTab from './FriendsTab'
+import FriendsTab from './FriendsTab';
 export default FriendsTab;

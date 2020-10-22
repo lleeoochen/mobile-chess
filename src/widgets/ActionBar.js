@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { View, Text, Image, StyleSheet, Dimensions } from 'react-native';
-import { vw, vh } from 'chessvibe/src/Util';
+import { Image, StyleSheet } from 'react-native';
+import { vw } from 'chessvibe/src/Util';
 import { IMAGE, APP_THEME } from 'chessvibe/src/Const';
 import TextVibe from './TextVibe';
 import ButtonVibe from './ButtonVibe';

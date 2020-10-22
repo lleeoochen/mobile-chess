@@ -1,2 +1,2 @@
-import SettingsTab from './SettingsTab'
+import SettingsTab from './SettingsTab';
 export default SettingsTab;

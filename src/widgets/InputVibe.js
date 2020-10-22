@@ -1,7 +1,5 @@
 import * as React from 'react';
-import { View, TextInput, StyleSheet, ScrollView } from 'react-native';
-import { vw, vh } from 'chessvibe/src/Util';
-
+import { View, TextInput } from 'react-native';
 
 export default function InputVibe(props) {
 	let {
@@ -17,7 +15,6 @@ export default function InputVibe(props) {
 	let { fontSize=20 } = style;
 
 	const [ value, changeText ] = React.useState(initValue || placeholder);
-	const contentRef = React.useRef();
 
 	let inputStyle = {
 		fontSize,

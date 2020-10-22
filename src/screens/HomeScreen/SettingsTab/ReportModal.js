@@ -1,16 +1,11 @@
 import * as React from 'react';
-import { Keyboard, Switch, Animated, View, SafeAreaView, ScrollView, StyleSheet, StatusBar, TouchableOpacity, TouchableWithoutFeedback, Image, Button, RefreshControl } from 'react-native';
-import { ActionBar, WebVibe, TextVibe, ModalVibe, ButtonVibe, DialogVibe, InputVibe } from 'chessvibe/src/widgets';
-import AutoHeightImage from 'react-native-auto-height-image';
+import { Keyboard, View, StyleSheet, TouchableWithoutFeedback } from 'react-native';
+import { TextVibe, ModalVibe, InputVibe } from 'chessvibe/src/widgets';
 
-import { URL, TEAM, IMAGE, STORAGE_IS_DARK_THEME, APP_THEME } from 'chessvibe/src/Const';
-import Util, { formatDate, vw, vh } from 'chessvibe/src/Util';
-import Storage from 'chessvibe/src/Storage';
+import { APP_THEME } from 'chessvibe/src/Const';
+import { vw, vh } from 'chessvibe/src/Util';
 import Cache from 'chessvibe/src/Cache';
 import Backend from 'chessvibe/src/Backend';
-import SideMenu from 'react-native-side-menu'
-import Store from 'chessvibe/src/redux/Store';
-import { useSelector } from 'react-redux';
 
 
 // Home Screen
@@ -26,10 +21,6 @@ export default function ReportModal(props) {
 
 	let inputStyle = {
 		backgroundColor: isDarkTheme ? '#ffffff2e' : appTheme.MENU_BACKGROUND
-	};
-
-	let btnStyle = {
-		backgroundColor: appTheme.APP_BACKGROUND
 	};
 
 	function clearForm() {
@@ -78,36 +69,21 @@ export default function ReportModal(props) {
 
 
 const styles = StyleSheet.create({
-	view: {
-		alignSelf: 'stretch',
-		flex: 1,
+	title: {
+		fontSize: vw(5),
 	},
 
-		header: {
-			flexDirection: 'row',
-			justifyContent: 'space-between',
-			alignItems: 'flex-start',
-		},
+	emailInput: {
+		fontSize: vw(5),
+		borderRadius: vw(),
+		height: vw(10),
+		marginTop: vw(5),
+	},
 
-			title: {
-				fontSize: vw(5),
-			},
-
-			clearBtn: {
-				paddingHorizontal: vw(2),
-			},
-
-		emailInput: {
-			fontSize: vw(5),
-			borderRadius: vw(),
-			height: vw(10),
-			marginTop: vw(5),
-		},
-
-		messageInput: {
-			fontSize: vw(5),
-			borderRadius: vw(),
-			height: vh(50),
-			marginTop: vw(),
-		},
+	messageInput: {
+		fontSize: vw(5),
+		borderRadius: vw(),
+		height: vh(50),
+		marginTop: vw(),
+	},
 });

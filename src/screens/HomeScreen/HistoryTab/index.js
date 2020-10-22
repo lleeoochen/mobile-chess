@@ -1,2 +1,2 @@
-import HistoryTab from './HistoryTab'
+import HistoryTab from './HistoryTab';
 export default HistoryTab;

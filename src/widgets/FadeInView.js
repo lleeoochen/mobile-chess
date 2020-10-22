@@ -11,7 +11,7 @@ export default function FadeInView(props) {
 			duration: props.duration || 1000,
 			useNativeDriver: true
 		}).start();
-	}, [])
+	}, []);
 
 	return (
 		<Animated.View
