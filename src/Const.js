@@ -83,6 +83,12 @@ export const IMAGE = {
 	INVITE: require('chessvibe/assets/invite.png'),
 };
 
+
+// Potential themes
+// Autumn: f7e490 f6f6d1
+// Morning: fbfbfb eeeeee
+// Skyblue: 559df7 b7ceea
+// Darkness: 559df7 b7ceea
 export const APP_THEME = Object.freeze({
 	LIGHT: {
 		APP_BACKGROUND:     '#559df7', // Top bar, app background color
@@ -90,8 +96,8 @@ export const APP_THEME = Object.freeze({
 		MENU_BACKGROUND:    '#90b7e6', // Side menu background color
 		COLOR:              'black', // Text color
 		SUB_COLOR:          'darkslategrey', // Subtext color
-		SETTING_BACKGROUND: 'white',  // Setting item color
-		SETTING_BORDER:     'grey', // Setting item border
+		SETTING_BACKGROUND: '#fbfbfb',  // Setting item color
+		SETTING_BORDER:     '#b7ceea', // Setting item border
 		ACTION_BUTTON:      '#5bad29', // Action button background color
 	},
 
