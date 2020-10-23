@@ -2,7 +2,6 @@ import * as React from 'react';
 import { View, SafeAreaView, ScrollView, StyleSheet, Image } from 'react-native';
 import { TextVibe, ButtonVibe, InputVibe } from 'chessvibe/src/widgets';
 import AutoHeightImage from 'react-native-auto-height-image';
-import SearchBar from 'react-native-search-bar';
 import Store from 'chessvibe/src/redux/Store';
 
 import { IMAGE, APP_THEME, FRIEND } from 'chessvibe/src/Const';
@@ -65,8 +64,7 @@ export default function FriendsTab(props) {
 		<SafeAreaView style={ viewStyle }>
 			<SearchInput
 				appTheme={ appTheme }
-				onSubmit={ (text) => { setSearchText(text); } }
-				onDismiss={ () => { setSearchText(''); } }/>
+				onSubmit={ (text) => { setSearchText(text); } }/>
 			<ScrollView>
 				{ people }
 			</ScrollView>
@@ -76,7 +74,7 @@ export default function FriendsTab(props) {
 
 // Hack to get text to change color
 function SearchInput(props) {
-	let { appTheme, onSubmit, onDismiss } = props;
+	let { appTheme, onSubmit } = props;
 
 	return (
 		<View>
