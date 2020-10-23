@@ -32,7 +32,7 @@ export default function NotificationMenu(props) {
 		Animated.spring(shiftY, {
 			toValue: 0,
 			speed: 20,
-			bounciness: 7,
+			bounciness: 5,
 			useNativeDriver: true,
 		})
 		.start();
@@ -41,7 +41,7 @@ export default function NotificationMenu(props) {
 		Animated.spring(shiftY, {
 			toValue: fullShift,
 			speed: 20,
-			bounciness: 7,
+			bounciness: 5,
 			useNativeDriver: true,
 		})
 		.start();

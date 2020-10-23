@@ -204,13 +204,11 @@ const styles = StyleSheet.create({
 	carousel: {
 		alignItems: 'flex-start',
 		marginTop: vw(5),
-		paddingTop: vw(10),
 	},
 
 		actionBtn: {
 			margin: vw(3),
-			// marginBottom: 0,
-			marginTop: vw(10),
+			height: vw(80),
 
 			shadowColor: '#000',
 			shadowOffset: {
@@ -238,7 +236,6 @@ const styles = StyleSheet.create({
 			},
 
 			actionBtnImage: {
-				// resizeMode: 'cover',
 				height: vw(80),
 				width: vw(80),
 				position: 'absolute',

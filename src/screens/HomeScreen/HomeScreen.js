@@ -101,19 +101,16 @@ export default function HomeScreen(props) {
 				inactiveColor: 'grey',
 				barStyle: {
 					backgroundColor: appTheme.MENU_BACKGROUND,
-				},
 
-				// Regular tab bar config
-				tabBarOptions: {
-					activeTintColor: appTheme.COLOR,
-					activeBackgroundColor: appTheme.MENU_BACKGROUND,
-					inactiveTintColor: 'grey',
-					inactiveBackgroundColor: appTheme.MENU_BACKGROUND,
-					style: {
-						borderTopWidth: 0,
-						borderTopColor: 'transparent',
+					shadowColor: '#000',
+					shadowOffset: {
+						width: 0,
+						height: -50,
 					},
-				}
+					shadowOpacity: 1,
+					shadowRadius: 3,
+					elevation: 10,
+				},
 			}
 		);
 
