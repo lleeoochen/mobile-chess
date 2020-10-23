@@ -25,7 +25,7 @@ export default function InputVibe(props) {
 	};
 
 	let wrapStyle = {...{
-		height: fontSize * 1.6,
+		height: Platform.OS === 'android' ? fontSize * 2 * 1.2 : fontSize * 2,
 		paddingLeft: fontSize / 3,
 	}, ...style};
 

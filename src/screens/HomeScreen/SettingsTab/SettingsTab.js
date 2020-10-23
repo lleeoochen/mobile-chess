@@ -205,12 +205,13 @@ const styles = StyleSheet.create({
 	},
 
 		setting: {
+			margin: vw(),
+			marginBottom: 0,
 			padding: vw(3),
 			paddingHorizontal: vw(4),
 			flexDirection: 'row',
 			alignItems: 'center',
-			// borderBottomWidth: 1,
-			borderRadius: 0,
+			borderRadius: vw(),
 		},
 
 		settingsIcon: {

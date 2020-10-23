@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { View, SafeAreaView, ScrollView, StyleSheet, Image } from 'react-native';
-import { TextVibe, ButtonVibe } from 'chessvibe/src/widgets';
+import { TextVibe, ButtonVibe, InputVibe } from 'chessvibe/src/widgets';
 import AutoHeightImage from 'react-native-auto-height-image';
 import SearchBar from 'react-native-search-bar';
 import Store from 'chessvibe/src/redux/Store';
@@ -39,8 +39,6 @@ export default function FriendsTab(props) {
 		backgroundColor: appTheme.CONTENT_BACKGROUND
 	}];
 
-	let Search = isDarkTheme ? SearchDark : SearchLight;
-
 	// opponents.sort((a, b) => {
 	// 	let statusA = friends[a[0].user_id] || 0;
 	// 	let statusB = friends[b[0].user_id] || 0;
@@ -65,9 +63,8 @@ export default function FriendsTab(props) {
 
 	return (
 		<SafeAreaView style={ viewStyle }>
-			<Search
+			<SearchInput
 				appTheme={ appTheme }
-				initText={ searchText }
 				onSubmit={ (text) => { setSearchText(text); } }
 				onDismiss={ () => { setSearchText(''); } }/>
 			<ScrollView>
@@ -78,29 +75,28 @@ export default function FriendsTab(props) {
 }
 
 // Hack to get text to change color
-function SearchLight(props) { return <SearchInput initText={ props.initText } appTheme={ props.appTheme } onSubmit={ props.onSubmit } onDismiss={ props.onDismiss }/>; }
-function SearchDark(props) { return <SearchInput initText={ props.initText } appTheme={ props.appTheme } onSubmit={ props.onSubmit } onDismiss={ props.onDismiss }/>; }
 function SearchInput(props) {
-	let { appTheme, onSubmit, onDismiss, initText } = props;
-	let [ text, changeText ] = React.useState(initText);
-	let ref = React.useRef(null);
+	let { appTheme, onSubmit, onDismiss } = props;
 
 	return (
-		<SearchBar
-			ref={ ref }
-			placeholder="Search"
-			textColor={ appTheme.COLOR }
-			hideBackground={ true }
-			onChangeText={ (text) => {
-				changeText(text);
-				onSubmit(text);
-			} }
-			onSearchButtonPress={ () => {
-				onSubmit(text);
-				ref.current.blur();
-			} }
-			onCancelButtonPress={ () => onDismiss() }
-		/>
+		<View>
+			<InputVibe
+				placeholder={'Search ...'}
+				blurOnSubmit={true}
+				style={{
+					fontSize: vw(5),
+					color: appTheme.COLOR,
+					backgroundColor: appTheme.MENU_BACKGROUND,
+					margin: 10,
+					borderRadius: vw(),
+				}}
+				onChangeText={(text) => {
+					onSubmit(text);
+				}}
+				onSubmitText={() => {
+					onSubmit(text);
+				}}/>
+		</View>
 	);
 }
 
