@@ -10,8 +10,8 @@ import Backend from 'chessvibe/src/Backend';
 
 // Home Screen
 export default function ReportModal(props) {
-	const { isDarkTheme, isVisible, onDismiss } = props;
-	const appTheme = isDarkTheme ? APP_THEME.DARK : APP_THEME.LIGHT;
+	const { appThemeId, isVisible, onDismiss } = props;
+	const appTheme = APP_THEME[appThemeId];
 	const [ email, setEmail ] = React.useState(Cache.user.email);
 	const [ message, setMessage ] = React.useState('');
 
@@ -20,7 +20,7 @@ export default function ReportModal(props) {
 	};
 
 	let inputStyle = {
-		backgroundColor: isDarkTheme ? '#ffffff2e' : appTheme.MENU_BACKGROUND
+		backgroundColor: appThemeId === 'DARK' ? '#ffffff2e' : appTheme.MENU_BACKGROUND
 	};
 
 	function clearForm() {

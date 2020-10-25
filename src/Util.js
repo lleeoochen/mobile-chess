@@ -14,6 +14,7 @@ import {
 	TEAM,
 	BOARD_SIZE,
 
+	APP_THEME,
 	THEME,
 	IMAGE,
 

@@ -5,7 +5,7 @@ const initState = Object.freeze({
 	home: {
 		user: null,
 		alertMenuShown: false,
-		isDarkTheme: false,
+		appThemeId: 'DARK',
 		toLogout: false,
 	},
 	game: {
@@ -32,8 +32,8 @@ export const HomeReducer = {
 		let home = { ...state.home, alertMenuShown: !state.home.alertMenuShown };
 		return { ...state, home };
 	}),
-	setIsDarkTheme: createReducer((state, data) => {
-		let home = { ...state.home, isDarkTheme: data };
+	setAppThemeId: createReducer((state, data) => {
+		let home = { ...state.home, appThemeId: data };
 		return { ...state, home };
 	}),
 	toLogout: createReducer((state, data) => {

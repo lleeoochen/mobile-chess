@@ -17,7 +17,7 @@ FriendsTab.navigationOptions = () => {
 	return {
 		tabBarLabel: 'Friends',
 		tabBarIcon: (
-			<Image style={ styles.tab } source={ IMAGE['FRIENDS' + (Store.getState().home.isDarkTheme ? '' : '_DARK')] }/>
+			<Image style={ styles.tab } source={ IMAGE['FRIENDS' + (Store.getState().home.appThemeId === 'DARK' ? '' : '_DARK')] }/>
 		)
 	};
 };
@@ -26,12 +26,12 @@ FriendsTab.navigationOptions = () => {
 export default function FriendsTab(props) {
 	// Screen props from navigation
 	const {
-		isDarkTheme,
+		appThemeId,
 		opponents,
 		friends={},
 	} = props.navigation.getScreenProps();
 
-	const appTheme = isDarkTheme ? APP_THEME.DARK : APP_THEME.LIGHT;
+	const appTheme = APP_THEME[appThemeId];
 	let [ searchText, setSearchText ] = React.useState('');
 
 	let viewStyle = [styles.view, props.style, {

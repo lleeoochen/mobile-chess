@@ -7,8 +7,8 @@ import Backend from 'chessvibe/src/GameBackend';
 import { PopupStore } from 'chessvibe/src/redux/Store';
 
 export default function NotificationMenu(props) {
-	const { visible, setVisible, isDarkTheme, notificationIDs=[], friends, navigateGame=()=>{}, matches } = props;
-	const appTheme = isDarkTheme ? APP_THEME.DARK : APP_THEME.LIGHT;
+	const { visible, setVisible, appThemeId, notificationIDs=[], friends, navigateGame=()=>{}, matches } = props;
+	const appTheme = APP_THEME[appThemeId];
 
 	const fullShift = vh(-120);
 	const [ shiftY ] = React.useState(new Animated.Value(fullShift));
@@ -86,7 +86,7 @@ export default function NotificationMenu(props) {
 				data={ data }
 				friends={ friends }
 				id={ notificationIDs[index] }
-				isDarkTheme={ isDarkTheme }
+				appThemeId={ appThemeId }
 				navigateGame={ navigateGame }
 				matches={ matches }/>
 		);
@@ -128,12 +128,12 @@ function Notification(props) {
 	const {
 		data={},
 		friends={},
-		isDarkTheme=false,
+		appThemeId=false,
 		navigateGame,
 		matches,
 	} = props;
 
-	const appTheme = isDarkTheme ? APP_THEME.DARK : APP_THEME.LIGHT;
+	const appTheme = APP_THEME[appThemeId];
 	const { type=NOTIFICATION_TYPE.INFO, payload='', uid='' } = data;
 	const [ user, setUser ] = React.useState({});
 	const [ friendAlready, setFriendAlready ] = React.useState(friends[uid] == FRIEND.FRIENDED);
@@ -179,12 +179,12 @@ function Notification(props) {
 	let message, icon, confirmIcon, confirmText, confirmClick;
 	switch(type) {
 		case NOTIFICATION_TYPE.INFO:
-			icon = isDarkTheme ? IMAGE.HISTORY : IMAGE.HISTORY_DARK;
+			icon = appThemeId !== 'DARK' ? IMAGE.HISTORY : IMAGE.HISTORY_DARK;
 			message = payload;
 			break;
 
 		case NOTIFICATION_TYPE.FRIEND_REQUEST:
-			icon = user.photo ? formatImage(user.photo) : isDarkTheme ? IMAGE.FRIENDS : IMAGE.FRIENDS_DARK;
+			icon = user.photo ? formatImage(user.photo) : appThemeId !== 'DARK' ? IMAGE.FRIENDS : IMAGE.FRIENDS_DARK;
 
 			if (friendAlready) {
 				message = (user.name || '') + ' is now your friend.';
@@ -192,7 +192,7 @@ function Notification(props) {
 			else {
 				message = (user.name || '') + ' sent you a friend request.';
 				confirmText = 'Accept';
-				confirmIcon = isDarkTheme ? IMAGE.FRIENDS_DARK : IMAGE.FRIENDS;
+				confirmIcon = appThemeId !== 'DARK' ? IMAGE.FRIENDS_DARK : IMAGE.FRIENDS;
 				confirmClick = () => {
 					setFriendAlready(true);
 					Backend.acceptFriend(uid);
@@ -201,18 +201,18 @@ function Notification(props) {
 			break;
 
 		case NOTIFICATION_TYPE.FRIEND_ACCEPTED:
-			icon = user.photo ? formatImage(user.photo) : isDarkTheme ? IMAGE.FRIENDS : IMAGE.FRIENDS_DARK;
+			icon = user.photo ? formatImage(user.photo) : appThemeId !== 'DARK' ? IMAGE.FRIENDS : IMAGE.FRIENDS_DARK;
 			message = (user.name || '') + ' accepted your friend request.';
 			break;
 
 		case NOTIFICATION_TYPE.CHALLENGE:
-			icon = user.photo ? formatImage(user.photo) : isDarkTheme ? IMAGE.DRAW : IMAGE.DRAW_DARK;
+			icon = user.photo ? formatImage(user.photo) : appThemeId !== 'DARK' ? IMAGE.DRAW : IMAGE.DRAW_DARK;
 			message = (user.name || '') + ' challenged you to a chess match.';
 
 			let matchStarted = matches.some(match => match.includes(payload + '-'));
 			if (!matchStarted && payload) {
 				confirmText = 'Accept';
-				confirmIcon = isDarkTheme ? IMAGE.DRAW_DARK : IMAGE.DRAW;
+				confirmIcon = appThemeId !== 'DARK' ? IMAGE.DRAW_DARK : IMAGE.DRAW;
 				confirmClick = () => {
 					navigateGame(payload);
 				};

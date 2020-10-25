@@ -17,7 +17,7 @@ HistoryTab.navigationOptions = () => {
 	return {
 		tabBarLabel: 'History',
 		tabBarIcon: (
-			<Image style={ styles.tab } source={ IMAGE['HISTORY' + (Store.getState().home.isDarkTheme ? '' : '_DARK')] }/>
+			<Image style={ styles.tab } source={ IMAGE['HISTORY' + (Store.getState().home.appThemeId === 'DARK' ? '' : '_DARK')] }/>
 		)
 	};
 };
@@ -26,14 +26,14 @@ HistoryTab.navigationOptions = () => {
 export default function HistoryTab(props) {
 	// Screen props from navigation
 	const {
-		isDarkTheme,
+		appThemeId,
 		oldMatches,
 		navigateGame,
 		refresh,
 	} = props.navigation.getScreenProps();
 
 	// const [ selectedMatch, selectMatch ] = React.useState(null);
-	const appTheme = isDarkTheme ? APP_THEME.DARK : APP_THEME.LIGHT;
+	const appTheme = APP_THEME[appThemeId];
 	const [ fadein ] = React.useState(new Animated.Value(0));
 	const [ refreshing ] = React.useState(false);
 	const onRefresh = React.useCallback(() => refresh(), []);

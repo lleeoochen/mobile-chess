@@ -4,7 +4,7 @@ import { FadeInView, TextVibe } from 'chessvibe/src/widgets';
 import { GoogleSignin, GoogleSigninButton } from '@react-native-community/google-signin';
 import auth from '@react-native-firebase/auth';
 import Spinner from 'react-native-loading-spinner-overlay';
-import { URL, STORAGE_IS_DARK_THEME } from '../Const';
+import { URL, STORAGE_APP_THEME } from '../Const';
 import Util from '../Util';
 import Cache, { CACHE_DEFAULT } from '../Cache';
 
@@ -95,9 +95,9 @@ export default function EntryScreen(props) {
 
 	// Navigate to home
 	async function navigateHome() {
-		let isDarkTheme = await Storage.get(STORAGE_IS_DARK_THEME) || 'true';
+		let appThemeId = await Storage.get(STORAGE_APP_THEME) || 'DARK';
 
-		HomeStore.setIsDarkTheme(isDarkTheme == 'true');
+		HomeStore.setAppThemeId(appThemeId);
 
 		let auth_token = await auth().currentUser.getIdToken(true);
 

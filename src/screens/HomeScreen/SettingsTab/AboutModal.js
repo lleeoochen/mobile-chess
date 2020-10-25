@@ -9,8 +9,8 @@ import { vw } from 'chessvibe/src/Util';
 
 // Home Screen
 export default function AboutModal(props) {
-	const { isDarkTheme, isVisible, onDismiss } = props;
-	const appTheme = isDarkTheme ? APP_THEME.DARK : APP_THEME.LIGHT;
+	const { appThemeId, isVisible, onDismiss } = props;
+	const appTheme = APP_THEME[appThemeId];
 
 	let textColor = {
 		color: appTheme.COLOR

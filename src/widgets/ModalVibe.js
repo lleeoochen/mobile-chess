@@ -11,8 +11,8 @@ export default function ModalVibe(props) {
 	const wantVisible = isVisible;
 	const duration = 200;
 
-	const isDarkTheme = useSelector(state => state.home.isDarkTheme);
-	const appTheme = isDarkTheme ? APP_THEME.DARK : APP_THEME.LIGHT;
+	const appThemeId = useSelector(state => state.home.appThemeId);
+	const appTheme = APP_THEME[appThemeId];
 	const [ top ] = React.useState(new Animated.Value(vh(100)));
 	const [ shadowIndex ] = React.useState(new Animated.Value(0));
 	const [ modalVisible, setModalVisible ] = React.useState(wantVisible);
@@ -163,7 +163,7 @@ const styles = StyleSheet.create({
 
 // export default function ModalVibe(props) {
 // 	const isDarkTheme = useSelector(state => state.home.isDarkTheme);
-// 	const appTheme = isDarkTheme ? APP_THEME.DARK : APP_THEME.LIGHT;
+// 	const appTheme = APP_THEME[appThemeId];
 
 // 	// Theme configuration
 // 	let menuStyle = [styles.menu, {

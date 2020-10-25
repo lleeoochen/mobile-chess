@@ -28,8 +28,8 @@ const MENU_BUTTON_COLOR = '#424c5a';
 export default function HomeCreateMenu(props) {
 	const { mode, visible, opponents, friends, onDismiss, onSubmit } = props;
 
-	const isDarkTheme = useSelector(state => state.home.isDarkTheme);
-	const appTheme = isDarkTheme ? APP_THEME.DARK : APP_THEME.LIGHT;
+	const appThemeId = useSelector(state => state.home.appThemeId);
+	const appTheme = APP_THEME[appThemeId];
 	const modeAI = mode == MATCH_MODE.COMPUTER;
 
 	const formData = {
@@ -59,32 +59,32 @@ export default function HomeCreateMenu(props) {
 			</TextVibe>
 
 			<FriendSelector
-				isDarkTheme={ isDarkTheme }
+				appThemeId={ appThemeId }
 				formData={ formData }
 				opponents={ opponents }
 				friends={ friends }
 				visible={ !modeAI }/>
 
 			<ThemeSelector
-				isDarkTheme={ isDarkTheme }
+				appThemeId={ appThemeId }
 				formData={ formData }/>
 
 			<TimeSelector
-				isDarkTheme={ isDarkTheme }
+				appThemeId={ appThemeId }
 				formData={ formData }
 				visible={ !modeAI }/>
 
 			<SubmitButton
-				isDarkTheme={ isDarkTheme }
+				appThemeId={ appThemeId }
 				onPress={ () => createMatch() }/>
 		</ModalVibe>
 	);
 }
 
-function FriendSelector({ isDarkTheme, formData, opponents, friends, visible }) {
+function FriendSelector({ appThemeId, formData, opponents, friends, visible }) {
 	if (!visible) return <View/>;
 
-	const appTheme = isDarkTheme ? APP_THEME.DARK : APP_THEME.LIGHT;
+	const appTheme = APP_THEME[appThemeId];
 	const [ people, setPeople ] = React.useState([]);
 	const [ selected, setSelected ] = React.useState(0);
 
@@ -111,7 +111,7 @@ function FriendSelector({ isDarkTheme, formData, opponents, friends, visible }) 
 		const borderStyle = index == selected ?
 			{
 				borderWidth: vw(),
-				borderColor: isDarkTheme ? 'white' : appTheme.APP_BACKGROUND,
+				borderColor: appThemeId === 'DARK' ? appTheme.APP_BACKGROUND : 'white',
 			}
 			: null;
 
@@ -137,12 +137,12 @@ function FriendSelector({ isDarkTheme, formData, opponents, friends, visible }) 
 	);
 }
 
-function ThemeSelector({ isDarkTheme, formData }) {
-	const appTheme = isDarkTheme ? APP_THEME.DARK : APP_THEME.LIGHT;
+function ThemeSelector({ appThemeId, formData }) {
+	const appTheme = APP_THEME[appThemeId];
 	const [ theme, setTheme ] = React.useState(THEME_ID.CLASSIC);
 
 	const themeBtnStyle = {... styles.themeBtn, ...{
-		backgroundColor: isDarkTheme ? MENU_BUTTON_COLOR : appTheme.APP_BACKGROUND
+		backgroundColor: appThemeId !== 'DARK' ? appTheme.APP_BACKGROUND : MENU_BUTTON_COLOR
 	}};
 
 	const themeImage =
@@ -160,22 +160,22 @@ function ThemeSelector({ isDarkTheme, formData }) {
 	return (
 		<View style={ styles.themeContainer }>
 			<ButtonVibe style={ [themeBtnStyle, styles.themeBtnLeft] } onPress={() => changeTheme(-1)}>
-				<Image source={ IMAGE['BACK' + (isDarkTheme ? '' : '_DARK')] } style={ styles.themeBtnImage }/>
+				<Image source={ IMAGE['BACK' + (appThemeId !== 'DARK' ? '_DARK' : '')] } style={ styles.themeBtnImage }/>
 			</ButtonVibe>
 			<View style={ styles.themeImageWrap }>
 				<Image source={ themeImage } style={ styles.themeImage }/>
 			</View>
 			<ButtonVibe style={ [themeBtnStyle, styles.themeBtnRight] } onPress={() => changeTheme(1)}>
-				<Image source={ IMAGE['BACK' + (isDarkTheme ? '' : '_DARK')] } style={ [styles.themeBtnImage,  {transform: [{ scaleX: -1 }]}] }/>
+				<Image source={ IMAGE['BACK' + (appThemeId !== 'DARK' ? '_DARK' : '')] } style={ [styles.themeBtnImage,  {transform: [{ scaleX: -1 }]}] }/>
 			</ButtonVibe>
 		</View>
 	);
 }
 
-function TimeSelector({ isDarkTheme, formData, visible }) {
+function TimeSelector({ appThemeId, formData, visible }) {
 	if (!visible) return <View/>;
 
-	const appTheme = isDarkTheme ? APP_THEME.DARK : APP_THEME.LIGHT;
+	const appTheme = APP_THEME[appThemeId];
 
 	const textColor = {
 		color: appTheme.COLOR
@@ -213,11 +213,11 @@ function TimeSelector({ isDarkTheme, formData, visible }) {
 	);
 }
 
-function SubmitButton({ isDarkTheme, onPress }) {
-	const appTheme = isDarkTheme ? APP_THEME.DARK : APP_THEME.LIGHT;
+function SubmitButton({ appThemeId, onPress }) {
+	const appTheme = APP_THEME[appThemeId];
 
 	const submitBtnStyle = {
-		backgroundColor: isDarkTheme ? MENU_BUTTON_COLOR : appTheme.APP_BACKGROUND
+		backgroundColor: appThemeId !== 'DARK' ? appTheme.APP_BACKGROUND : MENU_BUTTON_COLOR
 	};
 
 	const textColor = {

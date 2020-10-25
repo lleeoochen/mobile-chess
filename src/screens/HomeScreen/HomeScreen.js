@@ -31,7 +31,7 @@ const NAV_TITLE = {
 // Navigation
 HomeScreen.navigationOptions = ({navigation}) => {
 	const { params = {} } = navigation.state;
-	return ActionBar(NAV_TITLE[params.tab], undefined, undefined, 'BELL', params.openNotification, params.isDarkTheme);
+	return ActionBar(NAV_TITLE[params.tab], undefined, undefined, 'BELL', params.openNotification, params.appThemeId);
 };
 
 
@@ -39,8 +39,8 @@ HomeScreen.navigationOptions = ({navigation}) => {
 export default function HomeScreen(props) {
 	const {setNavStack} = props.navigation.getScreenProps();
 
-	const isDarkTheme = useSelector(state => state.home.isDarkTheme);
-	const appTheme = isDarkTheme ? APP_THEME.DARK : APP_THEME.LIGHT;
+	const appThemeId = useSelector(state => state.home.appThemeId);
+	const appTheme = APP_THEME[appThemeId];
 
 	const [ opponents, setOpponents ] = React.useState(Cache.home.opponents);
 	const [ matches, setMatches ] = React.useState(Cache.home.matches);
@@ -125,7 +125,7 @@ export default function HomeScreen(props) {
 						screenTab.current = getActiveRouteName(currentState);
 					}}
 					screenProps={{
-						isDarkTheme,
+						appThemeId,
 						newMatches: matches.new,
 						oldMatches: matches.old,
 						friends: user.current.friends,
@@ -137,7 +137,7 @@ export default function HomeScreen(props) {
 
 				<HomeNotificationMenu
 					user={user}
-					isDarkTheme={isDarkTheme}
+					appThemeId={appThemeId}
 					navigateGame={navigateGame}
 					navigation={props.navigation}
 					tab={tab}/>
@@ -290,18 +290,18 @@ export default function HomeScreen(props) {
 }
 
 
-function HomeNotificationMenu({user, isDarkTheme, navigation, navigateGame, tab}) {
+function HomeNotificationMenu({user, appThemeId, navigation, navigateGame, tab}) {
 	const alertMenuShown = useSelector(state => state.home.alertMenuShown);
 
 	React.useEffect(() => {
 		navigation.setParams({
 			tab: tab,
-			isDarkTheme: isDarkTheme,
+			appThemeId: appThemeId,
 			openNotification: () => {
 				HomeStore.toggleAlertMenu();
 			},
 		});
-	}, [tab, isDarkTheme]);
+	}, [tab, appThemeId]);
 
 	return (
 		<NotificationMenu
@@ -309,7 +309,7 @@ function HomeNotificationMenu({user, isDarkTheme, navigation, navigateGame, tab}
 			navigateGame={ navigateGame }
 			notificationIDs={ (user.current.notifications || []).reverse() }
 			friends={ user.current.friends }
-			isDarkTheme={ isDarkTheme }
+			appThemeId={ appThemeId }
 			visible={ alertMenuShown }
 			setVisible={ HomeStore.toggleAlertMenu }/>
 	);

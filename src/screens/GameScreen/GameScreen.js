@@ -25,12 +25,12 @@ import GameAI from './Game/GameAI';
 // Navigation
 GameScreen.navigationOptions = ({ navigation }) => {
 	const { params = {} } = navigation.state;
-	return ActionBar('Match', 'BACK', params.goBack, 'THEME', params.changeTheme, params.isDarkTheme);
+	return ActionBar('Match', 'BACK', params.goBack, 'THEME', params.changeTheme, params.appThemeId);
 };
 
 // Game Screen
 export default function GameScreen(props) {
-	const isDarkTheme = useSelector(state => state.home.isDarkTheme);
+	const appThemeId = useSelector(state => state.home.appThemeId);
 
 	let [game, setGame] = React.useState(null);
 	let match_id = props.navigation.getParam('match');
@@ -47,7 +47,7 @@ export default function GameScreen(props) {
 		Backend.init();
 
 		props.navigation.setParams({
-			isDarkTheme: isDarkTheme,
+			appThemeId,
 			goBack: () => {
 				if (game)
 					game.ends();
@@ -149,7 +149,7 @@ export default function GameScreen(props) {
 		});
 
 		return () => isMountedRef.current = false;
-	}, [isDarkTheme]);
+	}, [appThemeId]);
 
 	function handleChessEvent(x, y) {
 		if (game) {
@@ -198,7 +198,7 @@ export default function GameScreen(props) {
 						</ScrollView>
 					</Animated.View>
 					<UtilityArea
-						isDarkTheme={ isDarkTheme }
+						appThemeId={ appThemeId }
 						style={ styles.utilityArea }
 						callbackNode={ fall }
 						gameRef={ game }/>

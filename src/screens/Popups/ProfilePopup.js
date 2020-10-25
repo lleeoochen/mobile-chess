@@ -8,8 +8,8 @@ import { APP_THEME } from 'chessvibe/src/Const';
 import { PopupStore } from 'chessvibe/src/redux/Store';
 
 export default function ProfilePopup() {
-	const isDarkTheme = useSelector(state => state.home.isDarkTheme);
-	const appTheme = isDarkTheme ? APP_THEME.DARK : APP_THEME.LIGHT;
+	const appThemeId = useSelector(state => state.home.appThemeId);
+	const appTheme = APP_THEME[appThemeId];
 
 	const profile = useSelector(state => state.popup.profile) || {};
 	const visible = profile.name !== undefined;

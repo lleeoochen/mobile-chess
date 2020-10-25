@@ -20,7 +20,7 @@ PlayTab.navigationOptions = () => {
 	return {
 		tabBarLabel: 'Play',
 		tabBarIcon: (
-			<Image style={ styles.tab } source={ IMAGE['DRAW' + (Store.getState().home.isDarkTheme ? '' : '_DARK')] }/>
+			<Image style={ styles.tab } source={ IMAGE['DRAW' + (Store.getState().home.appThemeId === 'DARK' ? '' : '_DARK')] }/>
 		)
 	};
 };
@@ -29,7 +29,7 @@ PlayTab.navigationOptions = () => {
 export default function PlayTab(props) {
 	// Screen props from navigation
 	const {
-		isDarkTheme,
+		appThemeId,
 		newMatches,
 		friends,
 		opponents,
@@ -64,7 +64,7 @@ export default function PlayTab(props) {
 	const startingMode = 1;
 	const [ description, setDescription ] = React.useState(ACTION_DATA[startingMode].description);
 	const [ fadein ] = React.useState(new Animated.Value(0));
-	const appTheme = isDarkTheme ? APP_THEME.DARK : APP_THEME.LIGHT;
+	const appTheme = APP_THEME[appThemeId];
 	const firstLoad = React.useRef(true);
 
 	React.useEffect(() => {

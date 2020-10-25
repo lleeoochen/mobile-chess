@@ -5,7 +5,7 @@ import { IMAGE, APP_THEME } from 'chessvibe/src/Const';
 import TextVibe from './TextVibe';
 import ButtonVibe from './ButtonVibe';
 
-export default function ActionBar(title, left_img, left_img_on_press, right_img, right_img_on_press, isDarkTheme=true) {
+export default function ActionBar(title, left_img, left_img_on_press, right_img, right_img_on_press, appThemeId='DARK') {
 
 	let on_left_press = () => {
 		if (left_img_on_press) left_img_on_press();
@@ -16,13 +16,13 @@ export default function ActionBar(title, left_img, left_img_on_press, right_img,
 	};
 
 
-	let appTheme = isDarkTheme ? APP_THEME.DARK : APP_THEME.LIGHT;
+	let appTheme = APP_THEME[appThemeId];
 
 	let titleStyle = [styles.title, {
 		color: appTheme.COLOR
 	}];
 
-	if (!isDarkTheme) {
+	if (appThemeId !== 'DARK') {
 		left_img += '_DARK';
 		right_img += '_DARK';
 	}

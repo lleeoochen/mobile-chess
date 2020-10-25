@@ -12,8 +12,8 @@ const handle_height = 20 + vw(3);
 const panel_height = vw(12);
 const header_height = panel_height + handle_height;
 export default function DialogVibe(props) {
-	const isDarkTheme = useSelector(state => state.home.isDarkTheme);
-	const appTheme = isDarkTheme ? APP_THEME.DARK : APP_THEME.LIGHT;
+	const appThemeId = useSelector(state => state.home.appThemeId);
+	const appTheme = APP_THEME[appThemeId];
 
 	let {
 		visible=false,

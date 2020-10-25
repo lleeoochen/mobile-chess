@@ -4,7 +4,7 @@ import { TextVibe, ButtonVibe } from 'chessvibe/src/widgets';
 import { GoogleSignin } from '@react-native-community/google-signin';
 import auth from '@react-native-firebase/auth';
 
-import { IMAGE, STORAGE_IS_DARK_THEME, APP_THEME } from 'chessvibe/src/Const';
+import { IMAGE, STORAGE_APP_THEME, APP_THEME } from 'chessvibe/src/Const';
 import { vw } from 'chessvibe/src/Util';
 import Storage from 'chessvibe/src/Storage';
 import Cache, { CACHE_DEFAULT } from 'chessvibe/src/Cache';
@@ -18,7 +18,7 @@ SettingsTab.navigationOptions = () => {
 	return {
 		tabBarLabel: 'Settings',
 		tabBarIcon: (
-			<Image style={ styles.tab } source={ IMAGE['SETTINGS' + (Store.getState().home.isDarkTheme ? '' : '_DARK')] }/>
+			<Image style={ styles.tab } source={ IMAGE['SETTINGS' + (Store.getState().home.appThemeId === 'DARK' ? '' : '_DARK')] }/>
 		)
 	};
 };
@@ -27,11 +27,11 @@ SettingsTab.navigationOptions = () => {
 export default function SettingsTab(props) {
 	// Screen props from navigation
 	const {
-		isDarkTheme,
+		appThemeId,
 		setNavStack,
 	} = props.navigation.getScreenProps();
 
-	const appTheme = isDarkTheme ? APP_THEME.DARK : APP_THEME.LIGHT;
+	const appTheme = APP_THEME[appThemeId];
 	const [ repotModalShown, showReportModal ] = React.useState(false);
 	const [ aboutModalShown, showAboutModal ] = React.useState(false);
 
@@ -44,6 +44,11 @@ export default function SettingsTab(props) {
 		backgroundColor: appTheme.SETTING_BORDER,
 	};
 
+	const newAppThemeId =
+		appThemeId === 'DARK' ? 'SKY' :
+		appThemeId === 'SKY' ? 'LIGHT' :
+		appThemeId === 'LIGHT' ? 'AUTUMN' :
+		'DARK';
 
 	return (
 		<View style={ viewStyle }>
@@ -51,19 +56,19 @@ export default function SettingsTab(props) {
 				<View style={ styles.divider }/>
 
 				<View style={ borderStyle }/>
-					<SwitchSetting
-						title={ 'Dark Theme' }
-						initEnabled={ isDarkTheme }
-						appTheme={ appTheme }
-						onChange={ (enabled) => {
-							HomeStore.setIsDarkTheme(enabled);
-							Storage.set(STORAGE_IS_DARK_THEME, enabled + '');
+					<MoreSetting
+						title={ 'Theme - ' + appThemeId }
+						type={ 'button' }
+						appThemeId={ appThemeId }
+						onPress={ (enabled) => {
+							HomeStore.setAppThemeId(newAppThemeId);
+							Storage.set(STORAGE_APP_THEME, newAppThemeId);
 						} }/>
 					<View style={ borderStyle }/>
 					<SwitchSetting
 						title={ 'Push Notification' }
 						enabled={ true }
-						appTheme={ appTheme }/>
+						appThemeId={ appThemeId }/>
 				<View style={ borderStyle }/>
 
 				<View style={ styles.divider }/>
@@ -72,7 +77,7 @@ export default function SettingsTab(props) {
 					<MoreSetting
 						title={ 'Report Issues' }
 						type={ 'more' }
-						isDarkTheme={ isDarkTheme }
+						appThemeId={ appThemeId }
 						onPress={ () => showReportModal(true) }/>
 
 					<View style={ borderStyle }/>
@@ -80,7 +85,7 @@ export default function SettingsTab(props) {
 					<MoreSetting
 						title={ 'About' }
 						type={ 'more' }
-						isDarkTheme={ isDarkTheme }
+						appThemeId={ appThemeId }
 						onPress={ () => showAboutModal(true) }/>
 				<View style={ borderStyle }/>
 
@@ -90,7 +95,7 @@ export default function SettingsTab(props) {
 					<MoreSetting
 						title={ 'Logout' }
 						type={ 'more' }
-						isDarkTheme={ isDarkTheme }
+						appThemeId={ appThemeId }
 						onPress={async () => {
 							await signOut();
 							setNavStack('login');
@@ -100,12 +105,12 @@ export default function SettingsTab(props) {
 			</ScrollView>
 
 			<ReportModal
-				isDarkTheme={ isDarkTheme }
+				appThemeId={ appThemeId }
 				isVisible={ repotModalShown }
 				onDismiss={ () => showReportModal(false) }/>
 
 			<AboutModal
-				isDarkTheme={ isDarkTheme }
+				appThemeId={ appThemeId }
 				isVisible={ aboutModalShown }
 				onDismiss={ () => showAboutModal(false) }/>
 		</View>
@@ -113,8 +118,9 @@ export default function SettingsTab(props) {
 }
 
 function SwitchSetting(props) {
-	const { title, appTheme, initEnabled=false, type='switch', onChange=()=>{} } = props;
+	const { title, appThemeId, initEnabled=false, type='switch', onChange=()=>{} } = props;
 	const [ enabled, setEnabled ] = React.useState(initEnabled);
+	const appTheme = APP_THEME[appThemeId];
 
 	// Update enable state
 	React.useEffect(() => {
@@ -154,8 +160,8 @@ function SwitchSetting(props) {
 
 
 function MoreSetting(props) {
-	const { title, isDarkTheme, onPress=() => {} } = props;
-	const appTheme = isDarkTheme ? APP_THEME.DARK : APP_THEME.LIGHT;
+	const { title, appThemeId, onPress=() => {} } = props;
+	const appTheme = APP_THEME[appThemeId];
 
 	let settingStyle = [styles.setting, {
 		backgroundColor: appTheme.SETTING_BACKGROUND,
@@ -169,7 +175,7 @@ function MoreSetting(props) {
 	return (
 		<ButtonVibe style={ settingStyle } onPress={ onPress }>
 			<TextVibe style={ textStyle }>{ title }</TextVibe>
-			<Image source={ IMAGE[isDarkTheme ? 'BACK' : 'BACK_DARK'] } style={ [styles.settingsIcon,  {transform: [{ scaleX: -1 }]}] }/>
+			<Image source={ IMAGE[appThemeId === 'DARK' ? 'BACK' : 'BACK_DARK'] } style={ [styles.settingsIcon,  {transform: [{ scaleX: -1 }]}] }/>
 		</ButtonVibe>
 	);
 }

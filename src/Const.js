@@ -91,13 +91,13 @@ export const IMAGE = {
 // Darkness: 559df7 b7ceea
 export const APP_THEME = Object.freeze({
 	LIGHT: {
-		APP_BACKGROUND:     '#559df7', // Top bar, app background color
-		CONTENT_BACKGROUND: '#b7ceea', // Main container background color
-		MENU_BACKGROUND:    '#90b7e6', // Side menu background color
+		APP_BACKGROUND:     '#fbfbfb', // Top bar, app background color
+		CONTENT_BACKGROUND: '#eeeeee', // Main container background color
+		MENU_BACKGROUND:    '#fbfbfb', // Side menu background color
 		COLOR:              'black', // Text color
 		SUB_COLOR:          'darkslategrey', // Subtext color
 		SETTING_BACKGROUND: '#fbfbfb',  // Setting item color
-		SETTING_BORDER:     '#b7ceea', // Setting item border
+		SETTING_BORDER:     '#eeeeee', // Setting item border
 		ACTION_BUTTON:      '#5bad29', // Action button background color
 	},
 
@@ -110,6 +110,28 @@ export const APP_THEME = Object.freeze({
 		SETTING_BACKGROUND: '#2a4261', // Setting item color
 		SETTING_BORDER:     '#1a283a', // Setting item border
 		ACTION_BUTTON:      '#437149', // Action button background color
+	},
+
+	AUTUMN: {
+		APP_BACKGROUND:     '#f7e490', // Top bar, app background color
+		CONTENT_BACKGROUND: '#f6f6d1', // Main container background color
+		MENU_BACKGROUND:    '#f7e490', // Side menu background color
+		COLOR:              'black', // Text color
+		SUB_COLOR:          'darkslategrey', // Subtext color
+		SETTING_BACKGROUND: '#f7e490',  // Setting item color
+		SETTING_BORDER:     '#f6f6d1', // Setting item border
+		ACTION_BUTTON:      '#5bad29', // Action button background color
+	},
+
+	SKY: {
+		APP_BACKGROUND:     '#559df7', // Top bar, app background color
+		CONTENT_BACKGROUND: '#b7ceea', // Main container background color
+		MENU_BACKGROUND:    '#559df7', // Side menu background color
+		COLOR:              'black', // Text color
+		SUB_COLOR:          'darkslategrey', // Subtext color
+		SETTING_BACKGROUND: '#fbfbfb',  // Setting item color
+		SETTING_BORDER:     '#b7ceea', // Setting item border
+		ACTION_BUTTON:      '#5bad29', // Action button background color
 	},
 });
 
@@ -240,7 +262,7 @@ export const STATS_MAX = 42; // treat king as 3 score
 export const LAST_VISITED_KEY = 'last_visited';
 export const SESSION_TOKEN = 'session_token';
 
-export const STORAGE_IS_DARK_THEME = 'STORAGE_IS_DARK_THEME';
+export const STORAGE_APP_THEME = 'STORAGE_APP_THEME';
 export const STORAGE_APP_CACHE = 'STORAGE_APP_CACHE';
 
 export const THEME_ID = {
