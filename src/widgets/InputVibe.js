@@ -12,6 +12,12 @@ export default function InputVibe(props) {
 		multiline=false,
 		blurOnSubmit=false,
 	} = props;
+
+	if (!Array.isArray(style)) {
+		style = [style];
+	}
+	style = { ...Object.assign({}, ...style) };
+
 	let { fontSize=20 } = style;
 
 	const [ value, changeText ] = React.useState(initValue || placeholder);

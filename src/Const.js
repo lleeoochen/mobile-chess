@@ -27,6 +27,7 @@ export const IMAGE = {
 	SETTINGS:  require('chessvibe/assets/settings.png'),
 	HALFMOON:  require('chessvibe/assets/halfmoon.png'),
 	BELL:      require('chessvibe/assets/bell.png'),
+	GOOGLE:    require('chessvibe/assets/google-logo.png'),
 
 	BACK_DARK:     require('chessvibe/assets/dark/back.png'),
 	THEME_DARK:    require('chessvibe/assets/dark/palette.png'),

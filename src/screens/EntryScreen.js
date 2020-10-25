@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { SafeAreaView, StyleSheet, StatusBar, Image } from 'react-native';
-import { FadeInView, TextVibe } from 'chessvibe/src/widgets';
-import { GoogleSignin, GoogleSigninButton } from '@react-native-community/google-signin';
+import { FadeInView, TextVibe, ButtonVibe } from 'chessvibe/src/widgets';
+import { GoogleSignin } from '@react-native-community/google-signin';
 import auth from '@react-native-firebase/auth';
 import Spinner from 'react-native-loading-spinner-overlay';
-import { URL, STORAGE_APP_THEME } from '../Const';
+import { URL, IMAGE, STORAGE_APP_THEME } from '../Const';
 import Util from '../Util';
 import Cache, { CACHE_DEFAULT } from '../Cache';
 
@@ -135,12 +135,13 @@ export default function EntryScreen(props) {
 				<Image style={ styles.logo } source={ logoImg }/>
 
 				<FadeInView style={ styles.googleBtnWrap }>
-					<GoogleSigninButton
-						style={ styles.googleBtn }
-						size={ GoogleSigninButton.Size.Wide }
-						color={ GoogleSigninButton.Color.Dark }
+					<ButtonVibe
+						style={styles.googleBtn}
 						onPress={ () => signIn() }
-						disabled={ signingin }/>
+						disabled={ signingin }>
+						<Image style={styles.googleIcon} source={ IMAGE.GOOGLE }/>
+						<TextVibe style={styles.googleText}>Sign in with Google</TextVibe>
+					</ButtonVibe>
 				</FadeInView>
 			</SafeAreaView>
 		);
@@ -183,15 +184,29 @@ const styles = StyleSheet.create({
 		width: logoSize,
 		height: logoSize
 	},
+
 	googleBtnWrap: {
-		// width: '50%',
-		height: 50,
 		position: 'absolute',
-		bottom: 0,
-		marginTop: 50,
-		marginBottom: 50,
+		bottom: 50,
 	},
-	googleBtn: {
-		// width: '100%',
-	}
+		googleBtn: {
+			flexDirection: 'row',
+			backgroundColor: '#4285F4',
+			borderRadius: 2,
+		},
+			googleIcon: {
+				padding: 1,
+				width: 45,
+				height: 45,
+			    resizeMode: 'contain',
+			},
+			googleText: {
+				fontSize: 18,
+				fontWeight: 'bold',
+				fontFamily: 'Roboto',
+				color: 'white',
+				textAlign: 'center',
+				marginLeft: 15,
+				marginRight: 15,
+			},
 });
