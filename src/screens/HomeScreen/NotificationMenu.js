@@ -192,7 +192,7 @@ function Notification(props) {
 			else {
 				message = (user.name || '') + ' sent you a friend request.';
 				confirmText = 'Accept';
-				confirmIcon = appThemeId !== 'DARK' ? IMAGE.FRIENDS_DARK : IMAGE.FRIENDS;
+				confirmIcon = appThemeId === 'DARK' ? IMAGE.FRIENDS_DARK : IMAGE.FRIENDS;
 				confirmClick = () => {
 					setFriendAlready(true);
 					Backend.acceptFriend(uid);
@@ -212,7 +212,7 @@ function Notification(props) {
 			let matchStarted = matches.some(match => match.includes(payload + '-'));
 			if (!matchStarted && payload) {
 				confirmText = 'Accept';
-				confirmIcon = appThemeId !== 'DARK' ? IMAGE.DRAW_DARK : IMAGE.DRAW;
+				confirmIcon = appThemeId === 'DARK' ? IMAGE.DRAW_DARK : IMAGE.DRAW;
 				confirmClick = () => {
 					navigateGame(payload);
 				};
