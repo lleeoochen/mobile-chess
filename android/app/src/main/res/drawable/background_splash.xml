@@ -6,6 +6,6 @@
 
     <item
         android:drawable="@mipmap/logo"
-        android:gravity="center" />
+        android:gravity="center"/>
 
 </layer-list>

@@ -22,13 +22,6 @@
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/background_splash" />
 
-        <!-- Splash screen with logo -->
-        <activity
-            android:name=".SplashActivity"
-            android:theme="@style/SplashTheme"
-            android:label="@string/app_name">
-        </activity>
-
         <!-- Main activity -->
         <activity
             android:name=".MainActivity"
