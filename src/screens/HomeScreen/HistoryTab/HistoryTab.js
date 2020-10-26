@@ -34,23 +34,13 @@ export default function HistoryTab(props) {
 
 	// const [ selectedMatch, selectMatch ] = React.useState(null);
 	const appTheme = APP_THEME[appThemeId];
-	const [ fadein ] = React.useState(new Animated.Value(0));
-	const [ refreshing ] = React.useState(false);
 	const onRefresh = React.useCallback(() => refresh(), []);
-	const firstLoad = React.useRef(true);
+	const [ refreshing ] = React.useState(false);
+	const [matchesData, setMatchesData] = React.useState([]);
 
 	React.useEffect(() => {
-		if (firstLoad.current) {
-			Animated.timing(fadein, {
-				toValue: 1,
-				duration: 200,
-				useNativeDriver: true,
-			})
-			.start();
-			firstLoad.current = false;
-		}
+		setTimeout(() => setMatchesData(oldMatches), 500);
 	}, [oldMatches]);
-
 
 	// function deleteMatch(match_id) {
 	// 	Backend.deleteMatch(match_id).then(async () => {
@@ -69,8 +59,15 @@ export default function HistoryTab(props) {
 
 	// Render function
 	function render() {
-		// Render
-		let $containers = renderMatches();
+		let $container = matchesData.length !== oldMatches.length ?
+			oldMatches.map(({enemy}, i) => {
+				return renderFakeMatches(enemy, i);
+			})
+			:
+			matchesData.map(({enemy, matches}, i) => {
+				return renderMatches(enemy, matches, i);
+			});
+		console.log($container);
 
 		return (
 			<SafeAreaView style={ viewStyle }>
@@ -81,7 +78,7 @@ export default function HistoryTab(props) {
 					refreshControl={
 						<RefreshControl refreshing={ refreshing } onRefresh={ onRefresh } tintColor={ appTheme.COLOR } />
 					}>
-					{ $containers }
+					{$container}
 				</ScrollView>
 
 				{/*
@@ -98,64 +95,90 @@ export default function HistoryTab(props) {
 
 	// ====================== Functions ======================
 
-	// Render user matches
-	function renderMatches() {
-		let $containers = [];
+	function renderFakeMatches(enemy, enemyIndex) {
+		return (
+			<View key={enemyIndex} style={[styles.playerBox]}>
+				<TextVibe style={titleStyle}>{enemy.name}</TextVibe>
+				<ScrollView horizontal={ true }>
+					{ renderMatch({}, '', {}, 0, 0) }
+				</ScrollView>
+			</View>
+		);
+	}
 
-		for (let i in oldMatches) {
-			let { enemy, matches } = oldMatches[i];
-			let $active_matches = [];
-			let $inactive_matches = [];
 
-			if (matches.length == 0)
-				continue;
+	// Render recent matches
+	function renderMatches(enemy, matches, enemyIndex) {
+		let $matches = [];
+		let matchIndex = 0;
+		let customFadein = getFadeinAnimation(enemyIndex);
 
-			matches.forEach((match, j) => {
-				let match_name = match[0];
-				let match_data = match[1];
-				Cache.theme[match_name] = match_data.theme;
+		matches.forEach((match) => {
+			let [match_name, match_data] = match;
+			$matches.push(
+				renderMatch(enemy, match_name, match_data, enemyIndex, matchIndex++)
+			);
+			Cache.theme[match_name] = match_data.theme;
+		});
 
-				let d = new Date(match_data.updated);
-				let d_str = formatDate(d, '%M/%D');
-
-				let active = Math.floor(match_data.moves[match_data.moves.length - 1] / 10) != 0;
-				let borderStyle = match_data.black == Cache.userID ? styles.blackBorder : styles.whiteBorder;
-				let colorStyle = active ? styles.greenColor : styles.greyColor;
-
-				if (active) {
-					$active_matches.push(
-						<ButtonVibe key={ j } style={ {...styles.matchView, ...borderStyle} } onPress={() => navigateGame(match_name)} onLongPress={ () => selectMatch(match_name) }>
-							<AutoHeightImage width={ matchSize } source={ formatImage(enemy.photo) } style={ styles.matchImg }/>
-							<View style={ {...styles.matchDate, ...colorStyle} }>
-								<TextVibe> { d_str } </TextVibe>
-							</View>
-						</ButtonVibe>
-					);
-				}
-				else {
-					$inactive_matches.push(
-						<ButtonVibe key={ j } style={ {...styles.matchView, ...borderStyle} } onPress={() => navigateGame(match_name)} onLongPress={ () => selectMatch(match_name) }>
-							<AutoHeightImage width={ matchSize } source={ formatImage(enemy.photo) } style={ styles.matchImg }/>
-							<View style={ {...styles.matchDate, ...colorStyle} }>
-								<TextVibe> { d_str } </TextVibe>
-							</View>
-						</ButtonVibe>
-					);
-				}
-			});
-			$containers.push(
-				<Animated.View key={ i } style={ [styles.playerBox, { opacity: fadein }] }>
-					<TextVibe style={ titleStyle }>{ enemy.name }</TextVibe>
-					<ScrollView
-						horizontal={ true }>
-						{ $active_matches }
-						{ $inactive_matches }
+		return (
+			<View key={enemyIndex} style={[styles.playerBox]}>
+				<TextVibe style={ titleStyle }>{ enemy.name }</TextVibe>
+				<Animated.View style={ [{ opacity: customFadein }] }>
+					<ScrollView horizontal={ true }>
+						{ $matches }
 					</ScrollView>
 				</Animated.View>
-			);
+			</View>
+		);
+	}
+
+	function renderMatch(enemy, matchName, matchData, enemyIndex, matchIndex) {
+		let active = false, updated_date = '', colorStyle = styles.greyColor;
+		let customFadein = getFadeinAnimation(enemyIndex, matchIndex);
+
+		if (matchData.moves) {
+			active = Math.floor(matchData.moves[matchData.moves.length - 1] / 10) != 0;
+			colorStyle = active ? styles.greenColor : styles.greyColor;
 		}
 
-		return $containers;
+		if (matchData.updated) {
+			updated_date = formatDate(new Date(matchData.updated), '%M/%D');
+		}
+
+		return (
+			<Animated.View key={matchIndex} style={{ opacity: customFadein }}>
+				<ButtonVibe
+					style={styles.matchView}
+					onPress={() => navigateGame(matchName)}
+					onLongPress={() => selectMatch(matchName)}>
+
+					<AutoHeightImage
+						width={matchSize}
+						source={formatImage(enemy.photo)}
+						style={styles.matchImg}/>
+
+					<View style={{ ...styles.matchDate, ...colorStyle }}>
+						<TextVibe>{updated_date}</TextVibe>
+					</View>
+				</ButtonVibe>
+			</Animated.View>
+		);
+	}
+
+	function getFadeinAnimation(enemyIndex=0, matchIndex=0) {
+		const ENEMY_DELAY = 200;
+		const MATCH_DELAY = 500;
+		const duration = ENEMY_DELAY * enemyIndex + MATCH_DELAY * matchIndex + 500;
+
+		let fadein = new Animated.Value(0);
+		Animated.timing(fadein, {
+			toValue: 1,
+			duration,
+			useNativeDriver: true,
+		}).start();
+
+		return fadein;
 	}
 
 
@@ -209,9 +232,6 @@ const styles = StyleSheet.create({
 
 				elevation: 3,
 			},
-
-				blackBorder: { borderColor: 'black' },
-				whiteBorder: { borderColor: 'white' },
 
 				matchImg: {
 					borderTopLeftRadius: vw(1),

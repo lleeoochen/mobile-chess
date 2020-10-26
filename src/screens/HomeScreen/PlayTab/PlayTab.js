@@ -57,9 +57,7 @@ export default function PlayTab(props) {
 		},
 	];
 
-
 	const [ createMenuVisible, showCreateMenu ] = React.useState({ show: false });
-
 
 	const startingMode = 1;
 	const [ description, setDescription ] = React.useState(ACTION_DATA[startingMode].description);
@@ -95,46 +93,64 @@ export default function PlayTab(props) {
 		setDescription(modeData.description);
 	}
 
+	function renderFakeMatches(total) {
+		let fakeMatches = [];
+		for (let i = 0; i < total; i++) {
+			fakeMatches.push(
+				renderMatch({}, '', {}, i)
+			);
+		}
+		return fakeMatches;
+	}
+
 
 	// Render recent matches
-	function renderMatches() {
-		if (!newMatches || newMatches.length < 1) return;
+	function renderMatches(enemyMatches) {
+		if (!enemyMatches || enemyMatches.length < 1) return;
 
 		let $matches = [];
+		let count = 0;
 
-		for (let i in newMatches) {
-			let { enemy, matches } = newMatches[i];
-
-			matches.forEach((match, j) => {
-				let match_name = match[0];
-				let match_data = match[1];
-				Cache.theme[match_name] = match_data.theme;
-
-				let d = new Date(match_data.updated);
-				let d_str = formatDate(d, '%M/%D');
-
-				let active = Math.floor(match_data.moves[match_data.moves.length - 1] / 10) != 0;
-				let borderStyle = match_data.black == Cache.userID ? styles.blackBorder : styles.whiteBorder;
-				let colorStyle = active ? styles.greenColor : styles.greyColor;
-
+		enemyMatches.forEach(({enemy, matches}) => {
+			matches.forEach((match) => {
+				let [match_name, match_data] = match;
 				$matches.push(
-					<ButtonVibe key={ i + '' + j } style={ {...styles.matchView, ...borderStyle} } onPress={() => navigateGame(match_name)}>
-						<AutoHeightImage width={ matchSize } source={ formatImage(enemy.photo) } style={ styles.matchImg }/>
-						<View style={ {...styles.matchDate, ...colorStyle} }>
-							<TextVibe> { d_str } </TextVibe>
-						</View>
-					</ButtonVibe>
+					renderMatch(enemy, match_name, match_data, count++)
 				);
+				Cache.theme[match_name] = match_data.theme;
 			});
+		});
+
+		return $matches;
+	}
+
+	function renderMatch(enemy, match_name, match_data, count) {
+		let active = false, updated_date = '', colorStyle = styles.greyColor;
+
+		if (match_data.moves) {
+			active = Math.floor(match_data.moves[match_data.moves.length - 1] / 10) != 0;
+			colorStyle = active ? styles.greenColor : styles.greyColor;
+		}
+
+		if (match_data.updated) {
+			updated_date = formatDate(new Date(match_data.updated), '%M/%D');
 		}
 
 		return (
-			<Animated.View style={ [styles.playerBox, { opacity: fadein }] }>
-				<TextVibe style={ titleStyle }>Recent Matches</TextVibe>
-				<ScrollView horizontal={ true }>
-					{ $matches }
-				</ScrollView>
-			</Animated.View>
+			<ButtonVibe
+				key={count}
+				style={styles.matchView}
+				onPress={() => navigateGame(match_name)}>
+
+				<AutoHeightImage
+					width={matchSize}
+					source={formatImage(enemy.photo)}
+					style={styles.matchImg}/>
+
+				<View style={{...styles.matchDate, ...colorStyle}}>
+					<TextVibe>{updated_date}</TextVibe>
+				</View>
+			</ButtonVibe>
 		);
 	}
 
@@ -149,7 +165,11 @@ export default function PlayTab(props) {
 	};
 
 	// Render
-	let $container = renderMatches();
+	// let $container = renderMatches(newMatches);
+	let $container = newMatches.length === 0
+		? renderFakeMatches(10)
+		: renderMatches(newMatches);
+
 	return (
 		<View style={ viewStyle }>
 			<Carousel
@@ -167,7 +187,13 @@ export default function PlayTab(props) {
 				contentContainerCustomStyle={ styles.carousel }
 				onScrollIndexChanged={ index => onSnapToMode(ACTION_DATA[index]) }/>
 			<TextVibe style={ [styles.description, { color: appTheme.SUB_COLOR }] }>{ description }</TextVibe>
-			{ $container }
+
+			<Animated.View style={ [styles.playerBox, { opacity: fadein }] }>
+				<TextVibe style={ titleStyle }>Recent Matches</TextVibe>
+				<ScrollView horizontal={ true }>
+					{ $container }
+				</ScrollView>
+			</Animated.View>
 
 			<HomeCreateMenu
 				visible={ createMenuVisible.show }
@@ -181,7 +207,7 @@ export default function PlayTab(props) {
 						Cache.theme[match_id] = theme;
 						navigateGame(match_id);
 					});
-				} }/>
+				}}/>
 		</View>
 	);
 }
@@ -278,9 +304,6 @@ const styles = StyleSheet.create({
 			shadowRadius: 2.22,
 			elevation: 3,
 		},
-
-			blackBorder: { borderColor: 'black' },
-			whiteBorder: { borderColor: 'white' },
 
 			matchImg: {
 				borderTopLeftRadius: vw(1),

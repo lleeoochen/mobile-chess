@@ -149,6 +149,8 @@ export default function HomeScreen(props) {
 	// ====================== Functions ======================
 
 	function navigateGame(match) {
+		if (!match) return;
+
 		props.navigation.navigate('Game', {
 			match,
 			refresh: () => fetchMatches(),
