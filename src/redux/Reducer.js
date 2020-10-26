@@ -3,7 +3,13 @@ import { THEME } from 'chessvibe/src/Const';
 // Initial store state
 const initState = Object.freeze({
 	home: {
-		user: null,
+		user: {},
+		opponents: new Set(),
+		matches: {
+			new: [],
+			old: [],
+		},
+
 		alertMenuShown: false,
 		appThemeId: 'DARK',
 		toLogout: false,
@@ -26,6 +32,14 @@ const initState = Object.freeze({
 export const HomeReducer = {
 	updateUser: createReducer((state, data) => {
 		let home = { ...state.home, user: data };
+		return { ...state, home };
+	}),
+	setOpponents: createReducer((state, data) => {
+		let home = { ...state.home, opponents: data };
+		return { ...state, home };
+	}),
+	setMatches: createReducer((state, data) => {
+		let home = { ...state.home, matches: data };
 		return { ...state, home };
 	}),
 	toggleAlertMenu: createReducer((state) => {

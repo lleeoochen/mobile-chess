@@ -3,6 +3,7 @@ import { Switch, View, ScrollView, StyleSheet, Image } from 'react-native';
 import { TextVibe, ButtonVibe } from 'chessvibe/src/widgets';
 import { GoogleSignin } from '@react-native-community/google-signin';
 import auth from '@react-native-firebase/auth';
+import { useSelector } from 'react-redux';
 
 import { IMAGE, STORAGE_APP_THEME, APP_THEME } from 'chessvibe/src/Const';
 import { vw } from 'chessvibe/src/Util';
@@ -27,10 +28,10 @@ SettingsTab.navigationOptions = () => {
 export default function SettingsTab(props) {
 	// Screen props from navigation
 	const {
-		appThemeId,
 		setNavStack,
 	} = props.navigation.getScreenProps();
 
+	const appThemeId = useSelector(state => state.home.appThemeId);
 	const appTheme = APP_THEME[appThemeId];
 	const [ repotModalShown, showReportModal ] = React.useState(false);
 	const [ aboutModalShown, showAboutModal ] = React.useState(false);
@@ -60,10 +61,10 @@ export default function SettingsTab(props) {
 						title={ 'Theme - ' + appThemeId }
 						type={ 'button' }
 						appThemeId={ appThemeId }
-						onPress={ (enabled) => {
+						onPress={() => {
 							HomeStore.setAppThemeId(newAppThemeId);
 							Storage.set(STORAGE_APP_THEME, newAppThemeId);
-						} }/>
+						}}/>
 					<View style={ borderStyle }/>
 					<SwitchSetting
 						title={ 'Push Notification' }

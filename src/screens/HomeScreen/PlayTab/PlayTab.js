@@ -1,10 +1,11 @@
 import * as React from 'react';
-import { Animated, View, ScrollView, StyleSheet, Image } from 'react-native';
+import { FlatList, Animated, View, StyleSheet, Image } from 'react-native';
 import { TextVibe, ButtonVibe } from 'chessvibe/src/widgets';
 import AutoHeightImage from 'react-native-auto-height-image';
 import Carousel from 'react-native-snap-carousel';
 import Store from 'chessvibe/src/redux/Store';
 import HomeCreateMenu from '../HomeCreateMenu';
+import { useSelector } from 'react-redux';
 
 import { IMAGE, APP_THEME, MATCH_MODE } from 'chessvibe/src/Const';
 import { formatDate, vw, formatImage } from 'chessvibe/src/Util';
@@ -29,12 +30,13 @@ PlayTab.navigationOptions = () => {
 export default function PlayTab(props) {
 	// Screen props from navigation
 	const {
-		appThemeId,
-		newMatches,
-		friends,
-		opponents,
 		navigateGame,
 	} = props.navigation.getScreenProps();
+
+	const appThemeId = useSelector(state => state.home.appThemeId);
+	const newMatches = useSelector(state => state.home.matches.new);
+	const opponents = useSelector(state => state.home.opponents);
+	const {friends={}} = useSelector(state => state.home.user);
 
 	const ACTION_DATA = [
 		{
@@ -93,35 +95,24 @@ export default function PlayTab(props) {
 		setDescription(modeData.description);
 	}
 
-	function renderFakeMatches(total) {
-		let fakeMatches = [];
-		for (let i = 0; i < total; i++) {
-			fakeMatches.push(
-				renderMatch({}, '', {}, i)
-			);
-		}
-		return fakeMatches;
-	}
-
-
 	// Render recent matches
-	function renderMatches(enemyMatches) {
-		if (!enemyMatches || enemyMatches.length < 1) return;
+	function renderMatches(matches) {
+		const renderMatchItem = ({index, item}) => {
+			const [match_name, match_data, enemy] = item;
+			Cache.theme[match_name] = match_data.theme;
+			return renderMatch(enemy, match_name, match_data, index);
+		};
 
-		let $matches = [];
-		let count = 0;
-
-		enemyMatches.forEach(({enemy, matches}) => {
-			matches.forEach((match) => {
-				let [match_name, match_data] = match;
-				$matches.push(
-					renderMatch(enemy, match_name, match_data, count++)
-				);
-				Cache.theme[match_name] = match_data.theme;
-			});
-		});
-
-		return $matches;
+		return (
+			<Animated.View style={ [styles.playerBox, { opacity: fadein }] }>
+				<TextVibe style={ titleStyle }>Recent Matches</TextVibe>
+				<FlatList
+					data={matches}
+					renderItem={renderMatchItem}
+					keyExtractor={(item, index) => index.toString()}
+					horizontal={true}/>
+			</Animated.View>
+		);
 	}
 
 	function renderMatch(enemy, match_name, match_data, count) {
@@ -165,10 +156,10 @@ export default function PlayTab(props) {
 	};
 
 	// Render
-	// let $container = renderMatches(newMatches);
-	let $container = newMatches.length === 0
-		? renderFakeMatches(10)
-		: renderMatches(newMatches);
+	const formattedMatches = newMatches.map(({enemy, matches}) => {
+		return matches.map(match => [...match, enemy]);
+	}).flat();
+	const $container = renderMatches(formattedMatches);
 
 	return (
 		<View style={ viewStyle }>
@@ -187,13 +178,7 @@ export default function PlayTab(props) {
 				contentContainerCustomStyle={ styles.carousel }
 				onScrollIndexChanged={ index => onSnapToMode(ACTION_DATA[index]) }/>
 			<TextVibe style={ [styles.description, { color: appTheme.SUB_COLOR }] }>{ description }</TextVibe>
-
-			<Animated.View style={ [styles.playerBox, { opacity: fadein }] }>
-				<TextVibe style={ titleStyle }>Recent Matches</TextVibe>
-				<ScrollView horizontal={ true }>
-					{ $container }
-				</ScrollView>
-			</Animated.View>
+			{$container}
 
 			<HomeCreateMenu
 				visible={ createMenuVisible.show }

@@ -3,6 +3,7 @@ import { View, SafeAreaView, ScrollView, StyleSheet, Image } from 'react-native'
 import { TextVibe, ButtonVibe, InputVibe } from 'chessvibe/src/widgets';
 import AutoHeightImage from 'react-native-auto-height-image';
 import Store from 'chessvibe/src/redux/Store';
+import { useSelector } from 'react-redux';
 
 import { IMAGE, APP_THEME, FRIEND } from 'chessvibe/src/Const';
 import { vw, formatImage } from 'chessvibe/src/Util';
@@ -24,12 +25,9 @@ FriendsTab.navigationOptions = () => {
 
 // Home Screen
 export default function FriendsTab(props) {
-	// Screen props from navigation
-	const {
-		appThemeId,
-		opponents,
-		friends={},
-	} = props.navigation.getScreenProps();
+	const appThemeId = useSelector(state => state.home.appThemeId);
+	const opponents = useSelector(state => state.home.opponents);
+	const {friends={}} = useSelector(state => state.home.user);
 
 	const appTheme = APP_THEME[appThemeId];
 	let [ searchText, setSearchText ] = React.useState('');

@@ -42,9 +42,6 @@ export default function HomeScreen(props) {
 	const appThemeId = useSelector(state => state.home.appThemeId);
 	const appTheme = APP_THEME[appThemeId];
 
-	const [ opponents, setOpponents ] = React.useState(Cache.home.opponents);
-	const [ matches, setMatches ] = React.useState(Cache.home.matches);
-
 	const user = React.useRef({});
 	const screenTab = React.useRef('PlayTab');
 
@@ -57,6 +54,9 @@ export default function HomeScreen(props) {
 
 	// Mount
 	React.useEffect(() => {
+		HomeStore.setOpponents(Cache.home.opponents);
+		HomeStore.setMatches(Cache.home.matches);
+
 		// Call when switching nav stack
 		props.navigation.addListener('didFocus', () => {
 			Backend.init();
@@ -125,11 +125,6 @@ export default function HomeScreen(props) {
 						screenTab.current = getActiveRouteName(currentState);
 					}}
 					screenProps={{
-						appThemeId,
-						newMatches: matches.new,
-						oldMatches: matches.old,
-						friends: user.current.friends,
-						opponents,
 						navigateGame,
 						refresh,
 						setNavStack,
@@ -263,8 +258,8 @@ export default function HomeScreen(props) {
 				return 0;
 			});
 
-			setOpponents(resultOpponents);
-			setMatches(resultMatches);
+			HomeStore.setOpponents(resultOpponents);
+			HomeStore.setMatches(resultMatches);
 
 			Cache.home.opponents = resultOpponents;
 			Cache.home.matches = resultMatches;
