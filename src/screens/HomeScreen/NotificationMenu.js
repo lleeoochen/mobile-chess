@@ -187,7 +187,7 @@ function Notification(props) {
 			icon = user.photo ? formatImage(user.photo) : appThemeId !== 'DARK' ? IMAGE.FRIENDS : IMAGE.FRIENDS_DARK;
 
 			if (friendAlready) {
-				message = (user.name || '') + ' is now your friend.';
+				return <View/>;
 			}
 			else {
 				message = (user.name || '') + ' sent you a friend request.';
@@ -200,10 +200,10 @@ function Notification(props) {
 			}
 			break;
 
-		case NOTIFICATION_TYPE.FRIEND_ACCEPTED:
-			icon = user.photo ? formatImage(user.photo) : appThemeId !== 'DARK' ? IMAGE.FRIENDS : IMAGE.FRIENDS_DARK;
-			message = (user.name || '') + ' accepted your friend request.';
-			break;
+		// case NOTIFICATION_TYPE.FRIEND_ACCEPTED:
+		// 	icon = user.photo ? formatImage(user.photo) : appThemeId !== 'DARK' ? IMAGE.FRIENDS : IMAGE.FRIENDS_DARK;
+		// 	message = (user.name || '') + ' accepted your friend request.';
+		// 	break;
 
 		case NOTIFICATION_TYPE.CHALLENGE:
 			icon = user.photo ? formatImage(user.photo) : appThemeId !== 'DARK' ? IMAGE.DRAW : IMAGE.DRAW_DARK;
@@ -216,6 +216,9 @@ function Notification(props) {
 				confirmClick = () => {
 					navigateGame(payload);
 				};
+			}
+			else {
+				return <View/>;
 			}
 			break;
 
