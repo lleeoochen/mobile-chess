@@ -26,7 +26,7 @@ FriendsTab.navigationOptions = () => {
 // Home Screen
 export default function FriendsTab(props) {
 	const appThemeId = useSelector(state => state.home.appThemeId);
-	const opponents = useSelector(state => state.home.opponents);
+	const opponents = useSelector(state => state.home.opponents) || [];
 	const {friends={}} = useSelector(state => state.home.user);
 
 	const appTheme = APP_THEME[appThemeId];
@@ -82,7 +82,7 @@ function SearchInput(props) {
 				style={{
 					fontSize: vw(5),
 					color: appTheme.COLOR,
-					backgroundColor: appTheme.MENU_BACKGROUND,
+					backgroundColor: appTheme.SETTING_BACKGROUND,
 					margin: 10,
 					borderRadius: vw(),
 				}}

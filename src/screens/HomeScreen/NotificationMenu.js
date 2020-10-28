@@ -260,6 +260,7 @@ const styles = StyleSheet.create({
 		height: vh(100),
 		position: 'absolute',
 		zIndex: 100,
+		marginTop: vw(15),
 	},
 
 	backView: {

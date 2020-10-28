@@ -7,7 +7,6 @@ target 'ChessVibe' do
   config = use_native_modules!
   use_react_native!(:path => config["reactNativePath"])
 
-  pod 'react-native-splash-screen', :path => '../node_modules/react-native-splash-screen'
 
   target 'ChessVibeTests' do
     inherit! :complete
@@ -33,7 +32,6 @@ target 'ChessVibe-tvOS' do
   end
 end
 
-pod 'RNCAsyncStorage', :path => '../node_modules/@react-native-community/async-storage'
 
 # Multiple commands produce '/Users/lleeoochen/Library/Developer/Xcode/DerivedData/ChessVibe-gmgkvnuxxbzcaleplxbcdubwwvoa/Build/Intermediates.noindex/ArchiveIntermediates/ChessVibe/IntermediateBuildFilesPath/UninstalledProducts/iphoneos/AccessibilityResources.bundle':
 # 1) Target 'React-Core.common-AccessibilityResources' has create directory command with output '/Users/lleeoochen/Library/Developer/Xcode/DerivedData/ChessVibe-gmgkvnuxxbzcaleplxbcdubwwvoa/Build/Intermediates.noindex/ArchiveIntermediates/ChessVibe/IntermediateBuildFilesPath/UninstalledProducts/iphoneos/AccessibilityResources.bundle'

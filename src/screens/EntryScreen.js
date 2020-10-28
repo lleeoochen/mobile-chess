@@ -203,7 +203,7 @@ const styles = StyleSheet.create({
 			googleText: {
 				fontSize: 18,
 				fontWeight: 'bold',
-				fontFamily: 'Roboto',
+				// fontFamily: 'Roboto',
 				color: 'white',
 				textAlign: 'center',
 				marginLeft: 15,

@@ -4,7 +4,7 @@ import { THEME } from 'chessvibe/src/Const';
 const initState = Object.freeze({
 	home: {
 		user: {},
-		opponents: new Set(),
+		opponents: [],
 		matches: {
 			new: [],
 			old: [],
