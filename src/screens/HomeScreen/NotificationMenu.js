@@ -4,7 +4,7 @@ import { TextVibe, ButtonVibe } from 'chessvibe/src/widgets';
 import { vw, vh, formatImage } from 'chessvibe/src/Util';
 import { IMAGE, APP_THEME, NOTIFICATION_TYPE, FRIEND } from 'chessvibe/src/Const';
 import Backend from 'chessvibe/src/GameBackend';
-import { PopupStore } from 'chessvibe/src/redux/Store';
+import { PopupStore, HomeStore } from 'chessvibe/src/redux/Store';
 
 export default function NotificationMenu(props) {
 	const { visible, setVisible, appThemeId, notificationIDs=[], friends, navigateGame=()=>{}, matches } = props;
@@ -215,6 +215,7 @@ function Notification(props) {
 				confirmIcon = appThemeId === 'DARK' ? IMAGE.DRAW_DARK : IMAGE.DRAW;
 				confirmClick = () => {
 					navigateGame(payload);
+					HomeStore.toggleAlertMenu();
 				};
 			}
 			else {

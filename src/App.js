@@ -63,10 +63,10 @@ export default function App() {
 
 
 	// Render
-	const NavContent = navStack === 'login' ? LoginNavigator : MainNavigator;
+	const Navigator = navStack === 'login' ? LoginNavigator : MainNavigator;
 	return (
 		<Provider store={ store }>
-			<NavContent setNavStack={setNavStack}/>
+			<Navigator setNavStack={setNavStack}/>
 		</Provider>
 	);
 }

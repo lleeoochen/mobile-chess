@@ -16,6 +16,7 @@ import SettingsTab from '../screens/HomeScreen/SettingsTab';
 
 import ProfilePopup from '../screens/Popups/ProfilePopup';
 import { APP_THEME, TEAM } from '../Const';
+import { vw } from '../Util';
 
 import Util from 'chessvibe/src/Util';
 import Stats from 'chessvibe/src/Stats';
@@ -23,12 +24,13 @@ import Backend from 'chessvibe/src/Backend';
 import { HomeStore } from '../redux/Store';
 import Cache from '../Cache';
 
-const NAV_TITLE = {
+const TAB_TITLE = {
 	PlayTab: 'ChessVibe',
 	HistoryTab: 'History',
 	FriendsTab: 'Friends',
 	SettingsTab: 'Settings',
 };
+
 
 export default function MainNavigator({setNavStack}) {
 	const appThemeId = useSelector(state => state.home.appThemeId);
@@ -88,15 +90,17 @@ export default function MainNavigator({setNavStack}) {
 		});
 	}
 
-	const MainContainer = getMainContainer(appThemeId, screenTab.current, HomeStore.toggleAlertMenu);
+	const MainNavigation = getMainNavigation(appThemeId, screenTab.current, HomeStore.toggleAlertMenu);
 
 	return (
 		<SafeAreaView style={{ flex: 1, backgroundColor: 'black' }}>
 			<StatusBar hidden={ true }/>
-			<MainContainer
+			<MainNavigation
 				ref={navigator}
 				onNavigationStateChange={(prevState, currentState) => {
-					screenTab.current = getActiveRouteName(currentState);
+					if (currentState.routes[currentState.routes.length - 1].routeName === 'Home') {
+						screenTab.current = getActiveRouteName(currentState);
+					}
 				}}
 				screenProps={{
 					setNavStack,
@@ -113,7 +117,7 @@ export default function MainNavigator({setNavStack}) {
 }
 
 // Main Navigation
-function getMainContainer(appThemeId, tab, openNotification) {
+function getMainNavigation(appThemeId, tab, openNotification) {
 	const appTheme = APP_THEME[appThemeId];
 
 	const HomeNavigator = createMaterialBottomTabNavigator(
@@ -132,16 +136,16 @@ function getMainContainer(appThemeId, tab, openNotification) {
 			inactiveColor: 'grey',
 			barStyle: {
 				backgroundColor: appTheme.MENU_BACKGROUND,
-
-				shadowColor: '#000',
+				borderColor: 'transparent',
 				shadowOffset: {
 					width: 0,
-					height: 0,
+					height: appThemeId === 'DARK' ? -2 : 0, // cover white border line in dark mode
 				},
 				shadowOpacity: 1,
-				shadowRadius: 2,
+				shadowColor: 'black',
+				shadowRadius: vw(0.5),
 
-				elevation: 10,
+				elevation: 2,
 			},
 		}
 	);
@@ -152,8 +156,12 @@ function getMainContainer(appThemeId, tab, openNotification) {
 		},
 		{
 			initialRouteName: 'Home',
-			defaultNavigationOptions: () => {
-				return ActionBar(NAV_TITLE[tab], undefined, undefined, 'BELL', openNotification, appThemeId);
+			defaultNavigationOptions: ({navigation}) => {
+				const {routeName, routes, index} = navigation.state;
+
+				if (routeName === 'Home') {
+					return ActionBar(TAB_TITLE[routes[index].key], undefined, undefined, 'BELL', openNotification, appThemeId);
+				}
 			},
 		}
 	);
