@@ -112,7 +112,6 @@ export default function EntryScreen(props) {
 		else {
 			signOut();
 		}
-		showSpinner(false);
 	}
 
 
