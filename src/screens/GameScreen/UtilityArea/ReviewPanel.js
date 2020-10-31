@@ -9,68 +9,67 @@ import AutoHeightImage from 'react-native-auto-height-image';
 export default function ActionPanel(props) {
 	const theme = useSelector(state => state.game.theme);
 	const { gameRef, minimizeDrawer=() => {} } = props;
-	const [ , update ] = React.useState(false);
+	const [ updateVersion, update ] = React.useState(0);
 	const [ playing, setPlaying ] = React.useState(false);
 
 
 	async function onFastBackwardClick() {
 		await gameRef.pausePlayback();
+		setPlaying(true);
 
-		gameRef.stopPlayBack = false;
 		await gameRef.reviewMove(0);
-		gameRef.stopPlayBack = true;
-		update(true);
+
+		update(updateVersion + 1);
+		setPlaying(false);
 	}
 
 	async function onBackwardClick() {
 		await gameRef.pausePlayback();
+		setPlaying(false);
 
-		gameRef.stopPlayBack = false;
 		await gameRef.reviewMove(gameRef.moves_applied - 1);
-		gameRef.stopPlayBack = true;
-		update(true);
+
+		update(updateVersion + 1);
 	}
 
 	async function onForwardClick() {
 		await gameRef.pausePlayback();
+		setPlaying(false);
 
-		gameRef.stopPlayBack = false;
 		await gameRef.reviewMove(gameRef.moves_applied + 1);
-		gameRef.stopPlayBack = true;
-		update(true);
+
+		update(updateVersion + 1);
 	}
 
 	async function onFastForwardClick() {
 		await gameRef.pausePlayback();
-
-		gameRef.stopPlayBack = false;
-		await gameRef.reviewMove(gameRef.match.moves.length - 1);
-		gameRef.stopPlayBack = true;
-		update(true);
-	}
-
-	async function onPlaybackClick() {
-		if (gameRef.playingBack.get()) {
-			setPlaying(false);
-			await gameRef.pausePlayback();
-			return;
-		}
-
 		setPlaying(true);
 
-		gameRef.stopPlayBack = false;
-		await gameRef.reviewMove(gameRef.match.moves.length - 1, 700);
-		gameRef.stopPlayBack = true;
-		update(true);
+		await gameRef.reviewMove(gameRef.match.moves.length - 1);
 
+		update(updateVersion + 1);
 		setPlaying(false);
 	}
 
+	async function onPlaybackClick() {
+		if (playing) {
+			setPlaying(false);
+			await gameRef.pausePlayback();
+		}
+		else {
+			setPlaying(true);
+
+			await gameRef.reviewMove(gameRef.match.moves.length - 1, 700);
+
+			setPlaying(false);
+			update(updateVersion + 1);
+		}
+	}
 
 	let buttons = [
 		{
 			image: IMAGE.FASTBACKWARD,
-			disabled: gameRef == null || gameRef.moves_applied <= 0,
+			disabled: playing || gameRef == null || gameRef.moves_applied <= 0,
 			onPress: () => {
 				minimizeDrawer();
 				onFastBackwardClick();
@@ -78,7 +77,7 @@ export default function ActionPanel(props) {
 		},
 		{
 			image: IMAGE.BACKWARD,
-			disabled: gameRef == null || gameRef.moves_applied <= 0,
+			disabled: playing || gameRef == null || gameRef.moves_applied <= 0,
 			onPress: () => {
 				minimizeDrawer();
 				onBackwardClick();
@@ -86,7 +85,6 @@ export default function ActionPanel(props) {
 		},
 		{
 			image: playing ? IMAGE.PAUSE : IMAGE.PLAY,
-			disabled: gameRef == null || gameRef.moves_applied >= gameRef.match.moves.length - 1,
 			onPress: () => {
 				minimizeDrawer();
 				onPlaybackClick();
@@ -94,7 +92,7 @@ export default function ActionPanel(props) {
 		},
 		{
 			image: IMAGE.FORWARD,
-			disabled: gameRef == null || gameRef.moves_applied >= gameRef.match.moves.length - 1,
+			disabled: playing || gameRef == null || gameRef.moves_applied >= gameRef.match.moves.length - 1,
 			onPress: () => {
 				minimizeDrawer();
 				onForwardClick();
@@ -102,7 +100,7 @@ export default function ActionPanel(props) {
 		},
 		{
 			image: IMAGE.FASTFORWARD,
-			disabled: gameRef == null || gameRef.moves_applied >= gameRef.match.moves.length - 1,
+			disabled: playing || gameRef == null || gameRef.moves_applied >= gameRef.match.moves.length - 1,
 			onPress: () => {
 				minimizeDrawer();
 				onFastForwardClick();
