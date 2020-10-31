@@ -7,9 +7,12 @@ import { HomeStore } from 'chessvibe/src/redux/Store';
 export default class Backend {
 
 	static init() {
-		if (this.socket)
+		if (this.socket) {
 			this.socket.close();
+			console.log('SOCKET LOG: Closing existing socket.');
+		}
 
+		console.log('SOCKET LOG: Initiating new socket.');
 		this.socket = io(URL.BACKEND, {
 			query: {
 				token: Cache.sessionToken
