@@ -39,6 +39,7 @@ export default function BasePlayerPanel(props) {
 	let imageStyle = {
 		borderRightWidth: margin_size,
 		borderColor: color,
+		borderRadius: 0,
 	};
 
 	let titleStyle = {

@@ -5,6 +5,18 @@ import { vw } from 'chessvibe/src/Util';
 import * as Const from 'chessvibe/src/Const';
 import { TextVibe } from 'chessvibe/src/widgets';
 
+const shadow = {
+	shadowColor: '#000',
+	shadowOffset: {
+		width: 0,
+		height: 0,
+	},
+	shadowOpacity: 0.1,
+	shadowRadius: 1,
+	elevation: 2,
+	zIndex: 100,
+};
+
 export default function BaseBoardGrid(props) {
 	let { x, y, numbering, color, isLight, theme, style } = props;
 	let gridColor = useSelector(state => state.game.baseboard[x][y]);
@@ -20,8 +32,13 @@ export default function BaseBoardGrid(props) {
 	// Set numbering color
 	let numberingColor = isLight ? 'black' : 'white';
 
+	let myShadow = {};
+	if (!isLight) {
+		myShadow = shadow;
+	}
+
 	return (
-		<View style={ [style, { backgroundColor: color }] }>
+		<View style={ [style, { backgroundColor: color }, myShadow] }>
 			<TextVibe style={ [styles.numberingX, { color: numberingColor }] }>{ numbering.x }</TextVibe>
 			<TextVibe style={ [styles.numberingY, { color: numberingColor }] }>{ numbering.y }</TextVibe>
 		</View>

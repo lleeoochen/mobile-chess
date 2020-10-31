@@ -39,11 +39,24 @@ export default function BaseBoard() {
 				width: cell_size,
 				height: cell_size,
 				position: 'absolute',
-
-				// Prevent gap between cells
-				paddingRight: (x < Const.BOARD_SIZE - 1 ? vw() : 0),
-				paddingBottom: (y < Const.BOARD_SIZE - 1 ? vw() : 0),
 			};
+
+			// Prevent gap between cells
+			if (isLight) {
+				let padding = {top: 1, left: 1, bottom: 1, right: 1};
+
+				if (x === 0) {padding.left = 0;}
+				if (x === 7) {padding.right = 0;}
+				if (y === 0) {padding.top = 0;}
+				if (y === 7) {padding.bottom = 0;}
+
+				gridStyle.width += (padding.left + padding.right);
+				gridStyle.height += (padding.top + padding.bottom);
+				gridStyle.transform = [
+					{translateX: -1 * padding.left},
+					{translateY: -1 * padding.top},
+				];
+			}
 
 			grids.push(
 				<BaseBoardGrid
