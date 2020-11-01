@@ -1,15 +1,15 @@
-import { GameStore } from 'chessvibe/src/redux/Store';
-import * as Const    from 'chessvibe/src/Const';
-import Util          from 'chessvibe/src/Util';
-import Backend       from 'chessvibe/src/GameBackend';
-import PieceFactory  from './Pieces/piecefactory';
-import Grid          from './Pieces/grid';
+import { GameStore }  from 'chessvibe/src/redux/Store';
+import * as Const     from 'chessvibe/src/Const';
+import Util           from 'chessvibe/src/Util';
+import PieceFactory   from './Pieces/piecefactory';
+import Grid           from './Pieces/grid';
 
-import ChessMover    from './Workers/ChessMover';
-import ChessUnmover  from './Workers/ChessUnmover';
-import ChessReviewer from './Workers/ChessReviewer';
-import TouchHandler  from './Workers/TouchHandler';
-import DataUpdater   from './Workers/DataUpdater';
+import ChessMover     from './Workers/ChessMover';
+import ChessUnmover   from './Workers/ChessUnmover';
+import ChessReviewer  from './Workers/ChessReviewer';
+import TouchHandler   from './Workers/TouchHandler';
+import DataUpdater    from './Workers/DataUpdater';
+import ChessValidator from './Workers/ChessValidator';
 
 export default class Game {
 
@@ -71,7 +71,14 @@ export default class Game {
 		this.ChessReviewer = new ChessReviewer(this);
 		this.TouchHandler = new TouchHandler(this);
 		this.DataUpdater = new DataUpdater(this);
+		this.ChessValidator = new ChessValidator(this);
 	}
+
+
+	//======================================================================== 
+	//============================ Init Game =================================
+	//========================================================================
+
 
 	//Intialize chessboard background
 	initBoard(){
@@ -137,28 +144,10 @@ export default class Game {
 	}
 
 
+	//======================================================================== 
+	//======================= Chess Move Helper ==============================
+	//========================================================================
 
-
-
-
-	// Check if old grid => new grid is valid
-	isValidMove(oldGrid, newGrid) {
-		if (!this.get_piece(oldGrid))
-			return;
-
-		let team = this.get_piece(oldGrid).team;
-		this.updateMoves(oldGrid);
-		let isLegal = this.isLegalMove(newGrid);
-		isLegal = isLegal && this.isKingSafe(team, oldGrid, newGrid);
-
-		if (this.canCastle(oldGrid, newGrid))
-			return true;
-
-		if (isLegal)
-			return true;
-
-		return false;
-	}
 
 	// Get all valid friends and enemies that can eat keyGrid
 	getReachablePieces(board, keyGrid, team) {
@@ -196,28 +185,6 @@ export default class Game {
 		return {friends: friends, enemies: enemies};
 	}
 
-	isCheckmate(team) {
-		for (let i = 0; i < this.chessboard.length; i++) {
-			for (let j = 0; j < this.chessboard.length; j++) {
-				let grid = this.chessboard[i][j];
-				if (this.get_piece(grid) != null && this.get_piece(grid).team == team) {
-					let validMoves = this.get_piece(grid).getPossibleMoves(this, this.chessboard, grid);
-
-					for (let k = 0; k < validMoves.length; k++) {
-						if (this.isKingSafe(team, grid, this.chessboard[validMoves[k].x][validMoves[k].y])) {
-							return Const.STATUS_NONE;
-						}
-					}
-				}
-			}
-		}
-
-		if (this.isKingSafe(team)) {
-			return Const.STATUS_STALEMATE;
-		}
-		return Const.STATUS_CHECKMATE;
-	}
-
 	// Update and show all possible moves based on a specific grid
 	updateMoves(grid) {
 		// let downward = this.get_piece(grid).team == Const.TEAM.B;
@@ -227,11 +194,11 @@ export default class Game {
 			(!this.black_king_moved && grid == this.king_grid[Const.TEAM.B])) {
 
 			//Show left castle move for king
-			if (this.canCastle(grid, this.chessboard[grid.x - 2][grid.y]))
+			if (this.ChessValidator.canCastle(grid, this.chessboard[grid.x - 2][grid.y]))
 				this.moves.push(this.chessboard[grid.x - 2][grid.y]);
 
 			//Show right castle move for king
-			if (this.canCastle(grid, this.chessboard[grid.x + 2][grid.y]))
+			if (this.ChessValidator.canCastle(grid, this.chessboard[grid.x + 2][grid.y]))
 				this.moves.push(this.chessboard[grid.x + 2][grid.y]);
 		}
 
@@ -247,107 +214,6 @@ export default class Game {
 			}
 		}
 		this.setMovesColor(Const.COLOR_HIGHLIGHT, grid);
-	}
-
-	// Check if grid is part of legal moves
-	isLegalMove(grid) {
-		let legalMove = false;
-		for (let i = 0; i < this.moves.length && !legalMove; i++)
-			if (grid.x == this.moves[i].x && grid.y == this.moves[i].y)
-				legalMove = true;
-		return legalMove;
-	}
-
-	// Check if king is safe
-	isKingSafe(team, oldGrid, newGrid) {
-		let board = this.copyBoard(this.chessboard);
-
-		let target_grid = this.king_grid[team];
-
-		if (oldGrid && newGrid) {
-			board[newGrid.x][newGrid.y].piece = board[oldGrid.x][oldGrid.y].piece;
-			board[oldGrid.x][oldGrid.y].piece = -1;
-
-			if (oldGrid == this.king_grid[team])
-				target_grid = newGrid;
-		}
-
-		let validPieces = this.getReachablePieces(board, target_grid, team);
-		let enemies = validPieces.enemies;
-
-		return enemies.length == 0;
-	}
-
-	// Check if can castle
-	canCastle(oldGrid, newGrid) {
-		if (!this.get_piece(oldGrid)) return;
-		let team = this.get_piece(oldGrid).team;
-
-		// Check piece type
-		if (this.get_piece(oldGrid) == null) return false;
-		if (this.get_piece(oldGrid).type != Const.CHESS.King) return false;
-
-		// Check piece location
-		if (newGrid.y != 0 && newGrid.y != Const.BOARD_SIZE - 1) return false;
-		if (Math.abs(newGrid.x - oldGrid.x) != 2) return false;
-
-		// Check if king moved
-		if (team == Const.TEAM.W && this.white_king_moved) return false;
-		if (team == Const.TEAM.B && this.black_king_moved) return false;
-
-		// Check if king is targeted/safe
-		if (!this.isKingSafe(team)) return false;
-
-
-		// Validate left/right castle
-		let leftSide = newGrid.x - oldGrid.x < 0;
-		if (leftSide) {
-			for (let x = 1; x < oldGrid.x; x++)
-				if (this.get_piece(this.chessboard[x][this.king_grid[team].y]))
-					return false;
-			return this.isKingSafe(team, this.king_grid[team], this.chessboard[this.king_grid[team].x - 1][this.king_grid[team].y])
-				&& this.isKingSafe(team, this.king_grid[team], this.chessboard[this.king_grid[team].x - 2][this.king_grid[team].y]);
-		}
-		else {
-			for (let x = oldGrid.x + 1; x < Const.BOARD_SIZE - 1; x++)
-				if (this.get_piece(this.chessboard[x][this.king_grid[team].y]))
-					return false;
-			return this.isKingSafe(team, this.king_grid[team], this.chessboard[this.king_grid[team].x + 1][this.king_grid[team].y])
-				&& this.isKingSafe(team, this.king_grid[team], this.chessboard[this.king_grid[team].x + 2][this.king_grid[team].y]);
-		}
-	}
-
-
-	//Switch active team turn
-	switchTurn() {
-		if (this.turn == Const.TEAM.B) {
-			this.turn = Const.TEAM.W;
-		}
-		else {
-			this.turn = Const.TEAM.B;
-		}
-	}
-
-	countDown() {
-		if (this.turn == Const.TEAM.W) {
-			if (this.white_timer <= 0) {
-				Backend.timesup(Const.TEAM.B);
-			}
-			else {
-				this.white_timer --;
-			}
-		}
-
-		if (this.turn == Const.TEAM.B) {
-			if (this.black_timer <= 0) {
-				Backend.timesup(Const.TEAM.W);
-			}
-			else {
-				this.black_timer --;
-			}
-		}
-
-		this.updateGame();
 	}
 
 
@@ -372,20 +238,39 @@ export default class Game {
 		this.moves = [];
 	}
 
+	//Switch active team turn
+	switchTurn() {
+		if (this.turn == Const.TEAM.B) {
+			this.turn = Const.TEAM.W;
+		}
+		else {
+			this.turn = Const.TEAM.B;
+		}
+	}
 
 	get_piece(grid) {
 		if (!grid || grid.piece == -1) return null;
 		return this.pieces[grid.piece];
 	}
 
-	fillGrid(grid, color) {
-		this.baseboard[grid.x][grid.y] = color;
-		this.updateGame();
-	}
-
 	unpackNextMove() {
 		const flipped = this.turn == this.team ? this.downward : !this.downward;
 		return Util.unpack(this.match.moves[this.moves_applied], flipped);
+	}
+
+	delay(ms) {
+		return new Promise(res => this.playTimeout = setTimeout(res, ms));
+	}
+
+
+	//======================================================================== 
+	//========================== Color Grids =================================
+	//======================================================================== 
+
+
+	fillGrid(grid, color) {
+		this.baseboard[grid.x][grid.y] = color;
+		this.updateGame();
 	}
 
 
@@ -407,10 +292,6 @@ export default class Game {
 		this.baseboard[newGrid.x][newGrid.y] = Const.COLOR_LAST_MOVE;
 
 		this.updateGame();
-	}
-
-	delay(ms) {
-		return new Promise(res => this.playTimeout = setTimeout(res, ms));
 	}
 
 

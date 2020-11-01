@@ -9,7 +9,7 @@ export default class TouchHandler {
 	// Handle chess event with (x, y) click coordinate
 	async handleChessEvent(x, y) {
 		let game = this.game;
-		let {ChessMover, ChessUnmover} = game;
+		let {ChessMover, ChessUnmover, ChessValidator} = game;
 
 		if (game.team != game.turn || game.ended) {
 			return;
@@ -17,13 +17,13 @@ export default class TouchHandler {
 
 		// Initalize important variables
 		let newGrid = game.chessboard[x][y];
-		let isLegal = game.isLegalMove(newGrid);
-		isLegal = isLegal && game.isKingSafe(game.team, game.oldGrid, newGrid);
+		let isLegal = ChessValidator.isLegalMove(newGrid);
+		isLegal = isLegal && ChessValidator.isKingSafe(game.team, game.oldGrid, newGrid);
 
 		first_move = false;
 
 		// Action0 - Castle
-		if (game.canCastle(game.oldGrid, newGrid)) {
+		if (ChessValidator.canCastle(game.oldGrid, newGrid)) {
 			Backend.updateChessboard(game.oldGrid, newGrid, game.turn, game.black_timer, game.white_timer).catch(() => {
 				game.clearMoves();
 				game.fillGrid(game.oldGrid, Const.COLOR_ORIGINAL);

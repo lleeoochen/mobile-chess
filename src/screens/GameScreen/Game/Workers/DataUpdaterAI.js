@@ -145,7 +145,7 @@ export default class DataUpdaterAI extends DataUpdater {
 	moveAI(oldGrid, newGrid) {
 		let game = this.game;
 		let {ChessMover} = game;
-		// let isLegal = game.isKingSafe(game.turn, oldGrid, newGrid);
+		// let isLegal = ChessValidator.isKingSafe(game.turn, oldGrid, newGrid);
 		// if (!isLegal) return false;
 
 		let grid1 = game.chessboard[Util.flipCoord(oldGrid.x)][Util.flipCoord(oldGrid.y)];

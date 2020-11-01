@@ -1,5 +1,6 @@
 import Store, { GameStore } from 'chessvibe/src/redux/Store';
 import Backend from 'chessvibe/src/GameBackend';
+import Util from 'chessvibe/src/Util';
 import Cache from 'chessvibe/src/Cache';
 import * as Const from 'chessvibe/src/Const';
 
@@ -10,7 +11,7 @@ export default class DataUpdater {
 
 	async updateMatchMoves() {
 		let game = this.game;
-		let {ChessMover, ChessUnmover} = game;
+		let {ChessMover, ChessUnmover, ChessValidator} = game;
 
 		while (game.moves_applied > game.match.moves.length) {
 			ChessUnmover.unmoveChess();
@@ -25,9 +26,9 @@ export default class DataUpdater {
 			if (!success) break;
 		}
 
-		// console.log(game.isCheckmate(game.team));
-		// console.log(game.isCheckmate(game.enemy));
-		switch(game.isCheckmate(game.team)) {
+		// console.log(ChessValidator.isCheckmate(game.team));
+		// console.log(ChessValidator.isCheckmate(game.enemy));
+		switch(ChessValidator.isCheckmate(game.team)) {
 			case Const.STATUS_CHECKMATE:
 				Backend.checkmate(game.team == Const.TEAM.W ? Const.TEAM.B : Const.TEAM.W);
 				game.ends();
@@ -38,7 +39,7 @@ export default class DataUpdater {
 				break;
 		}
 
-		switch(game.isCheckmate(game.enemy)) {
+		switch(ChessValidator.isCheckmate(game.enemy)) {
 			case Const.STATUS_CHECKMATE:
 				Backend.checkmate(game.enemy == Const.TEAM.W ? Const.TEAM.B : Const.TEAM.W);
 				game.ends();
@@ -78,12 +79,12 @@ export default class DataUpdater {
 			}
 		}
 
-		let self = game;
+		let self = this;
 		setTimeout(() => {
-			clearInterval(self.interval);
+			clearInterval(game.interval);
 			self.countDown();
 
-			self.interval = setInterval(function() {
+			game.interval = setInterval(function() {
 				self.countDown();
 			}, 1000);
 		}, network_delay);
@@ -110,5 +111,29 @@ export default class DataUpdater {
 
 		if (game.isMountedRef.current)
 			GameStore.updatePlayer({ blackPlayer, whitePlayer });
+	}
+
+	countDown() {
+		let game = this.game;
+
+		if (game.turn == Const.TEAM.W) {
+			if (game.white_timer <= 0) {
+				Backend.timesup(Const.TEAM.B);
+			}
+			else {
+				game.white_timer --;
+			}
+		}
+
+		if (game.turn == Const.TEAM.B) {
+			if (game.black_timer <= 0) {
+				Backend.timesup(Const.TEAM.W);
+			}
+			else {
+				game.black_timer --;
+			}
+		}
+
+		game.updateGame();
 	}
 }
