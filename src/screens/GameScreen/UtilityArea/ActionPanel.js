@@ -53,9 +53,6 @@ export default function ActionPanel(props) {
 
 	if (!drawDisabled) {
 		let { team, match } = game;
-		console.log(match.black_draw);
-		console.log(match.white_draw);
-		console.log(DB_REQUEST_ASK);
 		drawDisabled = (
 			(team == TEAM.B && match.black_draw == DB_REQUEST_ASK) ||
 			(team == TEAM.W && match.white_draw == DB_REQUEST_ASK)

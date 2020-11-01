@@ -19,7 +19,6 @@ const TIME_INDEX = {
 	[TIME.INFINITE]: 4,
 };
 
-const INDEX_THEME = [THEME_ID.CLASSIC, THEME_ID.WINTER, THEME_ID.METAL, THEME_ID.NATURE];
 const MODE_NAMES = ['', 'Computer', 'Friend'];
 
 const MENU_BUTTON_COLOR = '#424c5a';
@@ -152,9 +151,9 @@ function ThemeSelector({ appThemeId, formData }) {
 		IMAGE.PREVIEW_CLASSIC;
 
 	function changeTheme(direction) {
-		const next = (theme + direction + INDEX_THEME.length) % INDEX_THEME.length;
-		setTheme(INDEX_THEME[next]);
-		formData.theme = INDEX_THEME[next];
+		const next = (theme + direction + Object.keys(THEME_ID).length) % Object.keys(THEME_ID).length;
+		setTheme(next);
+		formData.theme = next;
 	}
 
 	return (

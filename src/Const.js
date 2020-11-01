@@ -46,6 +46,7 @@ export const IMAGE = {
 	WINTER:  require('chessvibe/assets/background_winter.jpg'),
 	METAL:   require('chessvibe/assets/background_metal.jpg'),
 	NATURE:  require('chessvibe/assets/background_nature.jpg'),
+	HELL:    require('chessvibe/assets/background_hell.jpg'),
 
 	// Preview images
 	PREVIEW_CLASSIC: require('chessvibe/assets/preview/classic.png'),
@@ -138,7 +139,7 @@ export const APP_THEME = Object.freeze({
 
 export const THEME = Object.freeze({
 	CLASSIC: {
-		ID:                     'classic',
+		ID:                     'CLASSIC',
 		COLOR_BOARD_LIGHT:      '#E6BF83',
 		COLOR_BOARD_DARK:       '#8B4513',
 		COLOR_HIGHLIGHT_LIGHT:  '#9E93E1',
@@ -154,7 +155,7 @@ export const THEME = Object.freeze({
 	},
 
 	WINTER: {
-		ID:                     'winter',
+		ID:                     'WINTER',
 		COLOR_BOARD_LIGHT:      '#00B3DE',
 		COLOR_BOARD_DARK:       '#3D507B',
 		COLOR_HIGHLIGHT_LIGHT:  '#CC5E7C',
@@ -170,7 +171,7 @@ export const THEME = Object.freeze({
 	},
 
 	METAL: {
-		ID:                     'metal',
+		ID:                     'METAL',
 		COLOR_BOARD_LIGHT:      '#d2d2d2',
 		COLOR_BOARD_DARK:       '#5a5858',
 		COLOR_HIGHLIGHT_LIGHT:  '#9e93e1',
@@ -186,7 +187,7 @@ export const THEME = Object.freeze({
 	},
 
 	NATURE: {
-		ID:                     'nature',
+		ID:                     'NATURE',
 		COLOR_BOARD_LIGHT:      '#c7da61',
 		COLOR_BOARD_DARK:       '#437149',
 		COLOR_HIGHLIGHT_LIGHT:  '#9e93e1',
@@ -198,6 +199,22 @@ export const THEME = Object.freeze({
 			MOBILE:             '#00000080',
 		},
 		BACKGROUND_IMAGE:       IMAGE.NATURE,
+		NAME_TITLE_COLOR:       'white',
+	},
+
+	HELL: {
+		ID:                     'HELL',
+		COLOR_BOARD_LIGHT:      '#F8A42F',
+		COLOR_BOARD_DARK:       '#FF4605',
+		COLOR_HIGHLIGHT_LIGHT:  '#9e93e1',
+		COLOR_HIGHLIGHT_DARK:   '#7B68EE',
+		COLOR_LAST_MOVE_LIGHT:  '#BB92AB',
+		COLOR_LAST_MOVE_DARK:   '#905E7C',
+		COLOR_UTILITY: {
+			DESKTOP:            '#494949',
+			MOBILE:             '#00000080',
+		},
+		BACKGROUND_IMAGE:       IMAGE.HELL,
 		NAME_TITLE_COLOR:       'white',
 	},
 });
@@ -248,11 +265,6 @@ export const DB_REQUEST_NONE = 0;
 export const DB_REQUEST_ASK = 1;
 export const DB_REQUEST_DONE = 2;
 
-export const DB_THEME_CLASSIC = 0;
-export const DB_THEME_WINTER = 1;
-export const DB_THEME_METAL = 2;
-export const DB_THEME_NATURE = 3;
-
 export const FLAG_NONE = 0;
 export const FLAG_KING_CASTLE = 1;
 export const FLAG_PASSANT_PAWN = 2;
@@ -271,6 +283,7 @@ export const THEME_ID = {
 	WINTER: 1,
 	METAL: 2,
 	NATURE: 3,
+	HELL: 4,
 };
 
 export const TIME = {

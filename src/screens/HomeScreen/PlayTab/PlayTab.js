@@ -40,22 +40,22 @@ export default function PlayTab(props) {
 
 	const ACTION_DATA = [
 		{
-			text: 'Sandbox',
-			description: 'To be announced...',
-			image: IMAGE.WINTER,
-			onPress: () => {},
+			text: 'AI Mode',
+			description: 'Practice with computer',
+			image: IMAGE.METAL,
+			onPress: () => showCreateMenu({ show: true, mode: MATCH_MODE.COMPUTER }),
 		},
 		{
-			text: 'Friend',
+			text: 'Friend Mode',
 			description: 'Challenge a friend',
 			image: IMAGE.NATURE,
 			onPress: () => showCreateMenu({ show: true, mode: MATCH_MODE.FRIEND }),
 		},
 		{
-			text: 'Computer',
-			description: 'Practice with computer',
-			image: IMAGE.METAL,
-			onPress: () => showCreateMenu({ show: true, mode: MATCH_MODE.COMPUTER }),
+			text: 'Hell Mode',
+			description: 'Play dirty and play to win',
+			image: IMAGE.HELL,
+			onPress: () => {},
 		},
 	];
 

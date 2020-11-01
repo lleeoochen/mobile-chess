@@ -8,7 +8,7 @@ import { ActionBar } from 'chessvibe/src/widgets';
 import Store, { GameStore } from 'chessvibe/src/redux/Store';
 import { useSelector } from 'react-redux';
 
-import { THEME, MAX_TIME } from 'chessvibe/src/Const';
+import { THEME_ID, THEME, MAX_TIME } from 'chessvibe/src/Const';
 import Util, { vw } from 'chessvibe/src/Util';
 
 import Cache from 'chessvibe/src/Cache';
@@ -76,15 +76,18 @@ export default function GameScreen(props) {
 				})());
 			},
 			changeTheme: () => {
-				let theme = Store.getState().game.theme;
-				if (theme == THEME.CLASSIC) theme = THEME.WINTER;
-				else if (theme == THEME.WINTER) theme = THEME.METAL;
-				else if (theme == THEME.METAL) theme = THEME.NATURE;
-				else if (theme == THEME.NATURE) theme = THEME.CLASSIC;
+				const themeIds = Object.keys(THEME);
 
-				Backend.changeTheme( theme );
-				Cache.theme[match_id] = Util.packTheme(theme);
-				GameStore.updateTheme(theme);
+				const theme = Store.getState().game.theme;
+				const themeIndex = THEME_ID[theme.ID];
+
+				const nextThemeIndex = (themeIndex + 1) % themeIds.length;
+				const nextThemeId = [...Object.keys(THEME_ID)][nextThemeIndex];
+				const nextTheme = THEME[nextThemeId];
+
+				Backend.changeTheme(nextTheme);
+				Cache.theme[match_id] = Util.packTheme(nextTheme);
+				GameStore.updateTheme(nextTheme);
 			},
 		});
 

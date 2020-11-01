@@ -16,11 +16,6 @@ import {
 
 	THEME,
 	IMAGE,
-
-	DB_THEME_CLASSIC,
-	DB_THEME_WINTER,
-	DB_THEME_METAL,
-	DB_THEME_NATURE,
 } from './Const';
 
 export default class Util {
@@ -89,35 +84,11 @@ export default class Util {
 	}
 
 	static packTheme(theme) {
-		if (theme == THEME.CLASSIC) {
-			return DB_THEME_CLASSIC;
-		}
-		else if (theme == THEME.WINTER) {
-			return DB_THEME_WINTER;
-		}
-		else if (theme == THEME.METAL) {
-			return DB_THEME_METAL;
-		}
-		else if (theme == THEME.NATURE) {
-			return DB_THEME_NATURE;
-		}
-		return DB_THEME_CLASSIC;
+		return theme.ID || THEME.CLASSIC.ID;
 	}
 
 	static unpackTheme(data) {
-		if (data == DB_THEME_CLASSIC) {
-			return THEME.CLASSIC;
-		}
-		else if (data == DB_THEME_WINTER) {
-			return THEME.WINTER;
-		}
-		else if (data == DB_THEME_METAL) {
-			return THEME.METAL;
-		}
-		else if (data == DB_THEME_NATURE) {
-			return THEME.NATURE;
-		}
-		return THEME.CLASSIC;
+		return THEME[data] || THEME.CLASSIC;
 	}
 
 	static packMessage(message, my_team) {
