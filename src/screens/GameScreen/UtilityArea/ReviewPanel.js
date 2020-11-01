@@ -6,7 +6,7 @@ import { IMAGE } from 'chessvibe/src/Const';
 import { ButtonVibe } from 'chessvibe/src/widgets';
 import AutoHeightImage from 'react-native-auto-height-image';
 
-export default function ActionPanel(props) {
+export default function ReviewPanel(props) {
 	const theme = useSelector(state => state.game.theme);
 	const { gameRef, minimizeDrawer=() => {} } = props;
 	const [ updateVersion, update ] = React.useState(0);

@@ -11,42 +11,49 @@ import TouchHandler   from './Workers/TouchHandler';
 import DataUpdater    from './Workers/DataUpdater';
 import ChessValidator from './Workers/ChessValidator';
 
+
 export default class Game {
 
 	constructor(team, match_id, match, isMountedRef) {
-		// White's side of chessboard
+		// Overall game state
 		this.chessboard = [[],[],[],[],[],[],[],[]];
 		this.baseboard = [[],[],[],[],[],[],[],[]];
+		this.pieces = {};
+		this.id = 0;
 		this.moves = [];
-		this.moves_applied = 0;
 
-		this.king_grid = {};
-		this.white_king_moved = false;
-		this.black_king_moved = false;
-
-		this.passant_pawn = null;
+		// Playback stacks
 		this.moves_stack = [];
 		this.passant_stack = [];
-		this.id = 0;
-		this.pieces = {};
-		this.turn = Const.TEAM.W;
-		this.team = team;
-		this.enemy = team == Const.TEAM.W ? Const.TEAM.B : Const.TEAM.W;
-		this.downward = false;
 
-		this.oldGrid = null;
-		this.newGrid = null;
-
-		this.black_timer = match.white_timer;
-		this.white_timer = match.black_timer;
-
+		// Game match state
 		this.match_id = match_id;
 		this.match = match;
 		this.ended = false;
 
+		// Team state
+		this.team = team;
+		this.enemy = team == Const.TEAM.W ? Const.TEAM.B : Const.TEAM.W;
+
+		// King state
+		this.king_grid = {};
+		this.white_king_moved = false;
+		this.black_king_moved = false;
+
+		// Active game state
+		this.moves_applied = 0;
+		this.oldGrid = null;
+		this.newGrid = null;
+		this.turn = Const.TEAM.W;
+		this.downward = false;
+		this.passant_pawn = null;
+
+		// Time state
+		this.black_timer = match.white_timer;
+		this.white_timer = match.black_timer;
+
 		// Review variables
-		this.stopPlayBack = false;
-		this.playTimeout = null;
+		this.delayTimeout = null;
 
 		// React native related
 		this.isMountedRef = isMountedRef;
@@ -259,7 +266,7 @@ export default class Game {
 	}
 
 	delay(ms) {
-		return new Promise(res => this.playTimeout = setTimeout(res, ms));
+		return new Promise(res => this.delayTimeout = setTimeout(res, ms));
 	}
 
 
