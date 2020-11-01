@@ -2,11 +2,11 @@ import * as Const from 'chessvibe/src/Const';
 
 export default class ChessMover {
 
-	static init(game) {
+	constructor(game) {
 		this.game = game;
 	}
 
-	static moveChess(oldGrid, newGrid) {
+	moveChess(oldGrid, newGrid) {
 		let game = this.game;
 
 		if (game.get_piece(oldGrid) == null) return false;
@@ -51,7 +51,7 @@ export default class ChessMover {
 		return true;
 	}
 
-	static movePassantPawn(oldGrid, newGrid) {
+	movePassantPawn(oldGrid, newGrid) {
 		let game = this.game;
 		let kill_passant_pawn = false;
 
@@ -96,7 +96,7 @@ export default class ChessMover {
 		game.passant_stack.push(game.passant_pawn);
 	}
 
-	static moveCastleKing(oldGrid, newGrid) {
+	moveCastleKing(oldGrid, newGrid) {
 		let game = this.game;
 
 		// If oldGrid is king
@@ -134,7 +134,7 @@ export default class ChessMover {
 		}
 	}
 
-	static movePawnToQueen(oldGrid, newGrid) {
+	movePawnToQueen(oldGrid, newGrid) {
 		let game = this.game;
 
 		if (game.get_piece(newGrid).type == Const.CHESS.Pawn) {
@@ -152,7 +152,7 @@ export default class ChessMover {
 		}
 	}
 
-	static stackEatenPiece(oldGrid, newGrid, eatenGrid, eatenPiece, toPopOne, flag) {
+	stackEatenPiece(oldGrid, newGrid, eatenGrid, eatenPiece, toPopOne, flag) {
 		let game = this.game;
 
 		if (toPopOne) game.moves_stack.pop();

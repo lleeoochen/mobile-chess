@@ -1,13 +1,11 @@
-import ChessMover from './ChessMover';
-import ChessUnmover from './ChessUnmover';
-
 export default class ChessReviewer {
-	static init(game) {
+	constructor(game) {
 		this.game = game;
 	}
 
-	static async reviewMove(moves_target, timeout=0) {
+	async reviewMove(moves_target, timeout=0) {
 		let game = this.game;
+		let {ChessMover, ChessUnmover} = game;
 
 		clearTimeout(game.playTimeout);
 		game.stopPlayBack = false;
@@ -35,7 +33,7 @@ export default class ChessReviewer {
 		game.stopPlayBack = true;
 	}
 
-	static async pausePlayback() {
+	async pausePlayback() {
 		let game = this.game;
 
 		clearTimeout(game.playTimeout);

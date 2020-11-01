@@ -2,12 +2,12 @@ import * as Const from 'chessvibe/src/Const';
 
 export default class ChessUnmover {
 
-	static init(game) {
+	constructor(game) {
 		this.game = game;
 	}
 
 	// Unmove chess piece from newGrid to oldGrid
-	static unmoveChess() {
+	unmoveChess() {
 		let game = this.game;
 
 		if (game.moves_stack.length == 0) return;
@@ -63,7 +63,7 @@ export default class ChessUnmover {
 		game.colorLatestMove(newGrid, oldGrid);
 	}
 
-	static unmoveEatPiece(eatenGrid, eaten_piece) {
+	unmoveEatPiece(eatenGrid, eaten_piece) {
 		let game = this.game;
 
 		if (eaten_piece != -1) {
@@ -79,7 +79,7 @@ export default class ChessUnmover {
 		}
 	}
 
-	static unmoveCastleKing(newGrid, oldGrid) {
+	unmoveCastleKing(newGrid, oldGrid) {
 		let game = this.game;
 
 		// Perform right castle
@@ -104,7 +104,7 @@ export default class ChessUnmover {
 		}
 	}
 
-	static unmovePawnToQueen(newGrid, oldGrid) {
+	unmovePawnToQueen(newGrid, oldGrid) {
 		let game = this.game;
 
 		oldGrid.piece = newGrid.piece;
@@ -113,7 +113,7 @@ export default class ChessUnmover {
 		game.stats[game.get_piece(oldGrid).team] += Const.VALUE[Const.CHESS.Pawn] - Const.VALUE[Const.CHESS.Queen];
 	}
 
-	static unstackEatenPiece() {
+	unstackEatenPiece() {
 		let game = this.game;
 
 		return game.moves_stack.pop();

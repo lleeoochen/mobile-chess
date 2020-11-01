@@ -115,6 +115,7 @@ export default function GameScreen(props) {
 				game.firstLoad = false;
 			}
 
+			const {DataUpdater} = game;
 			game.match = match;
 
 			if (isMountedRef.current) {
@@ -122,7 +123,7 @@ export default function GameScreen(props) {
 				GameStore.updateTheme(Util.unpackTheme(match.theme));
 			}
 
-			await game.updatePlayerData();
+			await DataUpdater.updatePlayerData();
 
 			// updateMatchChat();
 
@@ -155,18 +156,19 @@ export default function GameScreen(props) {
 
 			let timerEnable = match.black_timer < MAX_TIME && match.white_timer < MAX_TIME;
 			if (match.black && match.white && timerEnable) {
-				game.updateMatchTimer();
+				DataUpdater.updateMatchTimer();
 			}
 
-			await game.updateMatchMoves();
+			await DataUpdater.updateMatchMoves();
 		});
 
 		return () => isMountedRef.current = false;
 	}, [appThemeId]);
 
+
 	function handleChessEvent(x, y) {
 		if (game) {
-			game.handleChessEvent(x, y);
+			game.TouchHandler.handleChessEvent(x, y);
 		}
 	}
 

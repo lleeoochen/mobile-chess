@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 import { vw } from 'chessvibe/src/Util';
 import { IMAGE } from 'chessvibe/src/Const';
 import { ButtonVibe } from 'chessvibe/src/widgets';
-import ChessReviewer from 'chessvibe/src/screens/GameScreen/Game/Workers/ChessReviewer';
 import AutoHeightImage from 'react-native-auto-height-image';
 
 export default function ActionPanel(props) {
@@ -12,6 +11,7 @@ export default function ActionPanel(props) {
 	const { gameRef, minimizeDrawer=() => {} } = props;
 	const [ updateVersion, update ] = React.useState(0);
 	const [ playing, setPlaying ] = React.useState(false);
+	const { ChessReviewer } = gameRef || {};
 
 
 	async function onFastBackwardClick() {

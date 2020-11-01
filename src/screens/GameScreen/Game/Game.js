@@ -1,17 +1,19 @@
-import Store, { GameStore } from 'chessvibe/src/redux/Store';
+import { GameStore } from 'chessvibe/src/redux/Store';
 import * as Const    from 'chessvibe/src/Const';
 import Util          from 'chessvibe/src/Util';
 import Backend       from 'chessvibe/src/GameBackend';
-import Cache         from 'chessvibe/src/Cache';
 import PieceFactory  from './Pieces/piecefactory';
 import Grid          from './Pieces/grid';
+
 import ChessMover    from './Workers/ChessMover';
 import ChessUnmover  from './Workers/ChessUnmover';
 import ChessReviewer from './Workers/ChessReviewer';
+import TouchHandler  from './Workers/TouchHandler';
+import DataUpdater   from './Workers/DataUpdater';
 
 export default class Game {
 
-	constructor(team, match_id, match, isMountedRef, modeAI=false) {
+	constructor(team, match_id, match, isMountedRef) {
 		// White's side of chessboard
 		this.chessboard = [[],[],[],[],[],[],[],[]];
 		this.baseboard = [[],[],[],[],[],[],[],[]];
@@ -37,7 +39,6 @@ export default class Game {
 
 		this.black_timer = match.white_timer;
 		this.white_timer = match.black_timer;
-		this.interval = null;
 
 		this.match_id = match_id;
 		this.match = match;
@@ -62,14 +63,14 @@ export default class Game {
 			W: []
 		};
 
-		this.modeAI = modeAI;
-
 		this.initBoard();
 		this.initPieces();
 
-		ChessMover.init(this);
-		ChessUnmover.init(this);
-		ChessReviewer.init(this);
+		this.ChessMover = new ChessMover(this);
+		this.ChessUnmover = new ChessUnmover(this);
+		this.ChessReviewer = new ChessReviewer(this);
+		this.TouchHandler = new TouchHandler(this);
+		this.DataUpdater = new DataUpdater(this);
 	}
 
 	//Intialize chessboard background
@@ -126,7 +127,6 @@ export default class Game {
 		}
 	}
 
-
 	//Intialize each chess piece
 	initEachPiece(id, x, y, team, type) {
 		this.chessboard[x][y].piece = id;
@@ -137,158 +137,11 @@ export default class Game {
 	}
 
 
-	//Handle chess event with (x, y) click coordinate
-	async handleChessEvent(x, y) {
-		if (this.team != this.turn || this.ended)
-			return;
 
-		//Initalize important variables
-		let newGrid = this.chessboard[x][y];
-		let isLegal = this.isLegalMove(newGrid);
-		isLegal = isLegal && this.isKingSafe(this.team, this.oldGrid, newGrid);
 
-		first_move = false;
 
-		//Action0 - Castle
-		if (this.canCastle(this.oldGrid, newGrid)) {
-			Backend.updateChessboard(this.oldGrid, newGrid, this.turn, this.black_timer, this.white_timer).catch(() => {
-				this.clearMoves();
-				this.fillGrid(this.oldGrid, Const.COLOR_ORIGINAL);
-				ChessUnmover.unmoveChess();
-				this.oldGrid = null;
-			});
 
-			ChessMover.moveChess(this.oldGrid, newGrid);
-			this.oldGrid = null;
-			return;
-		}
-
-		//Action1 - Deselect Piece by clicking on illegal grid
-		if (this.oldGrid != null && !isLegal) {
-			this.clearMoves();
-			this.fillGrid(this.oldGrid, Const.COLOR_ORIGINAL);
-			this.oldGrid = null;
-		}
-
-		//Action2 - Select Piece by clicking on grid with active team.
-		if (this.get_piece(newGrid) != null && this.get_piece(newGrid).team == this.turn) {
-			this.updateMoves(newGrid);
-			this.oldGrid = newGrid;
-		}
-
-		//Action3 - Move Piece by clicking on empty grid or eat enemy by clicking on legal grid. Switch turn.
-		else if (this.oldGrid != null && this.get_piece(this.oldGrid) != null && isLegal) {
-			Backend.updateChessboard(this.oldGrid, newGrid, this.turn, this.black_timer, this.white_timer).catch(() => {
-				this.clearMoves();
-				this.fillGrid(this.oldGrid, Const.COLOR_ORIGINAL);
-				ChessUnmover.unmoveChess();
-				this.oldGrid = null;
-			});
-
-			ChessMover.moveChess(this.oldGrid, newGrid);
-			if (this.team == Const.TEAM.B)
-				this.black_timer += 1;
-			else
-				this.white_timer += 1;
-			this.oldGrid = null;
-		}
-	}
-
-	async updateMatchMoves() {
-		while (this.moves_applied > this.match.moves.length) {
-			ChessUnmover.unmoveChess();
-		}
-
-		while (this.moves_applied < this.match.moves.length) {
-			await this.delay(10);
-
-			let move = this.unpackNextMove();
-			let success = ChessMover.moveChess(this.chessboard[move.old_x][move.old_y], this.chessboard[move.new_x][move.new_y]);
-
-			if (!success) break;
-		}
-
-		// console.log(this.isCheckmate(this.team));
-		// console.log(this.isCheckmate(this.enemy));
-		switch(this.isCheckmate(this.team)) {
-			case Const.STATUS_CHECKMATE:
-				Backend.checkmate(this.team == Const.TEAM.W ? Const.TEAM.B : Const.TEAM.W);
-				this.ends();
-				break;
-			case Const.STATUS_STALEMATE:
-				Backend.stalemate();
-				this.ends();
-				break;
-		}
-
-		switch(this.isCheckmate(this.enemy)) {
-			case Const.STATUS_CHECKMATE:
-				Backend.checkmate(this.enemy == Const.TEAM.W ? Const.TEAM.B : Const.TEAM.W);
-				this.ends();
-				break;
-			case Const.STATUS_STALEMATE:
-				Backend.stalemate();
-				this.ends();
-				break;
-		}
-	}
-
-	updateMatchTimer() {
-		let turn = Util.unpack(this.match.moves[this.match.moves.length - 1]).turn == Const.TEAM.B ? Const.TEAM.W : Const.TEAM.B;
-		let t1 = new Date(this.match.updated);
-		let t2 = new Date();
-		let time_since_last_move = Math.floor((t2.getTime() - t1.getTime()) / 1000);
-
-		if (turn == Const.TEAM.B) {
-			this.white_timer = this.match.white_timer;
-			this.black_timer = this.match.black_timer - time_since_last_move;
-		}
-		else {
-			this.black_timer = this.match.black_timer;
-			this.white_timer = this.match.white_timer - time_since_last_move;
-		}
-
-		// Many magic numbers.. please fix in the future.
-		let network_delay = 1000 - new Date().getMilliseconds();
-		if (network_delay > 270) {
-			if (turn == Const.TEAM.B) {
-				this.black_timer --;
-			}
-			else {
-				this.white_timer --;
-			}
-		}
-
-		let self = this;
-		setTimeout(() => {
-			clearInterval(self.interval);
-			self.countDown();
-
-			self.interval = setInterval(function() {
-				self.countDown();
-			}, 1000);
-		}, network_delay);
-	}
-
-	async updatePlayerData() {
-		let { blackPlayer, whitePlayer } = Store.getState().game;
-
-		if (blackPlayer && whitePlayer) return;
-
-		if (!blackPlayer && this.match.black) {
-			blackPlayer = (await Backend.getUser(this.match.black)).data;
-		}
-		if (!whitePlayer && this.match.white) {
-			whitePlayer = (await Backend.getUser(this.match.white)).data;
-		}
-
-		Cache.users[this.match.black] = blackPlayer;
-		Cache.users[this.match.white] = whitePlayer;
-
-		if (this.isMountedRef.current)
-			GameStore.updatePlayer({ blackPlayer, whitePlayer });
-	}
-
+	// Check if old grid => new grid is valid
 	isValidMove(oldGrid, newGrid) {
 		if (!this.get_piece(oldGrid))
 			return;
@@ -307,7 +160,7 @@ export default class Game {
 		return false;
 	}
 
-	//Get all valid friends and enemies that can eat keyGrid
+	// Get all valid friends and enemies that can eat keyGrid
 	getReachablePieces(board, keyGrid, team) {
 		let friends = [];
 		let enemies = [];
@@ -365,7 +218,7 @@ export default class Game {
 		return Const.STATUS_CHECKMATE;
 	}
 
-	//Update and show all possible moves based on a specific grid
+	// Update and show all possible moves based on a specific grid
 	updateMoves(grid) {
 		// let downward = this.get_piece(grid).team == Const.TEAM.B;
 		this.moves = this.get_piece(grid).getPossibleMoves(this, this.chessboard, grid, this.downward);
@@ -396,7 +249,7 @@ export default class Game {
 		this.setMovesColor(Const.COLOR_HIGHLIGHT, grid);
 	}
 
-	//Check legal move of chess piece
+	// Check if grid is part of legal moves
 	isLegalMove(grid) {
 		let legalMove = false;
 		for (let i = 0; i < this.moves.length && !legalMove; i++)
@@ -405,7 +258,7 @@ export default class Game {
 		return legalMove;
 	}
 
-	//Check legal move of chess piece
+	// Check if king is safe
 	isKingSafe(team, oldGrid, newGrid) {
 		let board = this.copyBoard(this.chessboard);
 
@@ -425,6 +278,7 @@ export default class Game {
 		return enemies.length == 0;
 	}
 
+	// Check if can castle
 	canCastle(oldGrid, newGrid) {
 		if (!this.get_piece(oldGrid)) return;
 		let team = this.get_piece(oldGrid).team;
@@ -463,6 +317,7 @@ export default class Game {
 		}
 	}
 
+
 	//Switch active team turn
 	switchTurn() {
 		if (this.turn == Const.TEAM.B) {
@@ -473,21 +328,10 @@ export default class Game {
 		}
 	}
 
-	copyBoard(board) {
-		let newBoard = [[],[],[],[],[],[],[],[]];
-		for (let i = 0; i < board.length; i++) {
-			for (let j = 0; j < board.length; j++) {
-				newBoard[i][j] = new Grid(i, j, board[i][j].piece, board[i][j].color);
-			}
-		}
-		return newBoard;
-	}
-
 	countDown() {
 		if (this.turn == Const.TEAM.W) {
 			if (this.white_timer <= 0) {
 				Backend.timesup(Const.TEAM.B);
-				clearInterval(this.interval);
 			}
 			else {
 				this.white_timer --;
@@ -497,7 +341,6 @@ export default class Game {
 		if (this.turn == Const.TEAM.B) {
 			if (this.black_timer <= 0) {
 				Backend.timesup(Const.TEAM.W);
-				clearInterval(this.interval);
 			}
 			else {
 				this.black_timer --;
@@ -509,8 +352,25 @@ export default class Game {
 
 
 	//======================================================================== 
-	//============================= Helper =============================== 
+	//============================= Helper ===================================
 	//======================================================================== 
+
+
+	copyBoard(board) {
+		let newBoard = [[],[],[],[],[],[],[],[]];
+		for (let i = 0; i < board.length; i++) {
+			for (let j = 0; j < board.length; j++) {
+				newBoard[i][j] = new Grid(i, j, board[i][j].piece, board[i][j].color);
+			}
+		}
+		return newBoard;
+	}
+
+	//Clear and hide all possible moves
+	clearMoves() {
+		this.baseboard = [[],[],[],[],[],[],[],[]];
+		this.moves = [];
+	}
 
 
 	get_piece(grid) {
@@ -523,11 +383,9 @@ export default class Game {
 		this.updateGame();
 	}
 
-
-	//Clear and hide all possible moves
-	clearMoves() {
-		this.baseboard = [[],[],[],[],[],[],[],[]];
-		this.moves = [];
+	unpackNextMove() {
+		const flipped = this.turn == this.team ? this.downward : !this.downward;
+		return Util.unpack(this.match.moves[this.moves_applied], flipped);
 	}
 
 
@@ -551,26 +409,22 @@ export default class Game {
 		this.updateGame();
 	}
 
+	delay(ms) {
+		return new Promise(res => this.playTimeout = setTimeout(res, ms));
+	}
+
+
+	//======================================================================== 
+	//========================= Update Game State ============================
+	//========================================================================
+
 	updateGame() {
 		if (this.isMountedRef.current) {
 			GameStore.initGame(this);
-		}
-		else {
-			clearInterval(this.interval);
 		}
 	}
 
 	ends() {
 		this.ended = true;
-		clearInterval(this.interval);
-	}
-
-	unpackNextMove() {
-		const flipped = this.turn == this.team ? this.downward : !this.downward;
-		return Util.unpack(this.match.moves[this.moves_applied], flipped);
-	}
-
-	delay(ms) {
-		return new Promise(res => this.playTimeout = setTimeout(res, ms));
 	}
 }
