@@ -2,6 +2,7 @@ import * as Const   from 'chessvibe/src/Const';
 import Util         from 'chessvibe/src/Util';
 import Backend      from 'chessvibe/src/GameBackend';
 import Game         from './Game';
+import ChessMover   from './Workers/ChessMover';
 
 export default class GameAI extends Game {
 
@@ -10,8 +11,8 @@ export default class GameAI extends Game {
 	}
 
 
-	async updateMatchMoves(match) {
-		await super.updateMatchMoves(match);
+	async updateMatchMoves() {
+		await super.updateMatchMoves();
 
 		if (this.turn == Const.TEAM.W && !this.ended) {
 			let chosens = this.getBestMove(this.chessboard, this.turn, 3);
@@ -151,7 +152,7 @@ export default class GameAI extends Game {
 		let grid2 = this.chessboard[Util.flipCoord(newGrid.x)][Util.flipCoord(newGrid.y)];
 
 		Backend.updateChessboard(grid1, grid2, this.turn, this.black_timer, this.white_timer);
-		this.moveChess(oldGrid, newGrid);
+		ChessMover.moveChess(oldGrid, newGrid);
 		return true;
 	}
 }

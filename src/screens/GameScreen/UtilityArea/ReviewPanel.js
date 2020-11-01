@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { vw } from 'chessvibe/src/Util';
 import { IMAGE } from 'chessvibe/src/Const';
 import { ButtonVibe } from 'chessvibe/src/widgets';
+import ChessReviewer from 'chessvibe/src/screens/GameScreen/Game/Workers/ChessReviewer';
 import AutoHeightImage from 'react-native-auto-height-image';
 
 export default function ActionPanel(props) {
@@ -14,38 +15,38 @@ export default function ActionPanel(props) {
 
 
 	async function onFastBackwardClick() {
-		await gameRef.pausePlayback();
+		await ChessReviewer.pausePlayback();
 		setPlaying(true);
 
-		await gameRef.reviewMove(0);
+		await ChessReviewer.reviewMove(0);
 
 		update(updateVersion + 1);
 		setPlaying(false);
 	}
 
 	async function onBackwardClick() {
-		await gameRef.pausePlayback();
+		await ChessReviewer.pausePlayback();
 		setPlaying(false);
 
-		await gameRef.reviewMove(gameRef.moves_applied - 1);
+		await ChessReviewer.reviewMove(gameRef.moves_applied - 1);
 
 		update(updateVersion + 1);
 	}
 
 	async function onForwardClick() {
-		await gameRef.pausePlayback();
+		await ChessReviewer.pausePlayback();
 		setPlaying(false);
 
-		await gameRef.reviewMove(gameRef.moves_applied + 1);
+		await ChessReviewer.reviewMove(gameRef.moves_applied + 1);
 
 		update(updateVersion + 1);
 	}
 
 	async function onFastForwardClick() {
-		await gameRef.pausePlayback();
+		await ChessReviewer.pausePlayback();
 		setPlaying(true);
 
-		await gameRef.reviewMove(gameRef.match.moves.length - 1);
+		await ChessReviewer.reviewMove(gameRef.match.moves.length - 1);
 
 		update(updateVersion + 1);
 		setPlaying(false);
@@ -54,12 +55,12 @@ export default function ActionPanel(props) {
 	async function onPlaybackClick() {
 		if (playing) {
 			setPlaying(false);
-			await gameRef.pausePlayback();
+			await ChessReviewer.pausePlayback();
 		}
 		else {
 			setPlaying(true);
 
-			await gameRef.reviewMove(gameRef.match.moves.length - 1, 700);
+			await ChessReviewer.reviewMove(gameRef.match.moves.length - 1, 700);
 
 			setPlaying(false);
 			update(updateVersion + 1);

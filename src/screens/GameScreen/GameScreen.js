@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { StatusBar, SafeAreaView, StyleSheet, ScrollView, KeyboardAvoidingView } from 'react-native';
+import { BackHandler, StatusBar, SafeAreaView, StyleSheet, ScrollView, KeyboardAvoidingView } from 'react-native';
 import { StackActions } from 'react-navigation';
 import Animated from 'react-native-reanimated';
 import { isIphoneX, getStatusBarHeight, getBottomSpace } from 'react-native-iphone-x-helper';
@@ -38,6 +38,23 @@ export default function GameScreen(props) {
 	const isMountedRef = React.useRef(null);
 	const goingBack = React.useRef(false);
 
+	// Cleanup game
+	function cleanup() {
+		if (game)
+			game.ends();
+		GameStore.reset();
+		Backend.socket.disconnect();
+	}
+
+	// Handle android back button press
+	React.useEffect(() => {
+		BackHandler.addEventListener('hardwareBackPress', cleanup);
+
+		return () => {
+			BackHandler.removeEventListener('hardwareBackPress', cleanup);
+		};
+	}, []);
+
 	// Mount
 	React.useEffect(() => {
 		isMountedRef.current = true;
@@ -49,11 +66,7 @@ export default function GameScreen(props) {
 		props.navigation.setParams({
 			appThemeId,
 			goBack: () => {
-				if (game)
-					game.ends();
-				GameStore.reset();
-				Backend.socket.disconnect();
-
+				cleanup();
 				props.navigation.dispatch((() => {
 					if (goingBack.current)
 						return {};
@@ -109,7 +122,7 @@ export default function GameScreen(props) {
 				GameStore.updateTheme(Util.unpackTheme(match.theme));
 			}
 
-			await game.updatePlayerData(match);
+			await game.updatePlayerData();
 
 			// updateMatchChat();
 
@@ -142,10 +155,10 @@ export default function GameScreen(props) {
 
 			let timerEnable = match.black_timer < MAX_TIME && match.white_timer < MAX_TIME;
 			if (match.black && match.white && timerEnable) {
-				game.updateMatchTimer(match);
+				game.updateMatchTimer();
 			}
 
-			await game.updateMatchMoves(match);
+			await game.updateMatchMoves();
 		});
 
 		return () => isMountedRef.current = false;
