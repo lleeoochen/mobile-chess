@@ -5,6 +5,10 @@ class Grid {
 		this.piece = piece;
 		this.color = color;
 	}
+
+	clone() {
+		return new Grid(this.x, this.y, this.piece, this.color);
+	}
 }
 
 export default Grid;

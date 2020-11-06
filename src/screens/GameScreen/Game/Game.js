@@ -45,7 +45,7 @@ export default class Game {
 		this.oldGrid = null;
 		this.newGrid = null;
 		this.turn = Const.TEAM.W;
-		this.downward = false;
+		this.downward = false; // is your team fighting downward
 		this.passant_pawn = null;
 
 		// Time state
@@ -193,7 +193,7 @@ export default class Game {
 	}
 
 	// Update and show all possible moves based on a specific grid
-	updateMoves(grid) {
+	updateMoves(grid, dryRun=false) {
 		// let downward = this.get_piece(grid).team == Const.TEAM.B;
 		this.moves = this.get_piece(grid).getPossibleMoves(this, this.chessboard, grid, this.downward);
 
@@ -213,14 +213,17 @@ export default class Game {
 		if (this.passant_pawn) {
 			if (this.get_piece(grid).team != this.get_piece(this.passant_pawn).team) {
 				if (Math.abs(grid.x - this.passant_pawn.x) == 1 && grid.y == this.passant_pawn.y) {
-					if (downward)
+					if (this.downward)
 						this.moves.push(this.chessboard[this.passant_pawn.x][this.passant_pawn.y + 1]);
 					else
 						this.moves.push(this.chessboard[this.passant_pawn.x][this.passant_pawn.y - 1]);
 				}
 			}
 		}
-		this.setMovesColor(Const.COLOR_HIGHLIGHT, grid);
+
+		if (!dryRun) {
+			this.setMovesColor(Const.COLOR_HIGHLIGHT, grid);
+		}
 	}
 
 
@@ -271,6 +274,41 @@ export default class Game {
 
 
 	//======================================================================== 
+	//========================== Print board =================================
+	//======================================================================== 
+
+
+	toBoard(chessboard=this.chessboard) {
+	    let board = [];
+
+	    for (let y = 0;  y < Const.BOARD_SIZE; y++) {
+	        let rows = [];
+
+	        for (let x = 0;  x < Const.BOARD_SIZE; x++) {
+	            let grid = chessboard[x][y];
+	            let piece = this.get_piece(grid) ? this.get_piece(grid).type[0] + (this.get_piece(grid).team == Const.TEAM.W ? 'ʷ' : 'ᵇ') : '  ';
+	            rows.push(piece);
+	        }
+
+	        board.push(rows);
+	    }
+
+	    return board;
+	}
+
+	toStr() {
+	    let board = this.toBoard(this.chessboard);
+
+	    for (let x in board) {
+	        board[x] = '| ' + board[x].join('| ') + '|';
+	    }
+
+	    return     '\n┌───┬───┬───┬───┬───┬───┬───┬───┐\n' +
+	    board.join('\n|───|───|───|───|───|───|───|───|\n') +
+	               '\n└───┴───┴───┴───┴───┴───┴───┴───┘\n';
+	}
+
+	//======================================================================== 
 	//========================== Color Grids =================================
 	//======================================================================== 
 
@@ -305,6 +343,7 @@ export default class Game {
 	//======================================================================== 
 	//========================= Update Game State ============================
 	//========================================================================
+
 
 	updateGame() {
 		if (this.isMountedRef.current) {

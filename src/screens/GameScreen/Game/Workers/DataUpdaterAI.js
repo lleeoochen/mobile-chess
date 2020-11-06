@@ -3,6 +3,13 @@ import Util from 'chessvibe/src/Util';
 import * as Const from 'chessvibe/src/Const';
 import DataUpdater from './DataUpdater';
 
+const MAX_FUTURE_LOOK = 3;
+const GROUP_FLAG = {
+	NORMAL: 'normal',
+	CHECKMATE: 'checkmate',
+	STALEMATE: 'stalemate',
+};
+
 export default class DataUpdaterAI extends DataUpdater {
 
 	async updateMatchMoves() {
@@ -11,7 +18,7 @@ export default class DataUpdaterAI extends DataUpdater {
 		let game = this.game;
 
 		if (game.turn == Const.TEAM.W && !game.ended) {
-			let chosens = this.getBestMove(game.chessboard, game.turn, 3);
+			let chosens = this.getBestMove(game.cloneGame(), game.turn, MAX_FUTURE_LOOK);
 
 			let otherTeam = game.turn == Const.TEAM.B ? Const.TEAM.W : Const.TEAM.B;
 			let kingDistanceSort = (a, b) => {
@@ -38,108 +45,132 @@ export default class DataUpdaterAI extends DataUpdater {
 				rand -= weight;
 			}
 
+			// console.log('===========');
+			// console.log(chosens.map(c => this.getValueGroupStr(c)));
+			// console.log('Chosen: ');
+			// console.log(this.getValueGroupStr(chosen));
+			// console.log('===========');
+
 			this.moveAI(game.chessboard[chosen.oldGrid.x][chosen.oldGrid.y], game.chessboard[chosen.newGrid.x][chosen.newGrid.y]);
 		}
 	}
 
-	getBestMove(board, team, depth) {
-		let game = this.game;
-
-		let chosenGroups = {
-			normal: [],
-			check: [],
-			stale: [],
-		};
-
+	getBestMove(game, origTeam, depth) {
 		if (depth <= 0) {
 			return [];
 		}
 
-		for (let i in board) {
-			for (let j in board[i]) {
+		let chosenGroups = {
+			[GROUP_FLAG.NORMAL]: [],
+			[GROUP_FLAG.CHECKMATE]: [],
+			[GROUP_FLAG.STALEMATE]: [],
+		};
 
-				let oldGrid = board[i][j];
-				let oldPiece = game.get_piece(oldGrid);
+		for (let i in game.chessboard) {
+			for (let j in game.chessboard[i]) {
+				const oldGrid = game.chessboard[i][j];
+				const oldPiece = game.get_piece(oldGrid);
 
-				// Find best move for each valid grid
-				if (oldPiece && oldPiece.team == team) {
-					let downward = team == game.turn ? !game.downward : game.downward;
-					let moves = oldPiece.getPossibleMoves(game, board, oldGrid, downward);
+				// Skip irrelevant grid
+				if (!oldPiece || oldPiece.team !== game.turn) {
+					continue;
+				}
+
+				// Update all available moves for old grid
+				game.updateMoves(oldGrid, true);
+
+				// Find best move with highest value
+				for (let move of game.moves) {
+					const newGrid = game.chessboard[move.x][move.y];
 
 					// Simulate move
-					for (let move of moves) {
-						let tempBoard = game.copyBoard(board);
-						let newGrid = tempBoard[move.x][move.y];
-						let newPiece = game.get_piece(newGrid);
-						let value = newPiece ? newPiece.value : 0;
+					const {valueGroup, gameEnds} = this.simulateMove(game, origTeam, depth, oldGrid, newGrid);
 
-						// Set opponent value to negative
-						if (team != game.turn) {
-							value *= -1;
-						}
+					// Save the best-value group 
+					this.updateValueGroup(chosenGroups, gameEnds, game, valueGroup, origTeam);
 
-						// Simulate eat
-						tempBoard[newGrid.x][newGrid.y].piece = tempBoard[oldGrid.x][oldGrid.y].piece;
-						tempBoard[oldGrid.x][oldGrid.y].piece = null;
-
-						// Find best move for next round
-						let otherTeam = team == Const.TEAM.B ? Const.TEAM.W : Const.TEAM.B;
-						let nextBestMoves = this.getBestMove(tempBoard, otherTeam, depth - 1);
-						let chosen = 'normal';
-
-						// Add next best move's value
-						if (nextBestMoves.length > 0) {
-							value += nextBestMoves[0].value * Math.pow(0.9, 4 - depth);
-						}
-						// Handle checkmate/stalemate cases
-						else if (depth != 1) {
-							// Checkmate if other team's king is targeted.
-							if (game.getReachablePieces(board, game.king_grid[otherTeam], otherTeam).enemies.length != 0) {
-								chosen = 'check';
-							}
-							else {
-								chosen = 'stale';
-							}
-						}
-
-						// Overwrite chosen if value is larger/smaller
-						if (team == game.turn) {
-							// Maximizer (friend)
-							if (chosenGroups[chosen].length == 0 || value > chosenGroups[chosen][0].value) {
-								chosenGroups[chosen] = [{ oldGrid, newGrid, value }];
-							}
-							else if (value == chosenGroups[chosen][0].value) {
-								chosenGroups[chosen].push({ oldGrid, newGrid, value });
-							}
-						}
-						else {
-							// Minimizer (opponent)
-							if (chosenGroups[chosen].length == 0 || value < chosenGroups[chosen][0].value) {
-								chosenGroups[chosen] = [{ oldGrid, newGrid, value }];
-							}
-							else if (value == chosenGroups[chosen][0].value) {
-								chosenGroups[chosen].push({ oldGrid, newGrid, value });
-							}
-						}
-
-						// if (oldPiece.type == 'Queen') {
-						// 	if (depth == 3) {
-						// 		console.log("==========")
-						// 	}
-						// 	console.log("    ".repeat(3 - depth) + oldPiece.team + oldPiece.type + " (" + oldGrid.x + ", " + oldGrid.y + ") => (" + newGrid.x + ", " + newGrid.y + "):", value, team != game.turn);
-						// }
-					}
+					// Very good debug line
+					// this.debug_getBestMove(game, i, j, move, depth, oldPiece, valueGroup, nextBestMoves);
 				}
 			}
 		}
 
-		if (chosenGroups.check.length > 0)
-			return chosenGroups.check;
+		// Return chosen group based on priority CHECKMATE > STALEMATE > NORMAL
+		if (chosenGroups[GROUP_FLAG.CHECKMATE].length > 0) {
+			return chosenGroups[GROUP_FLAG.CHECKMATE];
+		}
+		if (chosenGroups[GROUP_FLAG.NORMAL].length > 0) {
+			return chosenGroups[GROUP_FLAG.NORMAL];
+		}
+		return chosenGroups[GROUP_FLAG.STALEMATE];
+	}
 
-		if (chosenGroups.normal.length > 0)
-			return chosenGroups.normal;
+	simulateMove(game, origTeam, depth, oldGrid, newGrid) {
+		// Value calculation init
+		let oldValue = game.stats[game.team] - game.stats[game.enemy];
+		let value = game.turn === origTeam ? 1 : -1;
 
-		return chosenGroups.stale;
+		// Simulation starts
+		game.ChessMover.moveChess(oldGrid, newGrid, true);
+		game.downward = !game.downward;
+
+		// Value calculation
+		let newValue = game.stats[game.team] - game.stats[game.enemy];
+		value *= Math.abs(newValue - oldValue);
+
+		// Find next best move of opponent
+		let nextBestMoves = this.getBestMove(game, origTeam, depth - 1);
+		if (nextBestMoves.length > 0) {
+			// Future value are weighted less (in case killing our king is weighted
+			// the same as killing opponent's king)
+			value += nextBestMoves[0].value * Math.pow(0.9, MAX_FUTURE_LOOK + 1 - depth);
+		}
+
+		// Simulation ends
+		game.downward = !game.downward;
+		game.ChessUnmover.unmoveChess(true);
+
+		const valueGroup = {oldGrid, newGrid, value};
+		const gameEnds = nextBestMoves.length === 0 && depth != 1;
+		return {valueGroup, gameEnds, nextBestMoves};		
+	}
+
+	updateValueGroup(chosenGroups, gameEnds, game, valueGroup, origTeam) {
+		let group;
+		const {value} = valueGroup;
+
+		// Handle checkmate/stalemate cases
+		if (gameEnds) {
+			if (game.getReachablePieces(board, game.king_grid[game.enemy], game.enemy).enemies.length != 0) {
+				group = GROUP_FLAG.CHECKMATE;
+			}
+			else {
+				group = GROUP_FLAG.STALEMATE;
+			}
+		}
+		else {
+			group = GROUP_FLAG.NORMAL;
+		}
+
+		// Overwrite chosen group if value is larger/smaller
+		if (origTeam == game.turn) {
+			// Maximizer (friend)
+			if (chosenGroups[group].length == 0 || value > chosenGroups[group][0].value) {
+				chosenGroups[group] = [valueGroup];
+			}
+			else if (value == chosenGroups[group][0].value) {
+				chosenGroups[group].push(valueGroup);
+			}
+		}
+		else {
+			// Minimizer (opponent)
+			if (chosenGroups[group].length == 0 || value < chosenGroups[group][0].value) {
+				chosenGroups[group] = [valueGroup];
+			}
+			else if (value == chosenGroups[group][0].value) {
+				chosenGroups[group].push(valueGroup);
+			}
+		}
 	}
 
 	moveAI(oldGrid, newGrid) {
@@ -154,5 +185,22 @@ export default class DataUpdaterAI extends DataUpdater {
 		Backend.updateChessboard(grid1, grid2, game.turn, game.black_timer, game.white_timer);
 		ChessMover.moveChess(oldGrid, newGrid);
 		return true;
+	}
+
+	getValueGroupStr(valueGroup) {
+		if (!valueGroup) return 'null';
+
+		return `<(${valueGroup.oldGrid.x}, ${valueGroup.oldGrid.y}) => ` + 
+				`(${valueGroup.newGrid.x}, ${valueGroup.newGrid.y}), ` + 
+				`value: ${valueGroup.value}>`;
+	}
+
+
+	debug_getBestMove(game, i, j, move, depth, oldPiece, valueGroup, nextBestMoves) {
+		console.log(
+			' '.repeat(4 * (MAX_FUTURE_LOOK - depth)), `depth ${depth} `, oldPiece.team, oldPiece.type + '\t',
+			`(${i}, ${j}) => (${move.x}, ${move.y})` + '\t', 'value: ' + valueGroup.value + ', ' + '\t',
+			'downward: ' + game.downward + ', ' + '\t', this.getValueGroupStr(nextBestMoves[0]),
+		);
 	}
 }

@@ -7,13 +7,21 @@ export default class ChessUnmover {
 	}
 
 	// Unmove chess piece from newGrid to oldGrid
-	unmoveChess() {
+	unmoveChess(dryRun=false) {
 		let game = this.game;
 
 		if (game.moves_stack.length == 0) return;
 
+		//===================== Unpack passant pawn ========================
+
 		game.passant_stack.pop();
 		game.passant_pawn = game.passant_stack[game.passant_stack.length - 1];
+
+		if (game.passant_pawn) {
+			game.passant_pawn = game.passant_pawn.clone();
+		}
+
+		//===================== Unpack previous moves ========================
 
 		let prev_move = this.unstackEatenPiece();
 
@@ -22,8 +30,6 @@ export default class ChessUnmover {
 		let eatenGrid = game.chessboard[prev_move.eaten_x][prev_move.eaten_y];
 		let eaten_piece = prev_move.eaten_piece;
 		let flag = prev_move.flag;
-
-		// this.revertMoveHistory();
 
 		//===================== Special Moves ========================
 
@@ -60,7 +66,9 @@ export default class ChessUnmover {
 		game.switchTurn();
 
 		//Color old and new grids
-		game.colorLatestMove(newGrid, oldGrid);
+		if (!dryRun) {
+			game.colorLatestMove(newGrid, oldGrid);
+		}
 	}
 
 	unmoveEatPiece(eatenGrid, eaten_piece) {

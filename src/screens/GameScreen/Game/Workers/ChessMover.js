@@ -6,7 +6,7 @@ export default class ChessMover {
 		this.game = game;
 	}
 
-	moveChess(oldGrid, newGrid) {
+	moveChess(oldGrid, newGrid, dryRun=false) {
 		let game = this.game;
 
 		if (game.get_piece(oldGrid) == null) return false;
@@ -46,7 +46,9 @@ export default class ChessMover {
 
 		game.moves_applied ++;
 
-		game.colorLatestMove(oldGrid, newGrid);
+		if (!dryRun) {
+			game.colorLatestMove(oldGrid, newGrid);
+		}
 
 		return true;
 	}
@@ -57,19 +59,21 @@ export default class ChessMover {
 
 		// Check passant pawn can be killed
 		if (game.passant_pawn && game.get_piece(oldGrid).type == Const.CHESS.Pawn) {
-
+			// Check if eater pawn is different team than passant pawn
 			if (game.get_piece(oldGrid).team != game.get_piece(game.passant_pawn).team) {
-				let downward = game.get_piece(oldGrid).team == game.team ? game.downward : !game.downward;
-
-				if (downward
-					&& newGrid.x == game.passant_pawn.x
-					&& newGrid.y == game.passant_pawn.y + 1) {
-					kill_passant_pawn = true;
-				}
-				else if (!downward
-					&& newGrid.x == game.passant_pawn.x
-					&& newGrid.y == game.passant_pawn.y - 1) {
-					kill_passant_pawn = true;
+				// Check if eater pawn is on different column
+				if (oldGrid.x !== game.passant_pawn.x) {
+					let downward = game.get_piece(oldGrid).team == game.team ? game.downward : !game.downward;
+					if (downward
+						&& newGrid.x == game.passant_pawn.x
+						&& newGrid.y == game.passant_pawn.y + 1) {
+						kill_passant_pawn = true;
+					}
+					else if (!downward
+						&& newGrid.x == game.passant_pawn.x
+						&& newGrid.y == game.passant_pawn.y - 1) {
+						kill_passant_pawn = true;
+					}
 				}
 			}
 		}
@@ -93,7 +97,13 @@ export default class ChessMover {
 				game.passant_pawn = newGrid;
 			}
 		}
-		game.passant_stack.push(game.passant_pawn);
+
+		// Save passant pawn to a stack
+		let passantCopy = game.passant_pawn ? game.passant_pawn.clone() : null;
+		if (passantCopy) {
+			passantCopy.piece = oldGrid.piece;
+		}
+		game.passant_stack.push(passantCopy);
 	}
 
 	moveCastleKing(oldGrid, newGrid) {
@@ -146,7 +156,7 @@ export default class ChessMover {
 				let eatenPiece = game.moves_stack.pop().eaten_piece;
 				this.stackEatenPiece(oldGrid, newGrid, newGrid, eatenPiece, false, Const.FLAG_PAWN_TO_QUEEN);
 
-				this.initEachPiece(this.id++, newGrid.x, newGrid.y, game.get_piece(newGrid).team, Const.CHESS.Queen);
+				game.initEachPiece(this.id++, newGrid.x, newGrid.y, game.get_piece(newGrid).team, Const.CHESS.Queen);
 				game.stats[game.get_piece(newGrid).team] += Const.VALUE[Const.CHESS.Queen] - Const.VALUE[Const.CHESS.Pawn];
 			}
 		}
