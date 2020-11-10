@@ -197,11 +197,11 @@ function getValueGroupStr(valueGroup) {
 // Debugging for best move algorithm
 // eslint-disable-next-line
 function debug_getBestMove(game, i, j, move, depth, oldPiece, valueGroup, nextBestMoves) {
-	console.log(
-		' '.repeat(4 * (MAX_FUTURE_LOOK - depth)), `depth ${depth} `, oldPiece.team, oldPiece.type + '\t',
-		`(${i}, ${j}) => (${move.x}, ${move.y})` + '\t', 'value: ' + valueGroup.value + ', ' + '\t',
-		'downward: ' + game.downward + ', ' + '\t', getValueGroupStr(nextBestMoves[0]),
-	);
+	// console.log(
+	// 	' '.repeat(4 * (MAX_FUTURE_LOOK - depth)), `depth ${depth} `, oldPiece.team, oldPiece.type + '\t',
+	// 	`(${i}, ${j}) => (${move.x}, ${move.y})` + '\t', 'value: ' + valueGroup.value + ', ' + '\t',
+	// 	'downward: ' + game.downward + ', ' + '\t', getValueGroupStr(nextBestMoves[0]),
+	// );
 }
 
 // Special sort that considers distance closest to king
