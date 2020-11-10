@@ -30,7 +30,7 @@ export default class DataUpdaterAI extends DataUpdater {
 		const chosen = chosens[chosenIndex];
 
 		// Useful debug line
-		console.log(getValueGroupStr(chosen));
+		// console.log(getValueGroupStr(chosen));
 
 		// Move AI to chosen move
 		this.moveAI(game.chessboard[chosen.oldGrid.x][chosen.oldGrid.y], game.chessboard[chosen.newGrid.x][chosen.newGrid.y]);
@@ -102,6 +102,8 @@ export default class DataUpdaterAI extends DataUpdater {
 		// Value calculation init
 		let oldValue = game.stats[game.team] - game.stats[game.enemy];
 		let value = game.turn === game.team ? 1 : -1;
+		let nextBestMoves;
+
 
 		// Simulation starts
 		game.downward = !game.downward;
@@ -112,7 +114,7 @@ export default class DataUpdaterAI extends DataUpdater {
 		value *= Math.abs(newValue - oldValue);
 
 		// Find next best move of opponent
-		let nextBestMoves = this.getBestMove(game, depth - 1);
+		nextBestMoves = this.getBestMove(game, depth - 1);
 		if (nextBestMoves.length > 0) {
 			// Future value are weighted less (in case killing our king is weighted
 			// the same as killing opponent's king)
@@ -122,6 +124,7 @@ export default class DataUpdaterAI extends DataUpdater {
 		// Simulation ends
 		game.ChessUnmover.unmoveChess(true);
 		game.downward = !game.downward;
+
 
 		const valueGroup = {oldGrid, newGrid, value};
 		const gameEnds = nextBestMoves.length === 0 && depth != 1;
@@ -183,6 +186,7 @@ function getWeightedRandomIndex(max) {
 }
 
 // Pretty string of value group
+// eslint-disable-next-line
 function getValueGroupStr(valueGroup) {
 	if (valueGroup) {
 		return `<(${valueGroup.oldGrid.x}, ${valueGroup.oldGrid.y}) => ` + 
