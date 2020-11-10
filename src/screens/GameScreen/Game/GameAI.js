@@ -9,7 +9,7 @@ export default class GameAI extends Game {
 		this.DataUpdater = new DataUpdaterAI(this);
 	}
 
-	cloneGame() {
+	cloneAIOpponent() {
 		let newGame = new GameAI(this.team, this.match_id, this.match, this.isMountedRef);
 
 		newGame.chessboard = this.copyBoard(this.chessboard);
@@ -24,11 +24,13 @@ export default class GameAI extends Game {
 		});
 
 		newGame.id = this.id;
-		newGame.team = this.team;
-		newGame.enemy = this.enemy;
-		newGame.turn = this.turn;
+
+		// Team swap
+		newGame.team = this.enemy;
+		newGame.enemy = this.team;
 		newGame.downward = !this.downward;
 
+		newGame.turn = this.turn;
 		newGame.king_grid = {...this.king_grid};
 		newGame.white_king_moved = this.white_king_moved;
 		newGame.black_king_moved = this.black_king_moved;
