@@ -51,7 +51,9 @@ export default class ChessUnmover {
 		}
 
 		//Update king position
-		game.king_grid[game.get_piece(newGrid).team] = newGrid == game.king_grid[game.get_piece(newGrid).team] ? oldGrid : game.king_grid[game.get_piece(newGrid).team];
+		game.king_grid[game.get_piece(newGrid).team] = newGrid.sameGrid(game.king_grid[game.get_piece(newGrid).team])
+			? oldGrid
+			: game.king_grid[game.get_piece(newGrid).team];
 
 		//Clear new grid piece
 		newGrid.piece = -1;

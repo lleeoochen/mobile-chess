@@ -35,7 +35,7 @@ export default class ChessMover {
 		this.movePawnToQueen(oldGrid, newGrid);
 
 		// Update king position
-		if (oldGrid == game.king_grid[team])
+		if (oldGrid.sameGrid(game.king_grid[team]))
 			game.king_grid[team] = newGrid;
 
 		// Clear old grid piece
@@ -61,8 +61,8 @@ export default class ChessMover {
 		if (game.passant_pawn && game.get_piece(oldGrid).type == Const.CHESS.Pawn) {
 			// Check if eater pawn is different team than passant pawn
 			if (game.get_piece(oldGrid).team != game.get_piece(game.passant_pawn).team) {
-				// Check if eater pawn is on different column
-				if (oldGrid.x !== game.passant_pawn.x) {
+				// Check if eater pawn is on different column and same row
+				if (oldGrid.x !== game.passant_pawn.x && oldGrid.y === game.passant_pawn.y) {
 					let downward = game.get_piece(oldGrid).team == game.team ? game.downward : !game.downward;
 					if (downward
 						&& newGrid.x == game.passant_pawn.x

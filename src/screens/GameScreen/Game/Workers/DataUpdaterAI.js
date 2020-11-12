@@ -53,7 +53,7 @@ export default class DataUpdaterAI extends DataUpdater {
 			return [];
 		}
 
-		let chosenGroups = {
+		var chosenGroups = {
 			[GROUP_FLAG.NORMAL]: [],
 			[GROUP_FLAG.CHECKMATE]: [],
 			[GROUP_FLAG.STALEMATE]: [],
@@ -77,10 +77,7 @@ export default class DataUpdaterAI extends DataUpdater {
 					const newGrid = game.chessboard[move.x][move.y];
 
 					// Simulate move
-					const {valueGroup, gameEnds, nextBestMoves} = this.simulateMove(game, depth, oldGrid, newGrid);
-
-					// Save the best-value group 
-					this.updateValueGroup(game, gameEnds, chosenGroups, valueGroup);
+					const {valueGroup, nextBestMoves} = this.simulateMove(game, depth, oldGrid, newGrid, chosenGroups);
 
 					// Very good debug line
 					debug_getBestMove(game, i, j, move, depth, oldPiece, valueGroup, nextBestMoves);
@@ -98,46 +95,45 @@ export default class DataUpdaterAI extends DataUpdater {
 		return chosenGroups[GROUP_FLAG.STALEMATE];
 	}
 
-	simulateMove(game, depth, oldGrid, newGrid) {
+	simulateMove(game, depth, oldGrid, newGrid, chosenGroups) {
 		// Value calculation init
-		let oldValue = game.stats[game.team] - game.stats[game.enemy];
-		let value = game.turn === game.team ? 1 : -1;
-		let nextBestMoves;
-
+		const valueKeeper = new ValueKeeper(game);
 
 		// Simulation starts
 		game.downward = !game.downward;
 		game.ChessMover.moveChess(oldGrid, newGrid, true);
-
-		// Value calculation
-		let newValue = game.stats[game.team] - game.stats[game.enemy];
-		value *= Math.abs(newValue - oldValue);
+		valueKeeper.recordGame(game);
 
 		// Find next best move of opponent
-		nextBestMoves = this.getBestMove(game, depth - 1);
-		if (nextBestMoves.length > 0) {
-			// Future value are weighted less (in case killing our king is weighted
-			// the same as killing opponent's king)
-			value += nextBestMoves[0].value * Math.pow(0.8, MAX_FUTURE_LOOK + 1 - depth);
-		}
+		let nextBestMoves = this.getBestMove(game, depth - 1);
+		valueKeeper.recordChildMoves(nextBestMoves, depth);
+
+		// Save the best-value group
+		const valueGroup = {oldGrid, newGrid, value: valueKeeper.value};
+		const gameEnds = nextBestMoves.length === 0 && depth != 1;
+		this.updateValueGroup(game, gameEnds, chosenGroups, valueGroup);
 
 		// Simulation ends
 		game.ChessUnmover.unmoveChess(true);
 		game.downward = !game.downward;
-
-
-		const valueGroup = {oldGrid, newGrid, value};
-		const gameEnds = nextBestMoves.length === 0 && depth != 1;
-		return {valueGroup, gameEnds, nextBestMoves};		
+		return {valueGroup, nextBestMoves};
 	}
 
 	updateValueGroup(game, gameEnds, chosenGroups, valueGroup) {
-		let group;
 		const {value} = valueGroup;
+		let group;
 
 		// Handle checkmate/stalemate cases
 		if (gameEnds) {
-			if (game.getReachablePieces(board, game.king_grid[game.enemy], game.enemy).enemies.length != 0) {
+			let kingDead = !game.chessboard.some(row => {
+				return row.some(grid => {
+					return game.get_piece(grid)
+						&& game.get_piece(grid).team === game.turn
+						&& game.get_piece(grid).type === Const.CHESS.King;
+				});
+			});
+
+			if (kingDead) {
 				group = GROUP_FLAG.CHECKMATE;
 			}
 			else {
@@ -157,7 +153,7 @@ export default class DataUpdaterAI extends DataUpdater {
 		}
 		else {
 			// Overwrite chosen group if value is larger/smaller
-			const isMaximizer = game.turn === game.team;
+			const isMaximizer = game.turn !== game.team;
 			const isValueLarger = value > chosenGroups[group][0].value;
 
 			if (isMaximizer === isValueLarger) {
@@ -216,4 +212,25 @@ function kingDistanceSort(a, b, game) {
 	let aDist = Math.sqrt(Math.pow(a.newGrid.kingX - kingX, 2) + Math.pow(a.newGrid.kingY - kingY, 2));
 	let bDist = Math.sqrt(Math.pow(b.newGrid.kingX - kingX, 2) + Math.pow(b.newGrid.kingY - kingY, 2));
 	return aDist - bDist;
+}
+
+
+class ValueKeeper {
+	constructor(game) {
+		this.oldValue = game.stats[game.team] - game.stats[game.enemy];
+		this.value = game.turn === game.team ? 1 : -1;
+	}
+
+	recordGame(game) {
+		this.newValue = game.stats[game.team] - game.stats[game.enemy];
+		this.value *= Math.abs(this.newValue - this.oldValue);
+	}
+
+	recordChildMoves(moves, depth) {
+		if (moves.length > 0) {
+			// Future value are weighted less (in case killing our king is weighted
+			// the same as killing opponent's king)
+			this.value += moves[0].value * Math.pow(0.8, MAX_FUTURE_LOOK + 1 - depth);
+		}
+	}
 }
