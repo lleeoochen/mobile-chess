@@ -100,13 +100,16 @@ export default class DataUpdaterAI extends DataUpdater {
 		const valueKeeper = new ValueKeeper(game);
 
 		// Simulation starts
-		game.downward = !game.downward;
 		game.ChessMover.moveChess(oldGrid, newGrid, true);
 		valueKeeper.recordGame(game);
+
+		game.downward = !game.downward;
 
 		// Find next best move of opponent
 		let nextBestMoves = this.getBestMove(game, depth - 1);
 		valueKeeper.recordChildMoves(nextBestMoves, depth);
+
+		game.downward = !game.downward;
 
 		// Save the best-value group
 		const valueGroup = {oldGrid, newGrid, value: valueKeeper.value};
@@ -115,7 +118,7 @@ export default class DataUpdaterAI extends DataUpdater {
 
 		// Simulation ends
 		game.ChessUnmover.unmoveChess(true);
-		game.downward = !game.downward;
+		// game.downward = !game.downward;
 		return {valueGroup, nextBestMoves};
 	}
 
