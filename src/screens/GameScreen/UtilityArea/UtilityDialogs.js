@@ -107,7 +107,7 @@ export default function UtilityDialogs(props) {
 				onSuccess={ () => resign() }/>
 
 			<DialogVibe
-				title={ 'Invite Link Copied!' }
+				title={ 'Invite Code Copied!' }
 				showCancelBtn={ false }
 				showConfirmBtn={ false }
 				theme={ theme }

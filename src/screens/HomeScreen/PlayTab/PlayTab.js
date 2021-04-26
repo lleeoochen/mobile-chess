@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { FlatList, Animated, View, StyleSheet, Image } from 'react-native';
-import { TextVibe, ButtonVibe } from 'chessvibe/src/widgets';
+import { TextVibe, ButtonVibe, InputVibe } from 'chessvibe/src/widgets';
 import AutoHeightImage from 'react-native-auto-height-image';
 import Carousel from 'react-native-snap-carousel';
 import Store from 'chessvibe/src/redux/Store';
@@ -40,14 +40,14 @@ export default function PlayTab(props) {
 
 	const ACTION_DATA = [
 		{
-			text: 'AI Mode',
-			description: 'Practice with computer',
+			text: 'Practice with Computer',
+			description: '',
 			image: IMAGE.METAL,
 			onPress: () => showCreateMenu({ show: true, mode: MATCH_MODE.COMPUTER }),
 		},
 		{
-			text: 'Friend Mode',
-			description: 'Challenge a friend',
+			text: 'Challenge A Friend',
+			description: '',
 			image: IMAGE.NATURE,
 			onPress: () => showCreateMenu({ show: true, mode: MATCH_MODE.FRIEND }),
 		},
@@ -177,7 +177,19 @@ export default function PlayTab(props) {
 				itemWidth={ vw(80) }
 				contentContainerCustomStyle={ styles.carousel }
 				onScrollIndexChanged={ index => onSnapToMode(ACTION_DATA[index]) }/>
-			<TextVibe style={ [styles.description, { color: appTheme.SUB_COLOR }] }>{ description }</TextVibe>
+			{/* <TextVibe style={ [styles.description, { color: appTheme.SUB_COLOR }] }>{ description }</TextVibe> */}
+			<InputVibe
+				initValue=''
+				placeholder='Invite Code'
+				onSubmitText={(matchName) => navigateGame(matchName)}
+				onChangeText={() => {}}
+				style={{
+					color: appTheme.COLOR,
+					backgroundColor: appTheme.MENU_BACKGROUND,
+					margin: vw(2),
+					borderRadius: vw(),
+				}}
+			/>
 			{$container}
 
 			<HomeCreateMenu

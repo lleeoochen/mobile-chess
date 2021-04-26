@@ -22,7 +22,7 @@ export default function InvitePanel(props) {
 			style={ btnStyle }
 			useGestureButton={ Platform.OS === 'android' }
 			onPress={ async () => {
-				Clipboard.setString(URL.FRONTEND + '/game?match=' + gameRef.match_id);
+				Clipboard.setString(gameRef.match_id);
 				setInviteState(DIALOG.REQUEST_SHOW);
 				minimizeDrawer();
 			} }>
