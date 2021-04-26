@@ -52,7 +52,8 @@ export const IMAGE = {
 	PREVIEW_CLASSIC: require('chessvibe/assets/preview/classic.png'),
 	PREVIEW_WINTER:  require('chessvibe/assets/preview/winter.png'),
 	PREVIEW_METAL:   require('chessvibe/assets/preview/metal.png'),
-	PREVIEW_NATURE:  require('chessvibe/assets/preview/nature.png'),
+	PREVIEW_NATURE: require('chessvibe/assets/preview/nature.png'),
+	PREVIEW_HELL: require('chessvibe/assets/preview/fire.png'),
 
 	// Chess pieces
 	BKing:   require('chessvibe/assets/BKing.png'),

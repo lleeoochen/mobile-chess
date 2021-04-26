@@ -148,6 +148,7 @@ function ThemeSelector({ appThemeId, formData }) {
 		theme == THEME_ID.WINTER ? IMAGE.PREVIEW_WINTER :
 		theme == THEME_ID.METAL ? IMAGE.PREVIEW_METAL :
 		theme == THEME_ID.NATURE ? IMAGE.PREVIEW_NATURE :
+		theme == THEME_ID.HELL ? IMAGE.PREVIEW_HELL :
 		IMAGE.PREVIEW_CLASSIC;
 
 	function changeTheme(direction) {

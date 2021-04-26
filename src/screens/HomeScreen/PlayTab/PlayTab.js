@@ -51,12 +51,12 @@ export default function PlayTab(props) {
 			image: IMAGE.NATURE,
 			onPress: () => showCreateMenu({ show: true, mode: MATCH_MODE.FRIEND }),
 		},
-		{
-			text: 'Hell Mode',
-			description: 'Play dirty and play to win',
-			image: IMAGE.HELL,
-			onPress: () => {},
-		},
+		// {
+		// 	text: 'Hell Mode',
+		// 	description: 'Play dirty and play to win',
+		// 	image: IMAGE.HELL,
+		// 	onPress: () => {},
+		// },
 	];
 
 	const [ createMenuVisible, showCreateMenu ] = React.useState({ show: false });
