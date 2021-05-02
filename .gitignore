@@ -62,3 +62,8 @@ buck-out/
 .env
 app.sublime-project
 app.sublime-workspace
+
+
+# Keystore and release
+android/app/keystore
+android/app/release
