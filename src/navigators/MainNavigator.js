@@ -19,6 +19,7 @@ import { APP_THEME, TEAM } from '../Const';
 import { vw } from '../Util';
 
 import Util from 'chessvibe/src/Util';
+import StyleUtil from 'chessvibe/src/StyleUtil';
 import Stats from 'chessvibe/src/Stats';
 import Backend from 'chessvibe/src/Backend';
 import { HomeStore } from '../redux/Store';
@@ -137,15 +138,15 @@ function getMainNavigation(appThemeId, tab, openNotification) {
 			barStyle: {
 				backgroundColor: appTheme.MENU_BACKGROUND,
 				borderColor: 'transparent',
-				shadowOffset: {
-					width: 0,
-					height: appThemeId === 'DARK' ? -2 : 0, // cover white border line in dark mode
-				},
-				shadowOpacity: 1,
-				shadowColor: 'black',
-				shadowRadius: vw(0.5),
 
-				elevation: 2,
+				...StyleUtil.makeShadow(
+					'black',                        // color
+					0,                              // offset width
+					appThemeId === 'DARK' ? -2 : 0, // offset height
+					1,                              // opacity
+					vw(0.5),                        // radius
+					2,                              // elevation
+				),
 			},
 		}
 	);

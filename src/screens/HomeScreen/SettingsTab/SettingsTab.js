@@ -7,6 +7,7 @@ import { useSelector } from 'react-redux';
 
 import { IMAGE, STORAGE_APP_THEME, APP_THEME } from 'chessvibe/src/Const';
 import { vw } from 'chessvibe/src/Util';
+import StyleUtil from 'chessvibe/src/StyleUtil';
 import Storage from 'chessvibe/src/Storage';
 import Cache, { CACHE_DEFAULT } from 'chessvibe/src/Cache';
 import Store, { HomeStore, RootStore } from 'chessvibe/src/redux/Store';
@@ -54,7 +55,7 @@ export default function SettingsTab(props) {
 	return (
 		<View style={ viewStyle }>
 			<ScrollView>
-				<View style={ styles.divider }/>
+				{/* <View style={ styles.divider }/> */}
 
 				<View style={ borderStyle }/>
 					<MoreSetting
@@ -212,22 +213,14 @@ const styles = StyleSheet.create({
 	},
 
 		setting: {
-			margin: vw(),
+			margin: vw(2),
 			marginBottom: 0,
 			padding: vw(3),
 			paddingHorizontal: vw(4),
 			flexDirection: 'row',
 			alignItems: 'center',
 			borderRadius: vw(),
-
-			shadowColor: '#000',
-			shadowOffset: {
-				width: 0,
-				height: 1,
-			},
-			shadowOpacity: 0.22,
-			shadowRadius: 2.22,
-			elevation: 3,
+			...StyleUtil.makeShadow(),
 		},
 
 		settingsIcon: {

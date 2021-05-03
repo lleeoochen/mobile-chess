@@ -81,9 +81,11 @@ function SearchInput(props) {
 				blurOnSubmit={true}
 				style={{
 					fontSize: vw(5),
-					color: appTheme.COLOR,
-					backgroundColor: appTheme.SETTING_BACKGROUND,
-					margin: 10,
+					color: appTheme.SEARCH_COLOR,
+					backgroundColor: appTheme.SEARCH_BACKGROUND,
+					// color: appTheme.COLOR,
+					// backgroundColor: appTheme.SETTING_BACKGROUND,
+					margin: vw(2),
 					borderRadius: vw(),
 				}}
 				onChangeText={(text) => {
@@ -186,8 +188,8 @@ const styles = StyleSheet.create({
 		width: vw(94),
 		justifyContent: 'flex-start',
 		alignItems: 'flex-start',
-		marginBottom: vw(3),
-		marginHorizontal: vw(3),
+		marginBottom: vw(2),
+		marginHorizontal: vw(2),
 	},
 
 		friendImage: {

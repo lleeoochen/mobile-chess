@@ -11,6 +11,7 @@ import { IMAGE, APP_THEME, MATCH_MODE } from 'chessvibe/src/Const';
 import { formatDate, vw, formatImage } from 'chessvibe/src/Util';
 import Cache from 'chessvibe/src/Cache';
 import Backend from 'chessvibe/src/Backend';
+import StyleUtil from 'chessvibe/src/StyleUtil';
 
 const matchSize = vw((100 - 2 - 6 - 4) / 4);
 const borderRadius = vw();
@@ -104,7 +105,7 @@ export default function PlayTab(props) {
 		};
 
 		return (
-			<Animated.View style={ [styles.playerBox, { opacity: fadein }] }>
+			<Animated.View style={[styles.playerBox, { backgroundColor: appTheme.SEARCH_BACKGROUND, opacity: fadein }] }>
 				<TextVibe style={ titleStyle }>Recent Matches</TextVibe>
 				<FlatList
 					data={matches}
@@ -178,19 +179,23 @@ export default function PlayTab(props) {
 				contentContainerCustomStyle={ styles.carousel }
 				onScrollIndexChanged={ index => onSnapToMode(ACTION_DATA[index]) }/>
 			{/* <TextVibe style={ [styles.description, { color: appTheme.SUB_COLOR }] }>{ description }</TextVibe> */}
+
+			
+			{$container}
+
 			<InputVibe
 				initValue=''
 				placeholder='Invite Code'
 				onSubmitText={(matchName) => navigateGame(matchName)}
-				onChangeText={() => {}}
+				onChangeText={() => { }}
 				style={{
-					color: appTheme.COLOR,
-					backgroundColor: appTheme.MENU_BACKGROUND,
+					color: appTheme.SEARCH_COLOR,
+					backgroundColor: appTheme.SEARCH_BACKGROUND,
 					margin: vw(2),
+					marginBottom: vw(2),
 					borderRadius: vw(),
-				}}
-			/>
-			{$container}
+					...StyleUtil.makeShadow(),
+				}}/>
 
 			<HomeCreateMenu
 				visible={ createMenuVisible.show }
@@ -232,15 +237,7 @@ const styles = StyleSheet.create({
 		actionBtn: {
 			margin: vw(3),
 			height: vw(80),
-
-			shadowColor: '#000',
-			shadowOffset: {
-				width: 0,
-				height: 1,
-			},
-			shadowOpacity: 0.22,
-			shadowRadius: 2.22,
-			elevation: 3,
+			...StyleUtil.makeShadow(),
 		},
 
 			actionBtnText: {
@@ -274,12 +271,15 @@ const styles = StyleSheet.create({
 	},
 
 	playerBox: {
-		width: '100%',
+		// width: '100%',
 		padding: '3%',
 		borderRadius: borderRadius,
-		marginBottom: vw(),
+		margin: vw(2),
+		marginBottom: 0,
 		// position: 'absolute',
 		bottom: 0,
+		backgroundColor: 'black',
+		...StyleUtil.makeShadow(),
 	},
 
 		matchesTitle: {
@@ -291,15 +291,7 @@ const styles = StyleSheet.create({
 			width: matchSize,
 			marginRight: vw(2),
 			borderRadius: borderRadius,
-
-			shadowColor: '#000',
-			shadowOffset: {
-				width: 0,
-				height: 1,
-			},
-			shadowOpacity: 0.22,
-			shadowRadius: 2.22,
-			elevation: 3,
+			...StyleUtil.makeShadow(),
 		},
 
 			matchImg: {

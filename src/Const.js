@@ -99,9 +99,11 @@ export const APP_THEME = Object.freeze({
 		MENU_BACKGROUND:    '#fbfbfb', // Side menu background color
 		COLOR:              'black', // Text color
 		SUB_COLOR:          'darkslategrey', // Subtext color
-		SETTING_BACKGROUND: '#fbfbfb',  // Setting item color
+		SETTING_BACKGROUND: '#fbfbfb', // Setting item color
 		SETTING_BORDER:     '#eeeeee', // Setting item border
 		ACTION_BUTTON:      '#5bad29', // Action button background color
+		SEARCH_BACKGROUND:  '#fbfbfb', // Setting item color
+		SEARCH_COLOR:       'black', // Setting item color
 	},
 
 	DARK: {
@@ -113,6 +115,8 @@ export const APP_THEME = Object.freeze({
 		SETTING_BACKGROUND: '#2a4261', // Setting item color
 		SETTING_BORDER:     '#1a283a', // Setting item border
 		ACTION_BUTTON:      '#437149', // Action button background color
+		SEARCH_BACKGROUND:  '#0D151F', // Setting item color
+		SEARCH_COLOR:       'white', // Setting item color
 	},
 
 	AUTUMN: {
@@ -121,9 +125,11 @@ export const APP_THEME = Object.freeze({
 		MENU_BACKGROUND:    '#f7e490', // Side menu background color
 		COLOR:              'black', // Text color
 		SUB_COLOR:          'darkslategrey', // Subtext color
-		SETTING_BACKGROUND: '#f7e490',  // Setting item color
+		SETTING_BACKGROUND: '#f7e490', // Setting item color
 		SETTING_BORDER:     '#f6f6d1', // Setting item border
 		ACTION_BUTTON:      '#5bad29', // Action button background color
+		SEARCH_BACKGROUND:  '#f7e490', // Setting item color
+		SEARCH_COLOR:       'black', // Setting item color
 	},
 
 	SKY: {
@@ -132,9 +138,11 @@ export const APP_THEME = Object.freeze({
 		MENU_BACKGROUND:    '#559df7', // Side menu background color
 		COLOR:              'black', // Text color
 		SUB_COLOR:          'darkslategrey', // Subtext color
-		SETTING_BACKGROUND: '#fbfbfb',  // Setting item color
+		SETTING_BACKGROUND: '#fbfbfb', // Setting item color
 		SETTING_BORDER:     '#b7ceea', // Setting item border
 		ACTION_BUTTON:      '#5bad29', // Action button background color
+		SEARCH_BACKGROUND:  '#fbfbfb', // Setting item color
+		SEARCH_COLOR:       'black', // Setting item color
 	},
 });
 
